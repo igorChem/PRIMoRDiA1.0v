@@ -1,0 +1,612 @@
+Starting program at:
+Thu Jul  4 14:36:32 2019
+
+Starting the descriptors calculation!
+
+Starting to read input information given in the first input line.
+
+
+molecule name acrolein_gauss
+Parameters for calculating the Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 40
+Fukui method: default
+Program QM output: gaussian
+local hardness method fukui
+Starting to parse fchk file from gaussian.
+HOMO energy: 
+-7.00217
+LUMO energy: 
+-1.85905
+Atomic orbitals: 
+68
+Cartesian molecular coordinates converted to angstron.
+Overlap matrix coeffcients not stored.
+If the QM output is from MOPAC, orca or gamess your files may contain problems. 
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required 
+
+molecule name trp_pm6_neutro_zy
+Parameters for calculating the Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 40
+Fukui method: default
+Program QM output: mopac
+local hardness method default
+Starting to parse AUX file from MOPAC.
+Found number of atoms in the aux file: 
+304
+Number of electron in the system: 
+851
+Number of atomic orbitals: 
+766
+Starting to parse aux file from MOPAC to get the overlap matrix.
+Nothing to read!
+
+Starting to parse aux file from MOPAC molecular orbital energies
+HOMO energy: 
+-9.586
+LUMO energy: 
+-4.663
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required 
+
+molecule name acrolein_orca
+Parameters for calculating the Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 40
+Fukui method: default
+Program QM output: orca
+local hardness method potential
+Starting to parse out file from ORCA.
+Total Energy 
+-5192.04
+HOMO energy: 
+-10.7256
+LUMO energy: 
+1.4995
+Atomic orbitals: 
+100
+Orca file parsed!
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required 
+
+molecule name acrolein_gam
+Parameters for calculating the Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 40
+Fukui method: default
+Program QM output: gamess
+local hardness method potential_fukui
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+8
+Total Energy 
+-5192.35
+HOMO energy: 
+-10.7431
+LUMO energy: 
+1.49391
+Atomic orbitals: 
+144
+Cartesian molecular coordinates converted to angstron.
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required 
+
+molecule name aldeide
+Parameters for calculating the Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 40
+Fukui method: default
+Program QM output: gamess
+local hardness method potential_fukui
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+7
+Total Energy 
+-4131.73
+HOMO energy: 
+-11.0397
+LUMO energy: 
+5.36337
+Atomic orbitals: 
+19
+Cartesian molecular coordinates converted to angstron.
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required 
+
+molecule name acrolein
+Parameters for calculating the Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 40
+Fukui method: default
+Program QM output: mopac
+local hardness method none
+Starting to parse AUX file from MOPAC.
+Found number of atoms in the aux file: 
+8
+Number of electron in the system: 
+22
+Number of atomic orbitals: 
+20
+Starting to parse aux file from MOPAC to get the overlap matrix.
+Nothing to read!
+
+Starting to parse aux file from MOPAC molecular orbital energies
+HOMO energy: 
+-10.257
+LUMO energy: 
+-0.376
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required 
+
+molecule name benzene
+Parameters for calculating the Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 40
+Fukui method: default
+Program QM output: mopac
+local hardness method fukui
+Starting to parse AUX file from MOPAC.
+Found number of atoms in the aux file: 
+12
+Number of electron in the system: 
+30
+Number of atomic orbitals: 
+30
+Starting to parse aux file from MOPAC to get the overlap matrix.
+Nothing to read!
+
+Starting to parse aux file from MOPAC molecular orbital energies
+HOMO energy: 
+-9.805
+LUMO energy: 
+0.204
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required 
+
+molecule name metano
+Parameters for calculating the Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 40
+Fukui method: default
+Program QM output: gamess
+local hardness method default
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+5
+Total Energy 
+-1094.06
+HOMO energy: 
+-14.8329
+LUMO energy: 
+1.14288
+Atomic orbitals: 
+49
+Cartesian molecular coordinates converted to angstron.
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required 
+
+molecule name trp_convHF
+Parameters for calculating the Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 40
+Fukui method: default
+Program QM output: gamess
+local hardness method fukui
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+304
+Total Energy 
+-201309
+HOMO energy: 
+-6.77564
+LUMO energy: 
+-2.13337
+Atomic orbitals: 
+1686
+Cartesian molecular coordinates converted to angstron.
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required 
+
+molecule name trp
+Parameters for calculating the Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 0
+Fukui method: default
+Program QM output: gamess
+local hardness method potential
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+304
+Total Energy 
+-10451.6
+HOMO energy: 
+-5.44772
+LUMO energy: 
+-2.12793
+Atomic orbitals: 
+766
+Cartesian molecular coordinates converted to angstron.
+Finishing the writting of the condensed local reactivity descriptors.
+
+molecule name acrolein_gam
+Parameters for calculating the Reactivity descriptors:
+Approximation: Finite Differences
+Grid size : 40
+Program QM output: gamess
+local hardness method default
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+8
+Total Energy 
+-5192.35
+HOMO energy: 
+-10.7431
+LUMO energy: 
+1.49391
+Atomic orbitals: 
+144
+Cartesian molecular coordinates converted to angstron.
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+8
+Total Energy 
+-1.07075e+06
+HOMO energy: 
+-34430.5
+LUMO energy: 
+-27648.1
+Atomic orbitals: 
+144
+Cartesian molecular coordinates converted to angstron.
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+8
+Total Energy 
+-1.15916e+06
+HOMO energy: 
+-37707.6
+LUMO energy: 
+-28816.8
+Atomic orbitals: 
+144
+Cartesian molecular coordinates converted to angstron.
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required
+
+molecule name metano
+Parameters for calculating the Reactivity descriptors:
+Approximation: Finite Differences
+Grid size : 40
+Program QM output: gamess
+local hardness method potential_fukui
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+5
+Total Energy 
+-1094.06
+HOMO energy: 
+-14.8329
+LUMO energy: 
+1.14288
+Atomic orbitals: 
+49
+Cartesian molecular coordinates converted to angstron.
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+5
+Total Energy 
+0
+HOMO energy: 
+-24.6699
+LUMO energy: 
+-3.6817
+Atomic orbitals: 
+49
+Cartesian molecular coordinates converted to angstron.
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+5
+Total Energy 
+-1092.92
+HOMO energy: 
+1.12927
+LUMO energy: 
+4.74567
+Atomic orbitals: 
+49
+Cartesian molecular coordinates converted to angstron.
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required
+
+molecule name acrolein_orca
+Parameters for calculating the Reactivity descriptors:
+Approximation: Finite Differences
+Grid size : 40
+Program QM output: orca
+local hardness method default
+Starting to parse out file from ORCA.
+Total Energy 
+-5192.04
+HOMO energy: 
+-10.7256
+LUMO energy: 
+1.4995
+Atomic orbitals: 
+100
+Orca file parsed!
+Starting to parse out file from ORCA.
+Total Energy 
+-5183.4
+HOMO energy: 
+-20.7665
+LUMO energy: 
+-4.9519
+Atomic orbitals: 
+100
+Orca file parsed!
+Starting to parse out file from ORCA.
+Total Energy 
+-5191.3
+HOMO energy: 
+-0.1985
+LUMO energy: 
+5.4964
+Atomic orbitals: 
+100
+Orca file parsed!
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required
+
+molecule name benzene
+Parameters for calculating the Reactivity descriptors:
+Approximation: Finite Differences
+Grid size : 40
+Program QM output: mopac
+local hardness method potential
+Opening mgf file
+HOMO energy: 
+-9.805
+LUMO energy: 
+0.2039
+Atomic orbitals: 
+30
+Overlap matrix coeffcients not stored.
+If the QM output is from MOPAC, orca or gamess your files may contain problems. 
+Opening mgf file
+HOMO energy: 
+-15.751
+LUMO energy: 
+-6.4628
+Atomic orbitals: 
+30
+Overlap matrix coeffcients not stored.
+If the QM output is from MOPAC, orca or gamess your files may contain problems. 
+Opening mgf file
+HOMO energy: 
+-0.5164
+LUMO energy: 
+6.3536
+Atomic orbitals: 
+30
+Overlap matrix coeffcients not stored.
+If the QM output is from MOPAC, orca or gamess your files may contain problems. 
+Starting to parse out file from MOPAC.
+Total Energy 
+-3247.33
+HOMO energy 
+-9.805
+LUMO energy 
+0.204
+Overlap matrix coeffcients not stored.
+If the QM output is from MOPAC, orca or gamess your files may contain problems. 
+Starting to parse out file from MOPAC.
+Total Energy 
+-3237.86
+HOMO energy 
+-15.751
+LUMO energy 
+-6.4628
+Overlap matrix coeffcients not stored.
+If the QM output is from MOPAC, orca or gamess your files may contain problems. 
+Starting to parse out file from MOPAC.
+Total Energy 
+-3247.48
+HOMO energy 
+-0.5164
+LUMO energy 
+6.3536
+Overlap matrix coeffcients not stored.
+If the QM output is from MOPAC, orca or gamess your files may contain problems. 
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+MEP grid calculations required
+
+molecule name trp
+Parameters for calculating the band Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 0
+Fukui method: default
+Program QM output: gamess
+local hardness method fukui
+Band Reactivity Descriptors method ED
+cular orbitals max size 
+Energy criteria 1 (eV)
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+304
+Total Energy 
+-10451.6
+HOMO energy: 
+-5.44772
+LUMO energy: 
+-2.12793
+Atomic orbitals: 
+766
+Cartesian molecular coordinates converted to angstron.
+Finishing the writting of the condensed local reactivity descriptors in PDBs.
+Finishing the writting of the condensed local reactivity descriptors.
+
+molecule name trp_pm6_neutro_zy
+Parameters for calculating the band Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 40
+Fukui method: default
+Program QM output: mopac
+local hardness method defult
+Band Reactivity Descriptors method EW
+tals max size 
+Energy criteria 1 (eV)
+Starting to parse AUX file from MOPAC.
+trp_pm6_neutro_zy.aux
+Found number of atoms in the aux file: 
+304
+Number of electron in the system: 
+851
+Number of atomic orbitals: 
+766
+Starting to parse aux file from MOPAC to get the overlap matrix.
+Starting to parse aux file from MOPAC molecular orbital energies
+Starting to parse aux file from MOPAC to get the overlap matrix.
+Starting to parse aux file from MOPAC molecular orbital energies
+Nothing to read!
+
+HOMO energy: 
+-9.586
+LUMO energy: 
+-4.663
+Atomic orbitals: 
+766
+Number of  occupied  MO used to calculate condensed to atom descriptors: 
+2
+Number of  virtual  MO used to calculate condensed to atom descriptors: 
+3
+Finishing the writting of the condensed local reactivity descriptors in PDBs.
+Finishing the writting of the condensed local reactivity descriptors.
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+
+molecule name 1l2yPM7neutro
+Parameters for calculating the band Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 0
+Fukui method: default
+Program QM output: mopac
+local hardness method fukui
+Band Reactivity Descriptors method EW
+ize 
+Energy criteria 1 (eV)
+All molecular orbitals information in QM output will be stored due the local hardness method chosen or if the condensed electron density was required
+Starting to parse AUX file from MOPAC.
+1l2yPM7neutro.aux
+Found number of atoms in the aux file: 
+304
+Number of electron in the system: 
+851
+Number of atomic orbitals: 
+766
+Starting to parse aux file from MOPAC to get the overlap matrix.
+Starting to parse aux file from MOPAC molecular orbital energies
+Starting to parse aux file from MOPAC molecular orbital energies
+Nothing to read!
+
+HOMO energy: 
+-9.451
+LUMO energy: 
+-4.154
+Atomic orbitals: 
+766
+Number of  occupied  MO used to calculate condensed to atom descriptors: 
+2
+Number of  virtual  MO used to calculate condensed to atom descriptors: 
+3
+Finishing the writting of the condensed local reactivity descriptors in PDBs.
+Finishing the writting of the condensed local reactivity descriptors.
+
+molecule name trp_convHF
+Parameters for calculating the band Reactivity descriptors:
+Approximation: Frozen Orbital
+Grid size: 0
+Fukui method: default
+Program QM output: gamess
+local hardness method potential
+Band Reactivity Descriptors method EW
+ize 
+Energy criteria 1 (eV)
+All molecular orbitals information in QM output will be stored due the local hardness method chosen or if the condensed electron density was required
+Starting to parse log file from GAMESS.
+Found number of atoms in the aux file: 
+304
+Total Energy 
+-201309
+HOMO energy: 
+-6.77564
+LUMO energy: 
+-2.13337
+Atomic orbitals: 
+1686
+Cartesian molecular coordinates converted to angstron.
+Number of  occupied  MO used to calculate condensed to atom descriptors: 
+2
+Number of  virtual  MO used to calculate condensed to atom descriptors: 
+1
+Finishing the writting of the condensed local reactivity descriptors in PDBs.
+Finishing the writting of the condensed local reactivity descriptors.
+Ending reactivity descriptors calculations.
+Exiting PRIMoRDiA after 237.52 seconds
