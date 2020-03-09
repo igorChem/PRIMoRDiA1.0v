@@ -1,0 +1,20 @@
+Starting program at:
+Thu Dec 12 21:18:01 2019
+
+You are using PRIMoRDiA for generation of molecular orbital scalar field cube file!
+
+Starting to parse fchk file from gaussian.
+HOMO energy: 
+-7.00217
+LUMO energy: 
+-1.85905
+Atomic orbitals: 
+68
+Cartesian molecular coordinates converted to angstron.
+Overlap matrix coeffcients not stored.
+If the QM output is from MOPAC, orca or gamess your files may contain problems. 
+You are using PRIMoRDiA for generation of molecular orbital scalar field cube file!
+
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Exiting PRIMoRDiA after 0.02005 seconds
