@@ -28,6 +28,9 @@
 \usepackage{booktabs}
 \usepackage{makecell}
 
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=blue,urlcolor=blue}
+
+
 \renewcommand\theadalign{bc}
 \renewcommand\theadfont{\bfseries}
 \renewcommand\theadgape{\Gape[4pt]}
@@ -68,6 +71,7 @@ This guide resumes:
 	\item List of generated files and descriptors.
 	\item How to work with the generated scripts for usage of graphical packages.
 	\item All purpose tutorials.
+	\item Dealing with errors.
 \end{enumerate}
 
 \end{abstract}
@@ -77,7 +81,7 @@ This guide resumes:
 
 \section{Download and Installation}
 
-Our Github repository, that contains the executable, this userguide and the test set, can be downloaded or cloned at https://github.com/igorChem/PRIMoRDiA1.0v.git. If you download you will have to extract the zip file. To clone the repository run the following command
+Our Github repository, that contains the executable, this userguide and the test set, can be downloaded or cloned at \url{https://github.com/igorChem/PRIMoRDiA1.0v.git}. If you download you will have to extract the zip file. To clone the repository run the following command
 
 \hspace*{-\leftmarginwidth}
 \begin{minipage}{\fullwidth}
@@ -92,20 +96,18 @@ The executable, file named "PRIMoRDiA\_1.0v\_LINUX64", is compiled for linux mac
 source ~/.bashrc\end{commandshell}
 \end{minipage}
 
-For avoid run problems and maximum performance, the system must have the amount of RAM at least equal to the files provided for analysis. This is relevant when dealing with macromolecules containing five thousand atoms or more. 
-
-
+To avoid run problems and ensure maximum performance, the system must have the amount of RAM at least equal to the files provided for analysis. This is relevant when dealing with macromolecules containing five thousand atoms or more. 
 
 \section{Reactivity Descriptors}
 
-Reactivity Descriptors (RD) are convenient theoretical quantities that summarize the reactive behavior of a molecular system or its atoms/different regions. The most successful and employed RD are from the Conceptual Density Functional Theory, that provided mathematical definitions of already used chemical concepts. This definitions are drawn from the fundamental differential equation of the DFT \autoref{eq.1}, and its Taylor series expansions, taking the energy and electron density derivatives with respect the number of electrons, and its Maxwell relations with other functional derivatives, assigning to it an reactive behavior for the system\cite{parr1978elect}. 
+Reactivity Descriptors (RD) are convenient theoretical quantities that summarize the reactive behavior of a molecular system or its atoms/different regions. The most successful and employed RD are from the Conceptual Density Functional Theory, that provided mathematical definitions of already used chemical concepts\cite{geerlings2003conceptual}. This definitions are drawn from the fundamental differential equation of the DFT \autoref{eq.1}, and its Taylor series expansions, taking the energy and electron density derivatives with respect the number of electrons, and its Maxwell relations with other functional derivatives, assigning to it an reactive behavior for the system\cite{parr1978elect}. 
 
 \begin{equation}
 dE = \mu dN + \int \rho(r) d \nu (r) dr
 \label{eq.1}
 \end{equation}
 
-The descriptors can be firstly separated by global, a number that represent all molecular system, and local quantity that is function of position. All global quantities that are outputted by PRIMoRDiA are listed in \autoref{tab1}, with its definition in CDFT and how the calculation occurs for each method available, Frozen Orbital Approximation (FOA) and Finite Differences (FD), that is the second possible way to categorize the RD. The third way to classify the access of these quantities is through the representation type, which is reserved only for the local RD, that can be represented by values at each point of a three dimensional grid or by a list of values, assigning the reactivity for each atomic center in the molecular system. The former representation type is called Condensed to atoms, often shortened in the literature as only condensed.    
+The descriptors can be firstly separated by global, a number that represent all molecular system, and local quantity that is function of position. All global quantities that are outputted by PRIMoRDiA are listed in \autoref{tab1}, with its definition in CDFT and how the calculation occurs for each method available, Frozen Orbital Approximation (FOA) and Finite Differences (FD), that is the second possible way to categorize the RD. The third way to classify the access of these quantities is through the representation type, which is reserved only for the local RD, that can be represented by values at each point of a three dimensional grid or by a list of values, assigning the reactivity for each atomic center in the molecular system. The former representation type is called Condensed to atoms, often shortened in the literature as only condensed. This categorization types are summarized
 
 \tikzstyle{block} = [rectangle, draw, fill=cyan!20, 
 text width=5em, text centered, rounded corners, minimum height=4em]
