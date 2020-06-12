@@ -104,7 +104,7 @@ dE = \mu dN + \int \rho(r) d \nu (r) dr
 \end{equation}
 
 \begin{equation}
-\hat{H} \Psi = \hat{H}E
+\mathbf{\hat{H}\Psi= E\Psi}
 \label{eq.1000}
 \end{equation}
 
@@ -282,19 +282,25 @@ f^{+}_k = q_{k [N+1]} - q_{k [N]}
 For FOA, the condensation is done using calculating the square of the molecular orbital $i$ correspondent to the required by the descriptor, as in \autoref{eq.19} showing the module square of  molecular orbital $\psi$ i for the $k_{th}$ atom, as the sum of the square of molecular orbital linear combination coefficients corresponding to the atomic orbitals (AO) of $k_{th}$ atom, plus the sum of product between these coefficients among them and its corresponding element in the overlap matrix $S$, which represent the product of the one-electron atomic orbitals of the basis set.
  
 \begin{equation}
-|\psi^i_k|^2  =\sum_{\nu \in k}^{AO} |C_{\nu i}|^{2} + \sum_{\mu \notin \nu }^{AO} |C_{\nu i} C_{\mu i}|S_{\mu \nu} 
+\mathbf{|\psi^i_k|^2  =\sum_{\nu \in k}^{AO} |C_{\nu i}|^{2} + \sum_{\mu \notin \nu }^{AO} |C_{\nu i} C_{\mu i}|S_{\mu \nu} }
 \label{eq.19}
 \end{equation}
+
+\begin{equation}
+\mathbf{ \rho(r)_k = \sum_{i}^{occ}|\psi^i_k|^2   }
+\label{eq.1o9}
+\end{equation}
+
 
 Thus, EAS is calculated for each atom $k$ as in \autoref{eq.20}, using the square module of HOMO, and NAS the LUMO \autoref{eq.21}. 
 
 \begin{equation}
-f^-_k =|\psi^{HOMO}_k|^2 =  \sum_{\nu \in k}^{AO} |C_{\nu HOMO}|^{2} + \sum_{\mu \notin \nu }^{AO} |C_{\nu HOMO} C_{\mu HOMO}|S_{\mu \nu} 
+\mathbf{f^-_k =|\psi^{HOMO}_k|^2 =  \sum_{\nu \in k}^{AO} |C_{\nu HOMO}|^{2} + \sum_{\mu \notin \nu }^{AO} |C_{\nu HOMO} C_{\mu HOMO}|S_{\mu \nu}}
 \label{eq.20}
 \end{equation}
 
 \begin{equation}
-f^+_k = |\psi^{LUMO}_k|^2 = \sum_{\nu \in k}^{AO} |C_{\nu LUMO}|^{2} + \sum_{\mu \notin \nu }^{AO} |C_{\nu LUMO} C_{\mu LUMO}|S_{\mu \nu} 
+\mathbf{f^+_k = |\psi^{LUMO}_k|^2 = \sum_{\nu \in k}^{AO} |C_{\nu LUMO}|^{2} + \sum_{\mu \notin \nu }^{AO} |C_{\nu LUMO} C_{\mu LUMO}|S_{\mu \nu} }
 \label{eq.21}
 \end{equation}
 
@@ -384,6 +390,8 @@ Then,   $F[\rho]$ is divided in three other functionals: kinetic electron energy
 \label{eq.26.1}
 \end{equation}
 
+
+
 \begin{equation}
 E[\rho] =  \int \rho(r) d \nu (r) dr + F[\rho]
 \label{eq.1.0}
@@ -404,6 +412,11 @@ Thus a total local hardness is defined as a sum of the quantity for each of thes
 \begin{equation}
 \eta^{TFD} (r) = \frac{1}{2N} \int \frac{\delta^2 J[\rho]}{\delta \rho(r) \delta \rho(r')} \rho(r')dr' = \frac{1}{2N} \int \frac{1}{|r-r'|} \rho(r') dr'
 \label{eq.27} 
+\end{equation}
+
+\begin{equation}
+\mathbf{\eta^{TFD} (r) =  \frac{1}{2N} \int \frac{1}{|r-r'|} \rho(r') dr'}
+\label{eq.27999} 
 \end{equation}
 
 \begin{equation}
@@ -500,17 +513,17 @@ f^-_{BD} = \sum^{HOMO}_{i=b} |\psi_i|^2
 \end{equation}
 
 \begin{equation}
-f^-_{EW} = \sum^{HOMO}_{i=b} e^{-|E_{i}-E_{HOMO}|}|\psi_i|^2
+\mathbf{f^-_{EW} = \sum^{HOMO}_{i=b} e^{-|E_{i}-E_{HOMO}|}|\psi_i|^2}
 \label{eq.31}
 \end{equation}
 
 \begin{equation}
-f^+_{BD} = \sum^{b}_{i=LUMO} |\psi_i|^2 
+\mathbf{f^+_{BD} = \sum^{b}_{i=LUMO} |\psi_i|^2 }
 \label{eq.32}
 \end{equation}
 
 \begin{equation}
-f^+_{EW} =  \sum^{b}_{i=LUMO} e^{-|E_{i}-E_{LUMO}|} |\psi_i|^2
+\mathbf{f^+_{EW} =  \sum^{b}_{i=LUMO} e^{-|E_{i}-E_{LUMO}|} |\psi_i|^2}
 \label{eq.33}
 \end{equation}
 
