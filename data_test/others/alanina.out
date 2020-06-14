@@ -9870,7 +9870,8 @@ MULLIKEN REDUCED ORBITAL CHARGES
  21 H s       :     0.675874  s :     0.675874
 
 ------------------------
-MULLIKEN OVERLAP CHARGES
+MULLIKEN
+ CHARGES
 ------------------------
 B(  0-H ,  1-C ) :   0.6190 B(  0-H ,  4-C ) :  -0.0643 B(  1-C ,  2-H ) :   0.6185 
 B(  1-C ,  3-H ) :   0.6501 B(  1-C ,  4-C ) :   0.4661 B(  1-C ,  5-O ) :  -0.1436 
