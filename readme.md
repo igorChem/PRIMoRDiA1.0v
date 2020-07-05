@@ -1,8 +1,7 @@
 PRIMoRDiA ( PRIMoRDiA Macromolecular Reactivity
 Descriptors Access ) is a shared memory parallel software
 written in C++ for post electronic structure calculations, that
-efficiently reads output files from most used quantum mechan-
-ics packages, storing molecular information and processing
+efficiently reads output files from most used quantum mechanics packages, storing molecular information and processing
 it to generate several descriptors to evaluate the global and
 local reactivity of molecular systems. PRIMoRDiA supports
 the main reactivity descriptors of the Conceptual Density
