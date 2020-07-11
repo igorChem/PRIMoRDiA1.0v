@@ -5,7 +5,5 @@ efficiently reads output files from most used quantum mechanics packages, storin
 it to generate several descriptors to evaluate the global and
 local reactivity of molecular systems. PRIMoRDiA supports
 the main reactivity descriptors of the Conceptual Density
-Functional Theory, the most famous and used reactivity the-
-ory, which works from response variables of the electronic
-structure of the molecules, as also other electrostatics prop-
-erties.
+Functional Theory, the most famous and used reactivity theory, which works from response variables of the electronic
+structure of the molecules, as also other electrostatics properties.
