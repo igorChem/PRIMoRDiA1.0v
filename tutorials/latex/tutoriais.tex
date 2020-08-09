@@ -58,23 +58,28 @@
 	\maketitle
 	
 \begin{abstract}
-	PRIMoRDiA ( \textbf{PRI}MoRDiA \textbf{M}acromolecular \textbf{R}eactivity \textbf{D}escriptors \textbf{A}ccess ) ia a shared memory parallel software written in C++ for post electronic structure calculations, that efficiently read output files from most used quantum mechanics packages, storing molecular information and processing it to generate several descriptors to evaluate the global and local reactivity of molecular systems. PRIMoRDiA supports the main reactivity descriptors of the Conceptual Density Functional Theory, the most famous and used reactivity theory, which work from response variables of the electronic structure of the molecules, as also other electrostatics properties.
+	PRIMoRDiA ( \textbf{PRI}MoRDiA \textbf{M}acromolecular \textbf{R}eactivity \textbf{D}escriptors \textbf{A}ccess )
 \end{abstract}
 
-\section{Tutorials}
+\section{Basic Tutorials}
 
 To learn how to use the program, its features and the auxiliary scripts, you can clone the \emph{primordia\_data\_test} repository from git hub with the following command
 
 \hspace*{-\leftmarginwidth}
 \begin{minipage}{\fullwidth}
-	\begin{commandshell}
-		git clone https://github.com/igorChem/PRIMoRDiA1.0v.git
-	\end{commandshell}
+	\begin{commandshell}git clone https://github.com/igorChem/PRIMoRDiA1.0v.git\end{commandshell}
 \end{minipage}
 
 Or paste this address in your web browser and download the zipped folder.
 
 This repository contains output files for several quantum mechanical calculations needed to get the reactivity descriptors and input files examples for PRIMoRDiA. Also, this is the repository where you have access to the executable and this present document. In this section will be explore the results of PRIMoRDiA from these files.
+
+
+\subsection{Frozen Orbital Examples}
+
+The Frozen Orbital Approximation (FOA) is a calculation method for the global and local descriptors that approximates some of the Conceptual Density Functional Theory derivatives using properties retrieved from the frontier molecular orbitals. Specifically, these molecular orbitals are the Highest energy Occupied Molecular Orbital (HOMO) and the Lowest energy Unoccupied Molecular Orbital (LUMO). To calculate some of the main global descriptors, such as electronic chemical potential and global hardness, the energies values of these molecular orbitals are used. The same is done for the Fukui functions, that are local reactivity descriptors, indicating regioselectivity, and used the spatial distribution of the probability density described by these orbitals.
+
+This approximation method is interesting because requires only one single point calculation for the system studies. Also, brings the relationship with the resolved electronic structure of the system with its chemical reactivity. For more information about these calculation method, its limitations and mathematical development, read the userguide.
 
 \subsection{Cube Generation and Option related}
 
@@ -115,31 +120,12 @@ The Pymol window will open with the cube file loaded. To show the iso-surfaces g
 
 The generation of Molecular Orbitals 
 
-
 \hspace*{-\leftmarginwidth}
 \begin{minipage}{\fullwidth}
-	\begin{commandshell}
-		primordia -mo acrloein_gauss.fchk  40 gaussian
-	\end{commandshell}
+	\begin{commandshell}primordia -mo acrloein_gauss.fchk  40 gaussian\end{commandshell}
 \end{minipage}
 
-
-\subsection{Reactivity Descriptors Calculations}
-
-\subsubsection{Global Reactivity Descriptors}
-
-\subsubsection{Local Reactivity Descriptors: Volumetric}
-
-\subsubsection{Local Reactivity Descriptors: Condensed}
-
-\subsubsection{Band Reactivity Descriptor: Small Peptides}
-
-\subsubsection{Band Reactivity Descriptors: Enzymatic Reaction}
-
-
-\section{Dealing with Errors}
-
-
+\subsection{Advanced Tutorials}
 
 
 \end{document}

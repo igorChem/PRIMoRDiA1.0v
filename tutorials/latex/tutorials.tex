@@ -81,6 +81,26 @@ This repository contains output files for several quantum mechanical calculation
 
 \subsection{Tutorial 1: Frozen Orbital Examples }
 
+The Frozen Orbital Approximation (FOA) is a calculation method for the global and local descriptors that approximates some of the Conceptual Density Functional Theory derivatives using properties retrieved from the frontier molecular orbitals. Specifically, these molecular orbitals are the Highest energy Occupied Molecular Orbital (HOMO) and the Lowest energy Unoccupied Molecular Orbital (LUMO). To calculate some of the main global descriptors, such as electronic chemical potential and global hardness, the energies values of these molecular orbitals are used. The same is done for the Fukui functions, that are local reactivity descriptors, indicating regioselectivity, and used the spatial distribution of the probability density described by these orbitals.
+
+This approximation method is interesting because requires only one single point calculation for the system studies. Also, brings the relationship with the resolved electronic structure of the system with its chemical reactivity. For more information about these calculation method, its limitations and mathematical development, read the userguide.
+
+\subsubsection{Required Data} 
+
+The required files to run this tutorial are in the data\_test/tutorials/tutorial\_1 folder of the repository. 
+The files are of type and extensions of output files from quantum chemistry packages, and a input file of the program. 
+This input file can be generated using the option provided along with the program to produce a input files from the names of files in the current folder of a certain quantum chemistry package. \footnote{Tip: Put the PRIMoRDiA executable in .bashrc file with the following command: echo "alias primordia='/path/to/executable/PRIMoRDiA\_1.0v'" >> /home/user/.bashrc }
+
+\hspace*{-\leftmarginwidth}
+\begin{minipage}{\fullwidth}
+	\begin{commandshell}\end{commandshell}
+\end{minipage}
+
+\subsubsection{Creating and Running the input}
+
+
+\subsubsection{Result Analysis}
+
 
 \subsection{Tutorial 2: Finite Differences Examples }
 
