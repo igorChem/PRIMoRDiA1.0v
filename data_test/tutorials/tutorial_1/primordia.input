@@ -1,4 +1,3 @@
 eband 1 
-1 ~/PRIMoRDiA1.0v/data_test/tutorials/tutorial_1/acrolein.aux LCP 40 mopac 
-1 ~/PRIMoRDiA1.0v/data_test/tutorials/tutorial_1/acrolein_orca.out LCP 40 mopac 
-1 ~/PRIMoRDiA1.0v/data_test/tutorials/tutorial_1/acrolein.out LCP 40 mopac 
+1 /home/luana/primordia-code/PRIMoRDiA1.0v/data_test/tutorials/tutorial_1/acrolein.aux LCP 40 mopac 
+1 /home/luana/primordia-code/PRIMoRDiA1.0v/data_test/tutorials/tutorial_1/acrolein.out LCP 40 mopac 
