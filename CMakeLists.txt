@@ -1,0 +1,8 @@
+cmake_minimum_required (VERSION 3.0)
+project (primordia_app)
+enable_language (CXX)
+include_directories (./include)
+file (GLOB SOURCES "src/*.cpp")
+add_executable(PRIMoRDiA_1.0v_LINUX64 ${SOURCES})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -O3  -std=c++14 -lstdc++fs -I /usr/include/eigen3")
+target_link_libraries(PRIMoRDiA_1.0v_LINUX64 -lstdc++fs)
