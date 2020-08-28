@@ -14,11 +14,9 @@ All theoretical background and working instructions of our program are in our us
 
 Read our published works: 
 
-1. Semiempirical methods do Fukui functions: Unlocking a modeling framework for biosystems
-Grillo, I. B., Urquiza‐Carvalho, G. A., Chaves, E. J. F., & Rocha, G. B. (2020). Semiempirical methods do Fukui functions: Unlocking a modeling framework for biosystems. Journal of Computational Chemistry, 41(9), 862-873.
+1. Grillo, I. B., Urquiza‐Carvalho, G. A., Chaves, E. J. F., & Rocha, G. B. (2020). Semiempirical methods do Fukui functions: Unlocking a modeling framework for biosystems. Journal of Computational Chemistry, 41(9), 862-873.
 
-2. Elucidating Enzymatic Catalysis Using Fast Quantum Chemical Descriptors
-Grillo, I. B., Urquiza-Carvalho, G. A., Bachega, J. F. R., & Rocha, G. B. (2020). Elucidating Enzymatic Catalysis Using Fast Quantum Chemical Descriptors. Journal of Chemical Information and Modeling, 60(2), 578-591.
+2. Grillo, I. B., Urquiza-Carvalho, G. A., Bachega, J. F. R., & Rocha, G. B. (2020). Elucidating Enzymatic Catalysis Using Fast Quantum Chemical Descriptors. Journal of Chemical Information and Modeling, 60(2), 578-591.
 
 
 
