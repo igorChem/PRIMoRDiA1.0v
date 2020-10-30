@@ -11,12 +11,18 @@ structure of the molecules, as also other electrostatics properties.
 Installation instructions and tutorials are in our [wiki](https://github.com/igorChem/PRIMoRDiA1.0v/wiki)
 All theoretical background and working instructions of our program are in our userguide pdf file that can be found in this repository. 
 
+#PRIMoRDiA 1.0v 
+
+![cover.png]
+
 
 Read our published works: 
 
 1. Grillo, I. B., Urquiza‐Carvalho, G. A., Chaves, E. J. F., & Rocha, G. B. (2020). Semiempirical methods do Fukui functions: Unlocking a modeling framework for biosystems. Journal of Computational Chemistry, 41(9), 862-873.
 
 2. Grillo, I. B., Urquiza-Carvalho, G. A., Bachega, J. F. R., & Rocha, G. B. (2020). Elucidating Enzymatic Catalysis Using Fast Quantum Chemical Descriptors. Journal of Chemical Information and Modeling, 60(2), 578-591.
+
+3. Grillo, Igor Barden, et al. "Theoretical characterization of the shikimate 5-dehydrogenase reaction from Mycobacterium tuberculosis by hybrid QC/MM simulations and quantum chemical descriptors." Journal of Molecular Modeling 26.11 (2020): 1-12.
 
 
 
