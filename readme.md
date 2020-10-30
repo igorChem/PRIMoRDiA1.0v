@@ -13,7 +13,7 @@ All theoretical background and working instructions of our program are in our us
 
 #PRIMoRDiA 1.0v 
 
-![cover.png]
+!(cover.png)
 
 
 Read our published works: 
