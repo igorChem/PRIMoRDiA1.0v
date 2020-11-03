@@ -222,8 +222,8 @@ bool operator==(const Icube& lhs_cube,const Icube& rhs_cube){
 	if ( result == false ) {
 		cout << lhs_cube.origin[0] << endl;
 		cout << rhs_cube.origin[0] << endl;
-		return result;
 	}
+	return result;
 }  
 /***************************************************************************/
 Icube operator-(const Icube& lhs_cube, const Icube& rhs_cube){

@@ -62,6 +62,7 @@ Iprimitive& Iprimitive::operator=(const Iprimitive& prim_rhs){
 		exponent	= prim_rhs.exponent;
 		c_coef		= prim_rhs.c_coef;
 	}
+	return *this;
 }
 /*****************************************************************************/
 Iprimitive& Iprimitive::operator=(Iprimitive&& prim_rhs) noexcept{
@@ -70,6 +71,7 @@ Iprimitive& Iprimitive::operator=(Iprimitive&& prim_rhs) noexcept{
 		exponent	= move(prim_rhs.exponent);
 		c_coef		= move(prim_rhs.c_coef);
 	}
+	return *this;
 }
 /*****************************************************************************/
 void Iprimitive::print(){
