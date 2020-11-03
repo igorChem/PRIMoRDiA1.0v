@@ -12,6 +12,8 @@ Installation instructions and tutorials are in our [wiki](https://github.com/igo
 All theoretical background and working instructions of our program are in our userguide pdf file that can be found in this repository. 
 
 
+# Cite our Work
+
 Read our published works: 
 
 1. Grillo, I. B., Urquiza‐Carvalho, G. A., Chaves, E. J. F., & Rocha, G. B. (2020). Semiempirical methods do Fukui functions: Unlocking a modeling framework for biosystems. Journal of Computational Chemistry, 41(9), 862-873.
