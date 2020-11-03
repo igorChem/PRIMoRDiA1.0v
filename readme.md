@@ -13,13 +13,13 @@ structure of the molecules, as also other electrostatics properties.
 Installation instructions and tutorials are in our [wiki](https://github.com/igorChem/PRIMoRDiA1.0v/wiki)
 All theoretical background and working instructions of our program are in our userguide pdf file that can be found in this repository. 
 
-# PRIMoRDiA1.0v: First stable release
+# Dowload and Installation
+
+## PRIMoRDiA1.0v: First stable release
 
 ![cover](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/cover.png)
 
-# PRIMoRDiA1.1v: Internal Version
-
-# PRIMoRDiA1.2v: Upcoming Version
+# Tutorials and Userguide
 
 # Cite our Work
 
