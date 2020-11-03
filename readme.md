@@ -11,7 +11,7 @@ structure of the molecules, as also other electrostatics properties.
 Installation instructions and tutorials are in our [wiki](https://github.com/igorChem/PRIMoRDiA1.0v/wiki)
 All theoretical background and working instructions of our program are in our userguide pdf file that can be found in this repository. 
 
-[!cover](cover.png)
+![cover](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/cover.png)
 
 # Cite our Work
 
