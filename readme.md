@@ -1,3 +1,5 @@
+# What is PRIMoRDiA?
+
 PRIMoRDiA ( PRIMoRDiA Macromolecular Reactivity
 Descriptors Access ) is a shared memory parallel software
 written in C++ for post electronic structure calculations, that
@@ -11,6 +13,15 @@ structure of the molecules, as also other electrostatics properties.
 Installation instructions and tutorials are in our [wiki](https://github.com/igorChem/PRIMoRDiA1.0v/wiki)
 All theoretical background and working instructions of our program are in our userguide pdf file that can be found in this repository. 
 
+![cover](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/cover.png)
+
+# Dowload and Installation
+
+
+
+# Tutorials and Userguide
+
+# Cite our Work
 
 Read our published works: 
 
