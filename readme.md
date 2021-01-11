@@ -17,7 +17,9 @@ All theoretical background and working instructions of our program are in our us
 
 # Dowload and Installation
 
-
+You can download the executable file or just compule the software usinf CMAKE. 
+We strongly recommend the latter to maximize the performance of the software in your machine. 
+The detailed instructions of these two intallation options are described in our [wiki](https://github.com/igorChem/PRIMoRDiA1.0v/wiki) home. 
 
 # Tutorials and Userguide
 
