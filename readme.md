@@ -41,5 +41,7 @@ Read our published works:
 
 3. Grillo, Igor Barden, et al. "Theoretical characterization of the shikimate 5-dehydrogenase reaction from Mycobacterium tuberculosis by hybrid QC/MM simulations and quantum chemical descriptors." Journal of Molecular Modeling 26.11 (2020): 1-12.
 
+4. Grillo, Igor Barden, Gabriel A. Urquiza-Carvalho, and Gerd Bruno Rocha. "PRIMoRDiA: A Software to Explore Reactivity and Electronic Structure in Large Biomolecules." Journal of Chemical Information and Modeling 60.12 (2020): 5885-5890.
+
 
 
