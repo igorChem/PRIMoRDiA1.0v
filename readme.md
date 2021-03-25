@@ -13,7 +13,22 @@ structure of the molecules, as also other electrostatics properties.
 Installation instructions and tutorials are in our [wiki](https://github.com/igorChem/PRIMoRDiA1.0v/wiki)
 All theoretical background and working instructions of our program are in our userguide pdf file that can be found in this repository. 
 
+
 ![cover](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/cover.png)
+
+## PRIMoRDiA 1.0v - List of Features 
+
+1. Calculates Global reactivity descriptors 
+  (Hardness, softness, Ionization Potential, Electron Affinity, and more six related with electronic energies)
+2. Calculate Local reactivity Descriptors
+(Four working methods for Local hardness, Local Softness, hyper softness, local electrophilicity, multiphilcity, Fukui functions, electron density, and other common local electrostatic properties)
+3. Caluclate Local Reactivity Descriptors for residues from biological systems ( set in PDB files, such as protein adn DNA fragments )
+4. Implements local reactivity descriptor methods adjusted for macromolecules
+5. Outputs those reactivity descriptors either in Cube files or in numerical values assigned to each atom.
+6. Calculate total electron density.
+7. Calculate Molecular Orbitals.
+8. Make R scripts to automate Density of States (DOS) plot.
+
 
 # Dowload and Installation
 
