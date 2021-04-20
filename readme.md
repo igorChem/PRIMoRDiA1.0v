@@ -29,6 +29,23 @@ All theoretical background and working instructions of our program are in our us
 7. Calculate Molecular Orbitals.
 8. Make R scripts to automate Density of States (DOS) plot.
 
+## PRIMoRDiA 1.1v - Unstable Internal Version
+
+A not released version for the public. 
+Features related with  TERACHEM support via molden files.
+In the next versions this feature will be included along with the support for other quantum chemical packages
+
+## PRIMoRDiA 1.2v - Important Stable Update  
+
+From its release, the latest source files will be from this version. 
+Currently, this version is under tests and will be released soon and will include all features of the 1.0v along with important updates listed below. 
+
+1. All features of the 1.0v.
+2. New input format, more intuitive and complete for the new analysis.
+3. Reaction path trajectory automatic calculation and generation of scripts for statistical analysis.
+4. Molecular Dynamics trajectory automatic calculation and generation of scripts for statistical analysis.
+5. Implementation of the global and local composite hardness.
+6. Important adjustments in scripts for Pymol grpahical visualization 
 
 # Dowload and Installation
 
