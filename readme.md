@@ -53,7 +53,7 @@ You can download the executable file or just compule the software usinf CMAKE.
 We strongly recommend the latter to maximize the performance of the software in your machine. 
 The detailed instructions of these two intallation options are described in our [wiki](https://github.com/igorChem/PRIMoRDiA1.0v/wiki) home. 
 
-# Tutorials and Userguide
+# Tutorials and Userguide of the 1.0 version
 
 The following links present four basic tutorials on PRIMoRDiA usage. Running PRIMoRDiA is a very simple task, although the visualization of the results in graphical packages can become a complex task as the volume of results produced by PRIMoRDiA increases. Thus, the tutorials are an invitation to users to discuss the meaning of these theoretical quantities and understand how to transform them into useful chemical information.
 
