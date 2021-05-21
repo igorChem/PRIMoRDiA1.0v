@@ -75,8 +75,8 @@ Iprimitive& Iprimitive::operator=(Iprimitive&& prim_rhs) noexcept{
 }
 /*****************************************************************************/
 void Iprimitive::print(){
-	cout << "	exponent: "		<< exponent << "\n"
-		 << "	c. coefficient: "		<< c_coef   << "\n"
+	cout << "	exponent: "			<< exponent << "\n"
+		 << "	c. coefficient: "	<< c_coef   << "\n"
 		 << "	Normalization f.: " << n_fact   << "\n\n"; 
 }
 /*****************************************************************************/
@@ -85,7 +85,7 @@ Iprimitive::~Iprimitive(){}
 //END OF Iprimitive Class
 ///////////////////////////////////////////////////////////////////////////////
 /*****************************************************************************/
-Iaorbital::Iaorbital():
+Iaorbital::Iaorbital()	:
 	shell(1)			,
 	gto(false)			,
 	spherical(false)	,
@@ -153,7 +153,7 @@ Iaorbital::Iaorbital(unsigned int level	,
 	}
 }
 /*****************************************************************************/
-Iaorbital::Iaorbital(const Iaorbital& rhs_orb):
+Iaorbital::Iaorbital(const Iaorbital& rhs_orb)	:
 		shell(rhs_orb.shell)					,
 		gto(rhs_orb.gto)						,
 		symmetry(rhs_orb.symmetry)				,

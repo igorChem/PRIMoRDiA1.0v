@@ -18,6 +18,7 @@
 #include <iostream>
 #include <memory>
 #include <cstring>
+#include <algorithm>
 #include <string>
 #include <fstream>
 #include <ctime>
@@ -36,6 +37,8 @@
 #include "../include/autoprimordia.h"
 #include "../include/test_p.h"
 #include "../include/interface.h"
+#include "../include/pos_traj.h"
+
 /*********************************************************/
 using std::unique_ptr;
 using std::cout;
@@ -45,132 +48,63 @@ using std::move;
 using std::string;
 namespace fs = std::experimental::filesystem;
 /***********************************************************************/
-interface::interface():
-	m_argc(0){
+interface::interface()	:
+	m_argc(0)			{
 }
 /***********************************************************************/
-interface::interface(int argc, char** argv):
+interface::interface(int argc, char** argv) :
 	m_argc(argc)							{
-
-	for(int i =0;i<m_argc;i++){
+	
+	//---------------------------------
+	// Filling argument vector
+	for( int i =0; i<m_argc; i++ ){
 		m_argv.emplace_back(argv[i]);
 	}
 	runtyp = m_argv[1];
 	
+	//---------------------------------
+	// Setting time/date to print in the screen
 	time_t now	= time(0);
 	char* dt	= ctime(&now);
 	cout << "Starting PRIMoRDiA software! "	<< endl;
 	cout << "Calculations starting at: "	<< dt << endl;
 	
+	
+	//---------------------------------
+	// Setting general options
 	for(int i=0;i<m_argc;i++){
 		if      ( m_argv[i] == "-np")		NP			= stoi(m_argv[i+1]);
 		else if ( m_argv[i] == "-verbose")	M_verbose 	= true;
 	}
 	
+	//----------------------------------
+	// Writting basic information in the log file
 	m_log->initialize(M_verbose);
-	m_log->input_message("Starting PRIMoRDiA software! ");
+	m_log->input_message("Starting PRIMoRDiA software!\n ");
 	m_log->input_message("Calculations Starting at: ");
 	m_log->input_message(dt);
-	
+	m_log->input_message("\n");
+	m_log->inp_delim(2);
+	m_log->input_message("Provided Arguments: ");
+	for ( int i=0;i<m_argc;i++){
+		m_log->input_message("\n\t");
+		m_log->input_message(m_argv[i]);
+	}
+	m_log->input_message("\n");
+	m_log->inp_delim(2);
 }
 /***********************************************************************/
 void interface::run(){
-	if ( runtyp == "--help" || runtyp == "-h" ) this->write_help(); 
-	else if ( runtyp == "-f" ){
-		unique_ptr<AutoPrimordia> rds ( new AutoPrimordia( m_argv[2].c_str() ) );
-		rds->write_global();
-		rds->traj_atoms();
+	if ( runtyp == "-f" ){
+		AutoPrimordia rds ( m_argv[2].c_str() );
+		rds.init();
 	}
-	else if ( runtyp == "-mo" ){
-		m_log->input_message("You are using PRIMoRDiA for generation of molecular orbital scalar field cube file!\n");
-		unique_ptr<QMparser> qmfile ( new QMparser(m_argv[2].c_str(),m_argv[5]) );
-		Imolecule molecule ( move(qmfile->get_molecule() ) );
-		qmfile.reset(nullptr);
-		m_log->input_message("You are using PRIMoRDiA for generation of molecular orbital scalar field cube file!\n");
-		unique_ptr<gridgen> main_grid( new gridgen( stoi(m_argv[3]),move(molecule) ) );
-		if ( m_argv[5] == "orca"  ) main_grid->calculate_orb_orca( stoi(m_argv[4]),false );
-		else { 
-			main_grid->calculate_orb( stoi(m_argv[4].c_str()),false );
-		}
-		main_grid->write_grid();
-	}
-	else if ( runtyp == "-ed" ){
-		m_log->input_message("You are using PRIMoRDiA for generation of total electron density scalar field cube file!\n");
-		unique_ptr<QMparser> qmfile ( new QMparser( m_argv[2].c_str(),m_argv[4] ) );
-		Imolecule molecule ( move(qmfile->get_molecule() ) );
-		qmfile.reset(nullptr);
-		unique_ptr<gridgen> main_grid( new gridgen( stoi(m_argv[3].c_str() ), move(molecule) ) );
-		if ( m_argv[4].c_str() == "orca" ) {main_grid->calculate_density_orca(); }
-		else { 
-			main_grid->calculate_density();
-		}
-		main_grid->write_grid();
-	}
-	else if ( runtyp == "-cp"){
-		if ( check_file_ext(".aux",m_argv[2].c_str() ) ){
-			unique_ptr<QMparser> qmfile ( new QMparser ( m_argv[2].c_str(),m_argv[4]) );
-			Imolecule molecule ( move(qmfile->get_molecule() ) );
-			qmfile.reset(nullptr);
-			unique_ptr<gridgen> dens ( new gridgen(stoi(m_argv[3].c_str() ),move(molecule) ) );
-			dens->calculate_density();
-			dens->write_grid();
-			Icube comple  = dens->density.calculate_complement(false);
-			string cpname = m_argv[2];
-			cpname += "_complement.cube";
-			comple.write_cube(cpname);
-		}else if( check_file_ext( ".mgf",m_argv[2].c_str() ) ) {
-			unique_ptr<QMparser> qmfile ( new QMparser (m_argv[2].c_str(),m_argv[4]) );
-			Imolecule molecule ( move(qmfile->get_molecule() ) );	
-			qmfile.reset(nullptr);
-			unique_ptr<gridgen> dens ( new gridgen(stoi(m_argv[3]), move(molecule) ) );
-			dens->calculate_density();
-			dens->write_grid(); 
-			Icube comple  = dens->density.calculate_complement(true);
-			string cpname = m_argv[2];
-			cpname += "_complement.cube";
-			comple.write_cube(cpname);
-		}else if ( check_file_ext( ".cube",m_argv[2].c_str() ) ){
-			Icube comple(m_argv[2].c_str());
-			comple = comple.calculate_complement(false);
-			string cpname = m_argv[2];
-			cpname += "_complement.cube";
-			comple.write_cube(cpname);
-		}else{
-			cout << "No valid option selected for Density complement" << endl;
-			exit(-1);
-		}
-	}
-	else if ( runtyp == "-lcp"){
-		if ( check_file_ext(".aux",m_argv[2].c_str()) ){
-			unique_ptr<QMparser> qmfile ( new QMparser (m_argv[2].c_str(),m_argv[4]) );
-			Imolecule molecule ( move(qmfile->get_molecule() ) );	
-			qmfile.reset(nullptr);
-			unique_ptr<gridgen> dens ( new gridgen(stoi(m_argv[3]), move(molecule) ) );
-			dens->calculate_density();
-			dens->write_grid();
-			Icube comple  = dens->density.calculate_complement(true);
-			string cpname = m_argv[2];
-			cpname += "_complement.cube";
-			comple.write_cube(cpname);
-		}else if( check_file_ext(".mgf",m_argv[2].c_str()) ){
-			unique_ptr<QMparser> qmfile ( new QMparser (m_argv[2].c_str(),m_argv[4]) );
-			Imolecule molecule ( move(qmfile->get_molecule() ) );	
-			qmfile.reset(nullptr);
-			unique_ptr<gridgen> dens ( new gridgen(stoi(m_argv[3]),move(molecule) ) );
-			dens->calculate_density();
-			dens->write_grid();
-			Icube comple  = dens->density.calculate_complement(true);
-			string cpname = m_argv[2];
-			cpname += "_complement.cube";
-			comple.write_cube(cpname);
-		}else if ( check_file_ext(".cube",m_argv[2].c_str()) ){
-			Icube comple(m_argv[2].c_str());
-			comple = comple.calculate_complement(true);
-			string cpname = m_argv[2];
-			cpname += "_complement.cube";
-			comple.write_cube(cpname);
-		}
-	}
+	else if ( runtyp == "--help" || runtyp == "-h" ) this->write_help(); 
+	else if ( runtyp == "-mo" )		this->MO_cube();
+	else if ( runtyp == "-ed" )		this->ED_cube();
+	else if ( runtyp == "-cp" )		this->Comp_cube();
+	else if ( runtyp == "-input" )	this->write_input();
+	else if ( runtyp == "-test" ) 	this->test_run();
 	else if ( runtyp == "-cdiff" ){
 		cube_diffs diffe(m_argv[2].c_str());
 		diffe.write();
@@ -188,16 +122,67 @@ void interface::run(){
 	else if ( runtyp == "-int"){
 		Icube cube(m_argv[2].c_str());
 		cout << cube.calc_cube_integral() << endl;
+	}	
+	else if ( runtyp == "-p_traj" ){
+		std::vector<int> rs_l;
+		if ( m_argc > 2 ){
+			for(int i=2;i<m_argc;i++){
+				rs_l.push_back( stoi(m_argv[i] ) );
+			}
+			traj_rd traj(rs_l);
+			traj.init_from_folder();
+			traj.write_residues_reports();
+		}
 	}
-	else if ( runtyp == "-input")
-		this->write_input();
-	else if ( runtyp == "-test") 
-		this->test_run();
 	else {
 		cout << "No valid run option!" << endl;
 		exit(-1);
-	}
+	}	
+}
+/***********************************************************************/
+void interface::MO_cube(){
+	m_log->input_message("You are using PRIMoRDiA for generation of molecular orbital scalar field cube file!\n");
 	
+	unique_ptr<QMparser> qmfile ( new QMparser( m_argv[2].c_str(), m_argv[5]) );
+	Imolecule molecule ( move(qmfile->get_molecule() ) );
+	qmfile.reset(nullptr);
+		
+	unique_ptr<gridgen> main_grid( new gridgen( stoi(m_argv[3]), move(molecule) ) );
+	if ( m_argv[5] == "orca"  ) 
+		main_grid->calculate_orb_orca( stoi(m_argv[4]), false );
+	else { 
+		main_grid->calculate_orb( stoi(m_argv[4].c_str()), false );
+	}
+	main_grid->write_grid();
+}
+/***********************************************************************/
+void interface::ED_cube(){
+	m_log->input_message("You are using PRIMoRDiA for generation of total electron density scalar field cube file!\n");
+	
+	unique_ptr<QMparser> qmfile ( new QMparser( m_argv[2].c_str(),m_argv[4] ) );
+	Imolecule molecule ( move(qmfile->get_molecule() ) );
+	qmfile.reset(nullptr);
+	
+	unique_ptr<gridgen> main_grid( new gridgen( stoi(m_argv[3].c_str() ), move(molecule) ) );
+	if ( m_argv[4].c_str() == "orca" )  
+		main_grid->calculate_density_orca(); 
+	else { 
+		main_grid->calculate_density();
+	}
+	main_grid->write_grid();
+}
+/***********************************************************************/
+void interface::Comp_cube(){		
+	unique_ptr<QMparser> qmfile ( new QMparser ( m_argv[2].c_str(),m_argv[4]) );
+	Imolecule molecule ( move(qmfile->get_molecule() ) );
+	qmfile.reset(nullptr);
+	unique_ptr<gridgen> dens ( new gridgen(stoi(m_argv[3].c_str() ),move(molecule) ) );
+	dens->calculate_density();
+	dens->write_grid();
+	Icube comple  = dens->density.calculate_complement(false);
+	string cpname = m_argv[2];
+	cpname += "_complement.cube";
+	comple.write_cube(cpname);	
 }
 /***********************************************************************/
 void interface::write_help(){
@@ -211,11 +196,10 @@ void interface::write_help(){
 				<< "-ed   : Electron density cube file generation run option\n"
 				<< "-mo   : Molecular Orbital cube file generation run option\n"
 				<< "-input: Produce input from the name list in the current folder\n"
-				//<< "-cp   : Electron density complement\n"
-				//<< "-lcp  : Log of the electron density complement\n"
+				<< "-cp   : Electron density complement\n"
 				<< "-cubed: cube file differences and similarity index calculation\n"
 				<< "-cdiff: Calculates the similarity index from a list of cube files\n"
-				//"-int  : Calculates the integral of the cube file\n"
+				<< "-int  : Calculates the integral of the cube file\n"
 				<< "Generic options is the options must be placed after all the other arguments\n"
 				<< "Generic options:\n"
 				<< "-np [n] : program runs using n threads\n"
@@ -225,11 +209,9 @@ void interface::write_help(){
 }
 /***********************************************************************/
 void interface::test_run(){
-	test_p testlib;
-	//testlib.test_primordia_1();
-	testlib.test_primordia_2();
-	//testlib.test_primordia_3();
-	
+	test_p teste;
+	//teste.init_general_test();
+	teste.test_reaction_analysis();
 }
 /***********************************************************************/
 void interface::write_input(){
@@ -242,13 +224,15 @@ void interface::write_input(){
 	std::string lh			= "none";
 	std::string program		= "none ";
 	std::string mep			= "";
-	std::string band_method	= "";
-	std::string ext	= "";
+	std::string band_method	= "EW";
+	std::string ext			= "";
+	std::string RT			= "normal";
 	
 	int band				= 0;
 	for( int i=0;i<m_argc;i++){
-		if 		( m_argv[i] == "-op" )	option	= stoi(m_argv[i+1]);
+		if 		( m_argv[i] == "-op" )		option	= stoi(m_argv[i+1]);
 		else if	( m_argv[i] == "-p" )		program	= m_argv[i+1];
+		else if	( m_argv[i] == "-rt" )		RT		= m_argv[i+1];
 		else if	( m_argv[i] == "-grid")		grid	= stoi(m_argv[i+1]); 
 		else if	( m_argv[i] == "-lh")		lh		= m_argv[i+1]; 
 		else if	( m_argv[i] == "-mep")		mep		= "mep";
@@ -263,14 +247,15 @@ void interface::write_input(){
 	
 	std::vector<std::string> fnames; 
 	fs::path c_path = fs::current_path();
-	//fs::path c_path = "~/Documents/primordia_data_test/mopac/";
 	for (const auto & entry : fs::directory_iterator(c_path)){
 		fnames.push_back( entry.path().filename() );
 	}
-	
-	
+	std::sort( fnames.begin(), fnames.end() );
+		
 	std::ofstream inp_file("primordia.input");
-	inp_file <<  "eband 1 " << endl;
+	inp_file << "#RT " << RT << " \n"
+			 << "#PR eband 1\n";	
+	
 	for(int i=0;i<fnames.size();i++){
 		if ( program == "mopac"){
 			if ( check_file_ext(".aux",fnames[i].c_str()) ){
@@ -284,27 +269,26 @@ void interface::write_input(){
 			}else if( check_file_ext(".mgf",fnames[i].c_str()) ){
 				if ( option == 2 ) {
 					inp_file << option	<< " " << fnames[i] 
-								<< " "		<<	change_extension(fnames[i].c_str(),"_cat.mgf")	<< " "
-								<< " "		<<	change_extension(fnames[i].c_str(),"_an.mgf")	<< " "
-								<< lh			<<	" " << grid  << " " << 1 << " " << program << " " <<  mep << endl;
+								<< " "	<< change_extension(fnames[i].c_str(),"_cat.mgf")	<< " "
+								<< " "	<<	change_extension(fnames[i].c_str(),"_an.mgf")	<< " "
+								<< lh	<<	" " << grid  << " " << 1 << " " << program << " " <<  mep << endl;
 				}
 			}		
 			else if( check_file_ext(".out", fnames[i].c_str()) ){
 				if ( option == 1 || option == 3 ){
-					inp_file << option << " " << fnames[i] << " " <<	lh << " " << grid << " " << program << " " << mep << endl;
+					inp_file << option << " " << fnames[i] << " " << lh << " " << grid << " " << program << " " << mep << endl;
 				}
-			}
-			
+			}			
 		}
 		else if ( program == "gamess"){
 			if ( check_file_ext(".log",fnames[i].c_str()) ){
 				if ( option == 1 )
-					inp_file << option << " " << fnames[i] << " " <<	lh << " " << grid << " " << program << " " << mep << endl;
+					inp_file << option << " " << fnames[i] << " " << lh << " " << grid << " " << program << " " << mep << endl;
 				if ( option == 2 ){
 					inp_file << option	<< " " << fnames[i] 
-								<< " "		<<	change_extension(fnames[i].c_str(),"_cat.log")	<< " "
-								<< " "		<<	change_extension(fnames[i].c_str(),"_an.log")	<< " "
-								<< lh			<< " " << grid 	<< " " << 1 << " " << program << " " << mep << endl;
+								<< " "	<<	change_extension(fnames[i].c_str(),"_cat.log")	<< " "
+								<< " "	<<	change_extension(fnames[i].c_str(),"_an.log")	<< " "
+								<< lh	<< " " << grid 	<< " " << 1 << " " << program << " " << mep << endl;
 				}
 				if ( option == 3 ){
 					inp_file << option << " " << fnames[i] << " " <<	lh << " " << grid << " " << band << " " << " "
@@ -319,9 +303,9 @@ void interface::write_input(){
 					inp_file << option << " " << fnames[i] << " " <<	lh << " " << grid << " " << program << " " << mep << endl;
 				if ( option == 2 ){
 					inp_file << option	<< " " << fnames[i] 
-								<< " "		<<	change_extension(fnames[i].c_str(),"_cat.fchk")	<< " "
-								<< " "		<<	change_extension(fnames[i].c_str(),"_an.fchk")		<< " "
-								<< lh			<<	" " << grid		<< " " << 1 << " " << program << " " << mep << endl;
+								<< " "	<<	change_extension(fnames[i].c_str(),"_cat.fchk")	<< " "
+								<< " "	<<	change_extension(fnames[i].c_str(),"_an.fchk")		<< " "
+								<< lh	<<	" " << grid		<< " " << 1 << " " << program << " " << mep << endl;
 				}
 				if ( option == 3 ){
 					inp_file << option << " " << fnames[i] << " " <<	lh << " " << grid << " " << band << " " << " "
@@ -348,7 +332,6 @@ void interface::write_input(){
 			}
 		}else{
 				cout << "No program keyword recognized!" << endl;
-				exit(-1);
 		}
 	}
 	inp_file.close();

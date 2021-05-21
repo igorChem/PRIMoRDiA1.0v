@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+project(primordia_app LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+include(GNUInstallDirs)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+include_directories (./include)
+file (GLOB SOURCES "src/*.cpp")
+add_executable(PRIMoRDIA_1.2_WIN.exe ${SOURCES} )
+set(CMAKE_SYSTEM_NAME Windows)
+
+set(CMAKE_CXX_COMPILER i686-w64-mingw32-g++)
+
+set(CMAKE_FIND_ROOT_PATH /usr/i686-w64-mingw32)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+
+set (CMAKE_BUILD_TYPE Release)
+set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -fopenmp -O3  -std=c++17 -lstdc++fs -I /usr/include/eigen3")
+set (CMAKE_CXX_FLAGS_DEBUG "-pg -g -O0 -fopenmp -std=c++17 -I /usr/include/eigen3")
+target_link_libraries(PRIMoRDIA_1.2_WIN.exe -lstdc++fs)
+
