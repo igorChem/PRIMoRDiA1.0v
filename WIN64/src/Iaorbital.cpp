@@ -26,6 +26,8 @@
 #include "../include/common.h"
 #include "../include/Iaorbital.h"
 
+const double m_pi = 3.14159265358979323846;
+
 using std::move;
 using std::string;
 using std::cout;
@@ -231,12 +233,12 @@ bool Iaorbital::normalize(){
 		else if	( symmetry == "XX" || symmetry == "YY" || symmetry == "ZZ" ) { ff = 5.0000000/4.00000; } 
 		else if	( symmetry == "XY" || symmetry == "YZ" || symmetry == "XZ" ) { ff = 15.000000; } 
 		double part1 = pow(2.0*alpha,(shell + 0.50));
-		double part2 = sqrt((ff/ (4.0*M_PI)));
+		double part2 = sqrt((ff/ (4.0*m_pi)));
 		double part3 = sqrt( factorial(2.0*shell) );
 		n_factor		= part1*part2/part3;
 	}else{
-		double tmp		= (8./(M_PI*M_PI*M_PI));
-		double tmp1		= (2./(M_PI*M_PI*M_PI));
+		double tmp		= (8./(m_pi*m_pi*m_pi));
+		double tmp1		= (2./(m_pi*m_pi*m_pi));
 		double tmp_f0	= 4./(pow(15.,.5));
 		double tmp_f1	= 4./(pow(5.,.5));
 		double tmp_f2p	= 4.;
@@ -259,11 +261,11 @@ bool Iaorbital::normalize(){
 			}else if ( symmetry == "XYZ"){
 				gtos[i].n_fact = gtos[i].c_coef * pow( gtos[i].exponent,2.25 ) * 5.701643762;
 			}else if ( symmetry == "D0") {
-				gtos[i].n_fact = gtos[i].c_coef * pow(2048 * pow(gtos[i].exponent, 7.0)/(9.0 *M_PI*M_PI*M_PI),0.25);
+				gtos[i].n_fact = gtos[i].c_coef * pow(2048 * pow(gtos[i].exponent, 7.0)/(9.0 *m_pi*m_pi*m_pi),0.25);
 			}else if ( symmetry == "D1p" || symmetry == "D1n" || symmetry == "D2n" ){
-				gtos[i].n_fact = gtos[i].c_coef * pow(2048 * pow(gtos[i].exponent, 7.0)/(M_PI*M_PI*M_PI),0.25);
+				gtos[i].n_fact = gtos[i].c_coef * pow(2048 * pow(gtos[i].exponent, 7.0)/(m_pi*m_pi*m_pi),0.25);
 			}else if ( symmetry == "D2p" ){
-				gtos[i].n_fact = gtos[i].c_coef * pow(128 * pow(gtos[i].exponent, 7.0)/(M_PI*M_PI*M_PI),0.25);
+				gtos[i].n_fact = gtos[i].c_coef * pow(128 * pow(gtos[i].exponent, 7.0)/(m_pi*m_pi*m_pi),0.25);
 			}else if ( symmetry == "F7"){
 				gtos[i].n_fact = gtos[i].c_coef * pow(gtos[i].exponent, 2.5) * 1.4721580892990935;
 			}else if ( symmetry == "F0" ){
