@@ -1,0 +1,4 @@
+#RT normal 
+#PR eband 1
+1 acrolein.aux LCP 40 mopac 
+1 acrolein_orca.out LCP 40 mopac 
