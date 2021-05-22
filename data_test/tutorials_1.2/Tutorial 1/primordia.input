@@ -3,5 +3,5 @@
 1 acrolein.aux LCP 40 mopac 
 1 acrolein_orca.out LCP 40 orca 
 1 acrolein_gam.log LCP 40 gamess 
-1 acrolein_gam.fchk LCP 40 gaussian 
+1 acrolein_gauss.fchk LCP 40 gaussian 
 

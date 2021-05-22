@@ -566,3 +566,196 @@ There are no contents in the line! Verify your input file!
 Ending reactivity descriptors calculations.
 Exiting PRIMoRDiA after 3.42393 seconds
 ===========================================================================
+Starting PRIMoRDiA software!
+ Calculations Starting at: Sat May 22 18:56:14 2021
+
+------------------------------------------------------
+
+Provided Arguments: 
+	/home/igorchem/primordia-code/PRIMoRDiA_1.2_dev/PRIMoRDiA_1.2v_LINUX64
+	-f
+	primordia.input
+------------------------------------------------------
+
+Starting the descriptors calculation!
+Starting to process the input file parameters for reactivity descriptors!
+
+------------------------------------------------------
+
+Starting New Entry!
+======================================================
+
+molecule name acrolein
+Parameters for calculating the Reactivity descriptors:
+	Approximation: Frozen Orbital
+	Grid size: 40
+	Program QM output: mopac
+	local hardness method: LCP
+------------------------------------------------------
+
+Starting to parse MOPAC AUX file.
+Found number of atoms in the aux file: 
+	8
+
+Number of electron in the system: 
+	22
+
+Number of atomic orbitals: 
+	20
+
+Size of Overlap matrix: 
+	210
+Number of MO vectors: 
+	400
+Number of MO energy levels: 
+	20
+Formal Charge: 
+	0
+Checking molecular information!
+HOMO energy: 
+	-10.257000
+HOMO number: 
+	10
+LUMO energy: 
+	-0.376000
+LUMO number: 
+	11
+Checking some molecular information to performa the local condensed to atoms reactivity descriptors
+Checking some molecular information to performa the local condensed to atoms reactivity descriptors
+Finishing the writting of the condensed local reactivity descriptors.
+------------------------------------------------------
+
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+------------------------------------------------------
+
+Starting New Entry!
+======================================================
+
+molecule name acrolein_orca
+Parameters for calculating the Reactivity descriptors:
+	Approximation: Frozen Orbital
+	Grid size: 40
+	Program QM output: orca
+	local hardness method: LCP
+------------------------------------------------------
+
+Starting to parse out file from ORCA.
+Formal Charge: 
+	0
+Checking molecular information!
+Orca file parsed!Total Energy 
+	-5192.037670
+HOMO number: 
+	14
+
+HOMO energy: 
+	-10.725600
+LUMO number: 
+	15
+
+LUMO energy: 
+	1.499500
+Atomic orbitals: 
+	100
+
+Checking some molecular information to performa the local condensed to atoms reactivity descriptors
+Checking some molecular information to performa the local condensed to atoms reactivity descriptors
+Finishing the writting of the condensed local reactivity descriptors.
+------------------------------------------------------
+
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+------------------------------------------------------
+
+Starting New Entry!
+======================================================
+
+molecule name acrolein_gam
+Parameters for calculating the Reactivity descriptors:
+	Approximation: Frozen Orbital
+	Grid size: 40
+	Program QM output: gamess
+	local hardness method: LCP
+------------------------------------------------------
+
+Starting to parse log file from GAMESS.Found number of atoms in the log file: 8
+Cartesian molecular coordinates converted to angstron.
+
+##======================WARNING======================##
+	None electrons found in for the molecule!
+#===============End of Warning Message===============##
+
+
+##======================WARNING======================##
+	Starting to count based on atomic numbers!!
+#===============End of Warning Message===============##
+
+Formal Charge: 
+	0
+Checking molecular information!
+Total Energy 
+	-5192.353432
+HOMO number: 
+	14
+
+HOMO energy: 
+	-10.743061
+LUMO number: 
+	15
+
+LUMO energy: 
+	1.493906
+Atomic orbitals: 
+	144
+
+Checking some molecular information to performa the local condensed to atoms reactivity descriptors
+Checking some molecular information to performa the local condensed to atoms reactivity descriptors
+Finishing the writting of the condensed local reactivity descriptors.
+------------------------------------------------------
+
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+------------------------------------------------------
+
+Starting New Entry!
+======================================================
+
+molecule name acrolein_gauss
+Parameters for calculating the Reactivity descriptors:
+	Approximation: Frozen Orbital
+	Grid size: 40
+	Program QM output: gaussian
+	local hardness method: LCP
+------------------------------------------------------
+
+Starting to parse GAUSSIAN FCHK file!
+Starting to store the overlap 1e intragrals from the GAUSSIAN LOG file!
+Formal Charge: 
+	0
+HOMO energy: 
+	-7.00217
+
+LUMO energy: 
+	-1.85905
+
+Atomic orbitals: 
+	68
+
+Cartesian molecular coordinates converted to angstron.
+Starting to store the overlap 1e intragrals from the GAUSSIAN LOG file!
+Checking some molecular information to performa the local condensed to atoms reactivity descriptors
+Checking some molecular information to performa the local condensed to atoms reactivity descriptors
+Finishing the writting of the condensed local reactivity descriptors.
+------------------------------------------------------
+
+Cartesian molecular coordinates converted to bohr.
+Definind the grid vertices.
+Finishing writting the local reactivity descriptos grids.
+There are no contents in the line! Verify your input file!
+Ending reactivity descriptors calculations.
+Exiting PRIMoRDiA after 5.02228 seconds
+===========================================================================
