@@ -1,0 +1,22 @@
+preset.publication(selection='all')
+set sphere_scale, 0.2
+set bg_rgb, white 
+set stick_radius, 0.2
+load 2jof_PM7.pdb 
+load 2jof_PM7FOA_EAS.cube
+load 2jof_PM7FOA_NAS.cube
+load 2jof_PM7FOA_RAS.cube
+load 2jof_PM7FOA_dual.cube
+load 2jof_PM7FOA_Hardness.cube
+volume 2jof_PM7FOA_EAS_vol, 2jof_PM7FOA_EAS 
+volume 2jof_PM7FOA_NAS_vol, 2jof_PM7FOA_NAS 
+volume 2jof_PM7FOA_RAS_vol, 2jof_PM7FOA_RAS 
+volume 2jof_PM7FOA_dual_vol, 2jof_PM7FOA_dual 
+volume 2jof_PM7FOA_dual2_vol, 2jof_PM7FOA_dual 
+volume 2jof_PM7FOA_Hardness_vol, 2jof_PM7FOA_Hardness 
+volume_color 2jof_PM7FOA_EAS_vol, 0.0005 cyan 0.02 0.005 blue 0.05 
+volume_color 2jof_PM7FOA_NAS_vol, 0.0005 pink 0.02 0.005 red  0.05 
+volume_color 2jof_PM7FOA_RAS_vol, 0.0005 yellow 0.02 0.005 green 0.05 
+volume_color 2jof_PM7FOA_dual_vol, 0.0005 pink 0.03 0.005 red 0.05 
+volume_color 2jof_PM7FOA_dual2_vol, -0.005 blue 0.05 -0.0005 cyan 0.02 
+volume_color 2jof_PM7FOA_Hardness_vol, 0.0383819 orange 0.003 0.383819 purple 0.05 

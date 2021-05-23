@@ -1,0 +1,16 @@
+Starting PRIMoRDiA software!
+ Calculations Starting at: Fri May 21 11:37:30 2021
+
+------------------------------------------------------
+
+Provided Arguments: 
+	/home/igorchem/primordia-code/PRIMoRDiA_1.2_dev/PRIMoRDiA_1.2v_LINUX64
+	-input
+	-op
+	3
+	-p
+	mopac
+------------------------------------------------------
+
+Exiting PRIMoRDiA after 0.00374104 seconds
+===========================================================================

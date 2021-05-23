@@ -1,0 +1,21 @@
+preset.publication(selection='all')
+set sphere_scale, 0.2
+set bg_rgb, white 
+set stick_radius, 0.2
+load 2jof_PM7_PDB_RD/2jof_PM7_EAS.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_NAS.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_RAS.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_Netphilicity.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_hardness_A.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_hardness_B.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_hardness_C.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_hardness_D.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_mep.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_softness.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_hypersoftness.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_multiphilic.pdb
+load 2jof_PM7_PDB_RD/2jof_PM7_electron_density.pdb
+spectrum b, blue_white_red, minimum=-0.3, maximum=0.3
+spectrum b, white_yellow_orange_red_black, minimum=0.1, maximum=0.5
+spectrum b, white_cyan_blue, minimum=0, maximum=0.1
+spectrum b, white_pink_red, minimum=0, maximum=0.1
