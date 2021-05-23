@@ -393,7 +393,7 @@ void primordia::init_protein_RD(const char* file_name	,
 				grid.density.write_cube(name+"_mep2.cube");
 			}
 			if ( pymol_script ){
-				scripts pymol_s( name, "pymols" );
+				scripts pymol_s (name, "pymols");
 				pymol_s.write_pymol_cube(lrdVol, true);
 			}
 		}else{

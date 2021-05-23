@@ -68,8 +68,24 @@ scripts::scripts(	string Nm	,
 		script_file << "#!/usr/bin/env Rscript\n";
 	}	
 }
+/**********************************************************/
+scripts::scripts(const scripts& rhs):
+	file_name(rhs.file_name)     	,
+	s_type(rhs.s_type)				{
+	
+}
+/***********************************************************/
+scripts& scripts::operator=(const scripts& rhs){
+	if ( this != &rhs){
+		file_name	= rhs.file_name;
+		s_type		= rhs.s_type;
+	}
+	return *this;
+}
 /**************************************************************************/
-scripts::~scripts(){}
+scripts::~scripts(){
+	script_file.close();
+}
 /*************************************************************************/
 void scripts::write_r_dos(vector<double>& energies){
 	
@@ -77,7 +93,7 @@ void scripts::write_r_dos(vector<double>& energies){
 	Name 		+= ".DOS";
 	std::ofstream dos_file( Name.c_str() );
 	dos_file << "Energy\n";
-	for(unsigned i=0;i<energies.size();i++) {dos_file << energies[i] << endl; }
+	for( unsigned i=0; i<energies.size(); i++ ) { dos_file << energies[i] << endl; }
 	
 	m_log->input_message("Outputing Density of States information to file.");
 	
@@ -88,7 +104,6 @@ void scripts::write_r_dos(vector<double>& energies){
 				 << "\tgeom_density(fill='blue',bw=1) \n"
 				 << "png('"<< Name << ".png',width = 5, height = 3.5, units ='"  << "in', res = 400)\n"
 				 << "p\ndev.off()";
-	script_file.close();
 }
 /****************************************************************************/
 void scripts::write_pymol_cube(local_rd& lrdVol, bool fixed){
@@ -139,24 +154,21 @@ void scripts::write_pymol_cube(local_rd& lrdVol, bool fixed){
 					<< "volume_color " << lrdVol.Dual.name		<< "2_vol, "<< (-iso4) << " blue 0.05 "	<< (-iso3)	<< " cyan 0.02 \n"
 					<< "volume_color " << lrdVol.Hardness.name	<< "_vol, " << iso5 << " orange 0.003 "	<< iso6		<< " purple 0.05 \n";
 	}
-	script_file.close();
 }
 /**************************************************************************/
 void scripts::write_pymol_pdb(){
 	
-	std::ofstream script_f;
+	
+	//std::ofstream script_f;
 	string fname = get_file_name( file_name.c_str() );	
 	fname += ".pym";
-	script_f.open( fname.c_str() );
+	//script_f.open( fname.c_str() );
+
 	string fname2 = fname.substr( 0,fname.size()-4 );
 
 	string load_pdb_basic = "load "+ fname2 + "_PDB_RD/" + fname2;
 	
-	script_f 	<< "preset.publication(selection='all')\n"
-				<< "set sphere_scale, 0.2\n"
-				<< "set bg_rgb, white \n"
-				<< "set stick_radius, 0.2\n"
-				<< load_pdb_basic  << "_EAS.pdb\n"
+	script_file	<< load_pdb_basic  << "_EAS.pdb\n"
 				<< load_pdb_basic  << "_NAS.pdb\n"
 				<< load_pdb_basic  << "_RAS.pdb\n"
 				<< load_pdb_basic  << "_Netphilicity.pdb\n"
@@ -173,7 +185,6 @@ void scripts::write_pymol_pdb(){
 				<< "spectrum b, white_yellow_orange_red_black, minimum=0.1, maximum=0.5\n"
 				<< "spectrum b, white_cyan_blue, minimum=0, maximum=0.1\n"
 				<< "spectrum b, white_pink_red, minimum=0, maximum=0.1\n";
-	script_f.close();
 }
 /***************************************************************************/
 void scripts::write_r_heatmap(vector< vector<double> > rd_numerical	, 
@@ -217,7 +228,6 @@ void scripts::write_r_heatmap(vector< vector<double> > rd_numerical	,
 				<< "detach(data3)\n"
 				<< "pheatmap(pro1,color = colorRampPalette(c('navy','white','red'))(100),border_color=NA,cluster_cols=F,fontsize=8,main='\n',filenam='"
 				<< sname << "heatmap.png'";
-	script_file.close();
 }
 /*********************************************************************/
 void scripts::write_r_residuos_barplot(){
@@ -387,7 +397,6 @@ void scripts::write_r_residuos_barplot(){
 				<< "pm8\n"
 				<< "dev.off()\n"
 				<< "#-------------------------------------\n";			
-	script_file.close();		
 }
 /*********************************************************************/
 void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
@@ -659,7 +668,6 @@ void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
 			}
 		}
 	}
-	script_file.close();
 }
 
 //================================================================================

@@ -1,4 +1,0 @@
-preset.publication(selection='all')
-set sphere_scale, 0.2
-set bg_rgb, white 
-set stick_radius, 0.2

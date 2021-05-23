@@ -210,8 +210,8 @@ void interface::write_help(){
 /***********************************************************************/
 void interface::test_run(){
 	test_p teste;
-	//teste.init_general_test();
-	teste.test_reaction_analysis();
+	teste.init_general_test();
+	//teste.test_reaction_analysis();
 }
 /***********************************************************************/
 void interface::write_input(){

@@ -1,4 +1,4 @@
 #RT normal 
 #PR eband 1 pymols dos 
-3 2jof_PM7.aux mepEE 0 10  2jof.pdb mopac  0 0 0 0 BD 
-3 2jof_mozyme_pm7.aux LCP 0 0 2jof.pdb mopac  32.335 1.325 0.876 10 EW 
+3 2jof_PM7.aux mepEE 40 10  2jof_PM7.pdb mopac  0 0 0 0 BD 
+3 2jof_PM7_lmo.aux LCP 40 0 2jof_PM7_lmo.pdb mopac  32.335 1.325 0.876 10 EW 

@@ -41,8 +41,8 @@ class scripts{
 		//constructors/destructor
 		scripts();
 		scripts( std::string Nm, std::string _type );
-		scripts(const scripts& rhs) = delete;
-		scripts& operator=(const scripts& rhs) = delete;
+		scripts(const scripts& rhs);
+		scripts& operator=(const scripts& rhs);
 		~scripts();
 		//member functions
 		void write_r_dos( std::vector<double>& energies );		
