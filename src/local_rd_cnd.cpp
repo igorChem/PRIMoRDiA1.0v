@@ -514,7 +514,7 @@ void local_rd_cnd::write_LRD(){
 	lrd_file.precision(8);
 	lrd_file << std::fixed;
 	lrd_file << name << " " << "\n" <<  std::left;
-	lrd_file << "n atom charge Nucleophilicity Electrophilicity RAS Netphilicity Softness Hardness_A Hardness_B Hardness_C Hardness_D Multiphilic T_Electrohilicity Fukushima Electron_density Softness_dual composite_hardness\n";
+	lrd_file << "n atom charge Nucleophilicity Electrophilicity RAS Netphilicity Softness Hardness_A Hardness_B Hardness_C Hardness_D Multiphilic T_Electrohilicity Fukushima Electron_density Softness_dual\n";
 	
 	for(int i=0;i<molecule.num_of_atoms;i++){
 		lrd_file	<< (i+1) 
