@@ -37,7 +37,7 @@ In the next versions this feature will be included along with the support for ot
 
 ## PRIMoRDiA 1.2v - Important Stable Update  
 
-From its release, the latest source files will be from this version. 
+The newest stable release.
 Currently, this version is under tests and will be released soon and will include all features of the 1.0v along with important updates listed below. 
 
 1. All features of the 1.0v.
