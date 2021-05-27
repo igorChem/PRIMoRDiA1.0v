@@ -37,7 +37,7 @@ In the next versions this feature will be included along with the support for ot
 
 ## PRIMoRDiA 1.2v - Important Stable Update  
 
-From its release, the latest source files will be from this version. 
+The newest stable release.
 Currently, this version is under tests and will be released soon and will include all features of the 1.0v along with important updates listed below. 
 
 1. All features of the 1.0v.
@@ -70,7 +70,7 @@ The tutorials links for the most recent stable release (1.2) is listed below. Th
 
 1. [Tutorial 1:](https://github.com/igorChem/PRIMoRDiA1.0v/wiki/Tutorial-1-:-Calculando-Descritores-de-Reatividade-com-FOA-(-Basic-1.2v-)-%5BPT-BR%5D) Cálculo dos descritores com Orbital Congelado ( não completo )[Português-BR]
 2. [Tutorial 2:](https://github.com/igorChem/PRIMoRDiA1.0v/wiki/Tutorial-2-:-Calculando-Descritores-de-Reatividade-com-FD-(-Basic-1.2v-)-%5BPT-BR%5D) Cálculo dos descritores com diferenças finitas ( não completo )[Português-BR]
-3. [Tutorial 3:](https://github.com/igorChem/PRIMoRDiA1.0v/wiki/Tutorial-3-:-Calculando-Descritores-de-Reatividade-para-Macromoleculeculas--(-Basic-1.2v-)-%5BPT-BR%5D) Cálculo dos descritores para macromoléculas [Português-BR]
+3. [Tutorial 3:](https://github.com/igorChem/PRIMoRDiA1.0v/wiki/Tutorial-3:-Calculando-Descritores-de-Reatividade-para-Macromoleculeculas--(-Basic-1.2v-)-%5BPT-BR%5D) Cálculo dos descritores para macromoléculas [Português-BR]
 4. [Tutorial 4:](https://github.com/igorChem/PRIMoRDiA1.0v/wiki/Tutorial-4:-An%C3%A1lise-de-for%C3%A7a-%C3%A1cida-usando-os-descritores-(-Aplica%C3%A7%C3%A3o-1.2v--)-%5BPT-BR%5D) Análise de força ácida com os descritores [Português-BR]
 5. [Tutorial 5:](https://github.com/igorChem/PRIMoRDiA1.0v/wiki/Tutorial-5:-An%C3%A1lise-de-Caminho-de-Rea%C3%A7%C3%A3o-Enzim%C3%A1tica-(-Aplica%C3%A7%C3%A3o-1.2v-)-%5BPT-BR%5D) Análise de uma reação enzimática  [Português-BR]
 
