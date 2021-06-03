@@ -38,6 +38,7 @@
 #include "../include/test_p.h"
 #include "../include/interface.h"
 #include "../include/pos_traj.h"
+#include "../include/scripts.h"
 
 /*********************************************************/
 using std::unique_ptr;
@@ -132,6 +133,9 @@ void interface::run(){
 			traj_rd traj(rs_l);
 			traj.init_from_folder();
 			traj.write_residues_reports();
+			string from_f = "from_folder";
+			scripts res_analy( from_f.c_str(), "residuos_analysis" );
+			res_analy.write_r_residuos_barplot();
 		}
 	}
 	else {

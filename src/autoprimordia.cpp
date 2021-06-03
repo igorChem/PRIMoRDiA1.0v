@@ -193,6 +193,7 @@ void AutoPrimordia::calculate_rd_from_traj(){
 	double r_atom[3];
 	int sze				= 0;
 	int start 			= 0;
+	string pdb_prefix	= ".";
 	vector<string> neut;
 	vector<string> anions;
 	vector<string> cations;
@@ -245,12 +246,13 @@ void AutoPrimordia::calculate_rd_from_traj(){
 						program = list_f.lines[i].words[5];
 					break;	
 					case 3:
-						bgap = list_f.lines[i].get_int(4);
-						program = list_f.lines[i].words[6];
-						r_atom[0] = list_f.lines[i].get_double(7);
-						r_atom[1] = list_f.lines[i].get_double(8);
-						r_atom[2] = list_f.lines[i].get_double(9);
-						sze   = list_f.lines[i].get_int(10);
+						bgap		= list_f.lines[i].get_int(4);
+						pdb_prefix	= remove_extension( list_f.lines[i].words[5].c_str() );
+						program 	= list_f.lines[i].words[6];
+						r_atom[0]	= list_f.lines[i].get_double(7);
+						r_atom[1]	= list_f.lines[i].get_double(8);
+						r_atom[2]	= list_f.lines[i].get_double(9);
+						sze			= list_f.lines[i].get_int(10);
 					break;
 				}
 				for( unsigned k=0; k<list_f.lines[i].words.size(); k++ ){
@@ -324,6 +326,7 @@ void AutoPrimordia::calculate_rd_from_traj(){
 			anions.push_back(temp_name3);
 		}
 		else if ( mode == 3 ){
+			temp_name2 = pdb_prefix;
 			temp_name2 += to_string( trj_info.rc1_indxs[i] );
 			if ( trj_info.ndim == 2 ){
 				temp_name2 += "_";
@@ -331,7 +334,7 @@ void AutoPrimordia::calculate_rd_from_traj(){
 			}
 			temp_name2 += ".pdb";
 			pdbs.push_back(temp_name2);
-			temp_name2= prefix;
+			temp_name2= pdb_prefix;
 		}
 		temp_name = prefix;
 	}
