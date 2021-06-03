@@ -192,6 +192,7 @@ void AutoPrimordia::calculate_rd_from_traj(){
 	double dens_tmp		= 0.0;
 	double r_atom[3];
 	int sze				= 0;
+	int start 			= 0;
 	vector<string> neut;
 	vector<string> anions;
 	vector<string> cations;
@@ -205,12 +206,24 @@ void AutoPrimordia::calculate_rd_from_traj(){
 			if ( list_f.lines[i].words[0] == "#Reaction" ){
 				if ( list_f.lines[i].words[j] == "dimX" ){
 					trj_info.dimX = list_f.lines[i].get_int(j+1);
-				}else if ( list_f.lines[i].words[j] == "dimY" ){
+				}
+				if ( list_f.lines[i].words[j] == "dimY" ){
 					trj_info.dimY = list_f.lines[i].get_int(j+1);
+				}
+				if ( list_f.lines[i].words[j] == "start" ){
+					start = list_f.lines[i].get_int(j+1);
 				}
 			}else if ( list_f.lines[i].words[0] == "#TRJ" ){
 				if ( list_f.lines[i].words[j] == "frames" ){
 					trj_info.dimX = list_f.lines[i].get_int(j+1);
+				}
+				if ( list_f.lines[i].words[j] == "start" ){
+					start = list_f.lines[i].get_int(j+1);
+				}
+				if ( list_f.lines[i].words[j] == "residues"){
+					for ( unsigned k=j+1; k<list_f.lines[i].words.size(); k++ ){
+						trj_info.mnt_residues.push_back( list_f.lines[i].get_int(k) );
+					}
 				}
 			}
 			else if  ( list_f.lines[i].words[0][0]	== '#' ) { 
@@ -222,7 +235,7 @@ void AutoPrimordia::calculate_rd_from_traj(){
 				prefix	= remove_extension( list_f.lines[i].words[1].c_str() );
 				out_ext = get_file_ext( list_f.lines[i].words[1].c_str() );
 				locHard	= list_f.lines[i].words[2];
-				gridsize= list_f.lines[i].get_int(3);				
+				gridsize= list_f.lines[i].get_int(3);
 				switch( mode ){
 					case 1:
 						program = list_f.lines[i].words[4];
@@ -273,9 +286,9 @@ void AutoPrimordia::calculate_rd_from_traj(){
 	unsigned cnt = 0;
 	for( unsigned x=0; x<trj_info.dimX; x++ ){
 		for( unsigned y=0; y<trj_info.dimY; y++ ){
-			trj_info.rc1_indxs[cnt] = x;
+			trj_info.rc1_indxs[cnt] = x +start;
 			if ( trj_info.ndim == 2 ){
-				trj_info.rc2_indxs[cnt] = y;			
+				trj_info.rc2_indxs[cnt] = y+start;
 			}
 			cnt++;
 		}
@@ -288,18 +301,18 @@ void AutoPrimordia::calculate_rd_from_traj(){
 		temp_name += to_string( trj_info.rc1_indxs[i] );
 		if ( trj_info.ndim == 2 ){
 			temp_name += "_";
-			temp_name += to_string( trj_info.rc2_indxs[i] );			
+			temp_name += to_string( trj_info.rc2_indxs[i] );
 		}
 		temp_name += out_ext;
 		neut.push_back(temp_name);
 		if ( mode == 2 ){
 			temp_name2 +="_cat";
-			temp_name2 += to_string( trj_info.rc1_indxs[i] );
+			temp_name2 += to_string( trj_info.rc1_indxs[i]  );
 			temp_name3 +="_an";
-			temp_name3 += to_string( trj_info.rc1_indxs[i] );
+			temp_name3 += to_string( trj_info.rc1_indxs[i]  );
 			if ( trj_info.ndim == 2 ){
 				temp_name2 += "_";
-				temp_name2 += to_string( trj_info.rc2_indxs[i] );	
+				temp_name2 += to_string( trj_info.rc2_indxs[i] );
 				temp_name3 += "_";
 				temp_name3 += to_string( trj_info.rc2_indxs[i] );
 				temp_name2= prefix;
@@ -308,13 +321,13 @@ void AutoPrimordia::calculate_rd_from_traj(){
 			temp_name2 += out_ext;
 			cations.push_back(temp_name2);
 			temp_name3 += out_ext;
-			anions.push_back(temp_name3);		
+			anions.push_back(temp_name3);
 		}
 		else if ( mode == 3 ){
 			temp_name2 += to_string( trj_info.rc1_indxs[i] );
 			if ( trj_info.ndim == 2 ){
 				temp_name2 += "_";
-				temp_name2 += to_string( trj_info.rc2_indxs[i] );			
+				temp_name2 += to_string( trj_info.rc2_indxs[i] );
 			}
 			temp_name2 += ".pdb";
 			pdbs.push_back(temp_name2);
@@ -324,30 +337,38 @@ void AutoPrimordia::calculate_rd_from_traj(){
 	}
 	
 	unsigned i;
-	switch ( mode ){		
+	switch ( mode ){
 		case 1:
 			omp_set_num_threads(np_ngrd);
-			#pragma omp parallel for private(i)
-			for( i=0; i<RDs.size(); i++ ){
-				RDs[i].init_FOA(neut[i].c_str(),gridsize,locHard,mep,program,dens_tmp);
+			#pragma omp parallel
+			{
+				#pragma omp for
+				for( i=0; i<RDs.size(); i++ ){
+					RDs[i].init_FOA(neut[i].c_str(),gridsize,locHard,mep,program,dens_tmp);
+				}
 			}
 		break;
 		case 2:
 			omp_set_num_threads(np_ngrd);
-			#pragma omp parallel for private(i)
-			for( i=0; i<RDs.size(); i++ ){
-				RDs[i].init_FD(neut[i].c_str(),cations[i].c_str(),anions[i].c_str(),gridsize,charge,mep,locHard,program,dens_tmp);
+			#pragma omp parallel
+			{
+				#pragma omp for 
+				for( i=0; i<RDs.size(); i++ ){
+					RDs[i].init_FD(neut[i].c_str(),cations[i].c_str(),anions[i].c_str(),gridsize,charge,mep,locHard,program,dens_tmp);
+				}
 			}
 		break;
 		case 3:
 			omp_set_num_threads(np_ngrd);
-			#pragma omp parallel for private(i)
-			for( i=0; i<RDs.size(); i++ ){
-				RDs[i].init_protein_RD(neut[i].c_str(),locHard,gridsize,bgap,r_atom,sze,pdbs[i].c_str(),mep,btm,program);
+			#pragma omp parallel
+			{
+				#pragma omp for 
+				for( i=0; i<RDs.size(); i++ ){
+					RDs[i].init_protein_RD(neut[i].c_str(),locHard,gridsize,bgap,r_atom,sze,pdbs[i].c_str(),mep,btm,program);
+				}
 			}
 		break;
 	}
-		
 }
 /*************************************************************/
 void AutoPrimordia::reaction_analysis(){
@@ -385,23 +406,11 @@ void AutoPrimordia::reaction_analysis(){
 					pr_ind[pr++].push_back( list_f.lines[i].get_int(j+2) );
 				}
 			}
-			else if ( list_f.lines[i].words[0] == "#TRJ" ){
-				if ( list_f.lines[i].words[j] == "residues"){
-					for ( unsigned k=j+1; k<list_f.lines[i].words.size(); k++ ){
-						trj_info.mnt_residues.push_back( list_f.lines[i].get_int(k) );
-					}
-				}
-			}
 		}
 	}
 	
 	std::sort( trj_info.mnt_atoms.begin(), trj_info.mnt_atoms.end() );
 	trj_info.mnt_atoms.erase( std::unique(trj_info.mnt_atoms.begin(), trj_info.mnt_atoms.end() ), trj_info.mnt_atoms.end() );
-	
-	/**********************************************************************/
-	
-	
-	/**********************************************************************/
 	
 	//--------------------------------------------------------
 	traj_rd atoms_lrd( RDs, trj_info.mnt_atoms, trj_info.mnt_residues );
@@ -497,23 +506,13 @@ void AutoPrimordia::reaction_analysis(){
 }
 /*************************************************************/
 void AutoPrimordia::md_trajectory_analysis(){
-	Ibuffer list_f (m_file_list,true);
-	for ( unsigned i=0; i<list_f.nLines; i++ ){
-		for ( unsigned j=0; j<list_f.lines[i].words.size(); j++ ){
-			if ( list_f.lines[i].words[0] == "#TRJ" ){
-				if ( list_f.lines[i].words[j] == "residues"){
-					for ( unsigned k=j+1; k<list_f.lines[i].words.size(); k++){
-						trj_info.mnt_residues.push_back( list_f.lines[i].get_int(j+1) );
-					}
-				}
-			}
-		}
-	}
-	//this->calculate_rd();
-	traj_rd trajectories( trj_info.mnt_residues );
-	trajectories.init_from_folder();
+	traj_rd trajectories( RDs, trj_info.mnt_atoms, trj_info.mnt_residues );
 	trajectories.calculate_res_stats();
 	trajectories.write_residues_reports();
+	if ( M_R ){
+		scripts r_residues_analysis( RDs[0].mol_info.name.c_str(), "residues_analysis" );
+		r_residues_analysis.write_r_residuos_barplot();
+	}
 }
 /*************************************************************/
 void AutoPrimordia::write_global(){

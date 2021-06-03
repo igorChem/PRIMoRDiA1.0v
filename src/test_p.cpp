@@ -57,9 +57,11 @@ void test_p::test_reaction_analysis(){
 	//AutoPrimordia run_test2d("/home/igorchem/Documents/PM6_16x16/primordia.input");
 	//run_test2d.init();
 }
+
 /************************************************************************************/
 void test_p::test_traj_analysis(){
-	
+	AutoPrimordia Run("/home/igorchem/CCDIR/cmp2-2/primordia.input");
+	Run.init();
 }
 //================================================================================
 //END OF FILE
