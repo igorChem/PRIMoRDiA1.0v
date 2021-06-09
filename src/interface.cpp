@@ -132,6 +132,7 @@ void interface::run(){
 			}
 			traj_rd traj(rs_l);
 			traj.init_from_folder();
+			traj.calculate_res_stats();
 			traj.write_residues_reports();
 			string from_f = "from_folder";
 			scripts res_analy( from_f.c_str(), "residuos_analysis" );
