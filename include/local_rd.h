@@ -52,19 +52,8 @@ class local_rd {
 		bool finite_diff;
 		bool locHardness;
 		int charge;
-		Icube homo;
-		Icube lumo; 
-		Icube elec_dens;
-		Icube cation;
-		Icube anion; 
-		Icube EAS;
-		Icube NAS;
-		Icube RAS;
-		Icube Dual; 
-		Icube Hardness;
-		Icube Softness_Dual;
-		Icube Hyper_Softness;
-		Icube multifilic;
+		std::vector<Icube> lrds;
+		std::vector<std::string> rd_names;
 		//constructors/destructor
 		local_rd();
 		local_rd(const Icube& HOmo, const Icube& LUmo);
@@ -77,9 +66,9 @@ class local_rd {
 		~local_rd();
 		//member functions
 		friend local_rd operator-(const local_rd& lrd_lhs,const local_rd& lrd_rhs);	
-		void calculate_fukui();
-		void calculate_fukui_EW(const Imolecule& mol);
+		void calculate_fukui_Band(const Icube& homo_b, const Icube& lumo_b);
 		void calculate_RD(const global_rd& grd);
+		void calculate_Fukui_potential(const Imolecule& mol);
 		void calculate_hardness(const global_rd& grd, std::string method);
 		void write_LRD();
 };

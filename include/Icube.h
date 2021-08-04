@@ -75,7 +75,7 @@ class Icube {
 		Icube log_cube();
 		Icube SQ();
 		double calc_cube_integral();
-		Icube normalize();
+		void normalize( double norm );
 		double diff_integral(const Icube& cube);
 		double similarity_index(Icube& cube, std::string type);
 		Icube calculate_complement(bool clog);

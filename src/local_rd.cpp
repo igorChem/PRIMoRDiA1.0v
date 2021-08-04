@@ -48,15 +48,71 @@ local_rd::local_rd()	:
 	finite_diff(false)	,
 	locHardness(false)	,
 	charge(1)			{
+		
+	rd_names = {
+		"HOMO",						// 0  bs
+		"LUMO",						// 1  bs
+		"Elec_Dens",				// 2  bs
+		"ED_cation",				// 3  bs
+		"ED_anion", 				// 4  bs
+		"Nucleophilicity",			// 5  df
+		"Electrophilicity",			// 6  df
+		"Radical_sucseptibility",	// 7  df
+		"Netphilicity",				// 8  df
+		"L_Hardness_LCP",			// 9  if density
+		"L_Hardness_Vee",			// 10 if density
+		"Fukui_Potential_left",		// 11 df 
+		"Fukui_Potential_right",	// 12 ex
+		"Fukui_Potential_avg",		// 13 ex
+		"L_Hardness_INT",			// 14 ex
+		"Softness_Dual",			// 15 df
+		"Softness_AVG",				// 16 ex
+		"Hyper_Softess",			// 17 ex
+		"Multiphilicity"			// 18 ex
+		"MEP",						// 19 if density
+		"MO_BAND"					// 20
+	};
 }
 /***********************************************************************************/
 local_rd::local_rd(const Icube& HOmo		,
-					const Icube& LUmo)		:
+				   const Icube& LUmo)		:
 	name(HOmo.name)							,
 	finite_diff(false)						,
-	locHardness(false)						,
-	homo(HOmo)								,
-	lumo(LUmo)								{
+	locHardness(false)						{
+		
+	
+	lrds[0] = HOmo;
+	lrds[1] = LUmo;
+	lrds[5] = lrds[0]*lrds[0];
+	lrds[6] = lrds[1]*lrds[1];
+	lrds[7] = (lrds[5]+lrds[6])/2.0;
+	lrds[8] = lrds[6]-lrds[5];
+	
+	
+	rd_names = {
+		"HOMO",						// 0  bs
+		"LUMO",						// 1  bs
+		"Elec_Dens",				// 2  bs
+		"ED_cation",				// 3  bs
+		"ED_anion", 				// 4  bs
+		"Nucleophilicity",			// 5  df
+		"Electrophilicity",			// 6  df
+		"Radical_sucseptibility",	// 7  df
+		"Netphilicity",				// 8  df
+		"L_Hardness_LCP",			// 9  if density
+		"L_Hardness_Vee",			// 10 if density
+		"Fukui_Potential_left",		// 11 df 
+		"Fukui_Potential_right",	// 12 ex
+		"Fukui_Potential_avg",		// 13 ex
+		"L_Hardness_INT",			// 14 ex
+		"Softness_Dual",			// 15 df
+		"Softness_AVG",				// 16 ex
+		"Hyper_Softess",			// 17 ex
+		"Multiphilicity"			// 18 ex
+		"MEP",						// 19 if density
+		"MO_BAND"					// 20 if band
+	};
+
 }
 /***********************************************************************************/
 local_rd::local_rd(const Icube& elec_dens	,
@@ -65,26 +121,84 @@ local_rd::local_rd(const Icube& elec_dens	,
 	name(HOmo.name)							,
 	finite_diff(false)						,
 	locHardness(true)						,
-	charge(1)								,
-	homo(HOmo)								,
-	lumo(LUmo)								,
-	elec_dens(elec_dens)					{
+	charge(1)								{
+		
+	lrds[0] = HOmo;
+	lrds[1] = LUmo;
+	lrds[2] = elec_dens;
+	lrds[5] = lrds[0];
+	lrds[6] = lrds[1];
+	lrds[7] = (lrds[5]+lrds[6])/2.0;
+	lrds[8] = lrds[6]-lrds[5];
+	
+	
+	rd_names = {
+		"HOMO",						// 0  bs
+		"LUMO",						// 1  bs
+		"Elec_Dens",				// 2  bs
+		"ED_cation",				// 3  bs
+		"ED_anion", 				// 4  bs
+		"Nucleophilicity",			// 5  df
+		"Electrophilicity",			// 6  df
+		"Radical_sucseptibility",	// 7  df
+		"Netphilicity",				// 8  df
+		"L_Hardness_LCP",			// 9  if density
+		"L_Hardness_Vee",			// 10 if density
+		"Fukui_Potential_left",		// 11 df 
+		"Fukui_Potential_right",	// 12 ex
+		"Fukui_Potential_avg",		// 13 ex
+		"L_Hardness_INT",			// 14 ex
+		"Softness_Dual",			// 15 df
+		"Softness_AVG",				// 16 ex
+		"Hyper_Softess",			// 17 ex
+		"Multiphilicity"			// 18 ex
+		"MEP",						// 19 if density
+		"MO_BAND"					// 20 if band
+	};
 }
 /***********************************************************************************/
-local_rd::local_rd(const Icube& elecDens		,
-						const Icube& cationDens	, 
-						const Icube& anionDens	,
-						int chg					):
-	name(elecDens.name)							,
-	finite_diff(true)							,
-	locHardness(true)							,
-	charge(chg)									,
-	elec_dens(elecDens)							,
-	cation(cationDens)							,
-	anion(anionDens)							{
+local_rd::local_rd(const Icube& elecDens	,
+					const Icube& cationDens	, 
+					const Icube& anionDens	,
+					int chg					):
+	name(elecDens.name)						,
+	finite_diff(true)						,
+	locHardness(true)						,
+	charge(chg)								{
 
-	homo	= elec_dens	- cation;
-	lumo	= anion		- elec_dens;
+	
+	lrds[2] = elec_dens;
+	lrds[3] = cationDens;
+	lrds[4] = anionDens;
+	lrds[5] = lrds[2] - lrds[3];
+	lrds[6] = lrds[4] - lrds[2];
+	lrds[7] = (lrds[5]+lrds[6])/2.0;
+	lrds[8] = lrds[6]-lrds[5];	
+	
+	rd_names = {
+		"HOMO",						// 0  bs
+		"LUMO",						// 1  bs
+		"Elec_Dens",				// 2  bs
+		"ED_cation",				// 3  bs
+		"ED_anion", 				// 4  bs
+		"Nucleophilicity",			// 5  df
+		"Electrophilicity",			// 6  df
+		"Radical_sucseptibility",	// 7  df
+		"Netphilicity",				// 8  df
+		"L_Hardness_LCP",			// 9  if density
+		"L_Hardness_Vee",			// 10 if density
+		"Fukui_Potential_left",		// 11 df 
+		"Fukui_Potential_right",	// 12 ex
+		"Fukui_Potential_avg",		// 13 ex
+		"L_Hardness_INT",			// 14 ex
+		"Softness_Dual",			// 15 df
+		"Softness_AVG",				// 16 ex
+		"Hyper_Softess",			// 17 ex
+		"Multiphilicity"			// 18 ex
+		"MEP",						// 19 if density
+		"MO_BAND",					// 20 if band
+		"L_Hardness_TFD"			// 21 if density
+	};
 }
 /***********************************************************************************/
 local_rd::local_rd(const local_rd& lrd_rhs)	:
@@ -92,19 +206,8 @@ local_rd::local_rd(const local_rd& lrd_rhs)	:
 	finite_diff(lrd_rhs.finite_diff)		,
 	locHardness(lrd_rhs.locHardness)		,
 	charge(lrd_rhs.charge)					,
-	elec_dens(lrd_rhs.elec_dens)			,
-	cation(lrd_rhs.cation)					,
-	anion(lrd_rhs.anion)					,
-	homo(lrd_rhs.homo)						,
-	lumo(lrd_rhs.lumo)						,
-	EAS(lrd_rhs.EAS)						,
-	NAS(lrd_rhs.NAS)						,
-	RAS(lrd_rhs.RAS)						,
-	Dual(lrd_rhs.Dual)						,
-	Hardness(lrd_rhs.Hardness)				,
-	Softness_Dual(lrd_rhs.Softness_Dual)	,
-	Hyper_Softness(lrd_rhs.Hyper_Softness)	,
-	multifilic(lrd_rhs.multifilic)			{
+	rd_names(lrd_rhs.rd_names)				,
+	lrds(lrd_rhs.lrds)						{
 }
 /***********************************************************************************/
 local_rd& local_rd::operator=(const local_rd& lrd_rhs){
@@ -113,19 +216,8 @@ local_rd& local_rd::operator=(const local_rd& lrd_rhs){
 		finite_diff		= lrd_rhs.finite_diff;
 		charge			= lrd_rhs.charge;
 		locHardness		= lrd_rhs.locHardness;
-		elec_dens		= lrd_rhs.elec_dens;
-		cation			= lrd_rhs.cation;
-		anion			= lrd_rhs.anion;
-		homo			= lrd_rhs.homo;
-		lumo			= lrd_rhs.lumo;	
-		EAS				= lrd_rhs.EAS;
-		NAS				= lrd_rhs.NAS;
-		RAS				= lrd_rhs.RAS;
-		Dual			= lrd_rhs.Dual;
-		Hardness		= lrd_rhs.Hardness;
-		Softness_Dual	= lrd_rhs.Softness_Dual;
-		Hyper_Softness	= lrd_rhs.Hyper_Softness;
-		multifilic		= lrd_rhs.multifilic;
+		rd_names		= lrd_rhs.rd_names;
+		lrds			= lrd_rhs.lrds;
 	}
 	return *this;
 }
@@ -135,19 +227,8 @@ local_rd::local_rd(local_rd&& lrd_rhs) noexcept	:
 	finite_diff(lrd_rhs.finite_diff)			,
 	locHardness(lrd_rhs.locHardness)			,
 	charge(lrd_rhs.charge)						,
-	elec_dens( move(lrd_rhs.elec_dens) )		,
-	cation( move(lrd_rhs.cation) )				,
-	anion( move(lrd_rhs.anion) )				,
-	homo( move(lrd_rhs.homo) )					,
-	lumo( move(lrd_rhs.lumo) )					,
-	EAS( move(lrd_rhs.EAS) )					,
-	NAS( move(lrd_rhs.NAS) )					,
-	RAS( move(lrd_rhs.RAS) )					, 
-	Dual( move(lrd_rhs.Dual) )					,
-	Hardness( move(lrd_rhs.Hardness) )			,
-	Softness_Dual( move( lrd_rhs.Softness_Dual) ),
-	Hyper_Softness( move( lrd_rhs.Hyper_Softness) ),
-	multifilic( move(lrd_rhs.multifilic) )		{
+	rd_names( move(lrd_rhs.rd_names) )			,
+	lrds( move(lrd_rhs.lrds) )					{
 }
 /***********************************************************************************/
 local_rd& local_rd::operator=(local_rd&& lrd_rhs) noexcept {
@@ -156,206 +237,214 @@ local_rd& local_rd::operator=(local_rd&& lrd_rhs) noexcept {
 		finite_diff		= lrd_rhs.finite_diff;
 		charge			= lrd_rhs.charge;
 		locHardness		= lrd_rhs.locHardness;
-		elec_dens		= move(lrd_rhs.elec_dens);
-		cation			= move(lrd_rhs.cation);
-		anion			= move(lrd_rhs.anion);
-		homo			= move(lrd_rhs.homo);
-		lumo			= move(lrd_rhs.lumo);
-		EAS				= move(lrd_rhs.EAS);
-		NAS				= move(lrd_rhs.NAS);
-		RAS				= move(lrd_rhs.RAS);
-		Dual			= move(lrd_rhs.Dual);
-		Hardness		= move(lrd_rhs.Hardness);
-		Softness_Dual	= move(lrd_rhs.Softness_Dual);
-		Hyper_Softness	= move(lrd_rhs.Hyper_Softness);
-		multifilic		= move(lrd_rhs.multifilic);
+		rd_names		= move(rd_names);
+		lrds			= move(lrds);
 	}
 	return *this;
 }
 /***********************************************************************************/
-void local_rd::calculate_fukui(){
-	if ( !finite_diff ) {
-		EAS	= homo;
-		NAS	= lumo;
-		RAS	= (homo	+	lumo)/2.0;
-		Dual= lumo - homo;
-	}else{
-		EAS	= homo/charge;
-		NAS	= lumo/charge;
-		RAS	= (EAS	+ NAS)/2.0;
-		Dual = NAS	- EAS; 
-	}
+void local_rd::calculate_fukui_Band(const Icube& homo_b, const Icube& lumo_b){
+	lrds[5] = homo_b;
+	lrds[6] = lumo_b;
+	lrds[20] = (homo_b+lumo_b)/2.0;
+	lrds[5].normalize(5);
+	lrds[6].normalize(5);
+	lrds[7] = (lrds[5]+lrds[6])/2.0;
+	lrds[8] = lrds[6]-lrds[5];
 }
 /***********************************************************************************/
 void local_rd::calculate_RD(const global_rd& grd){
-	Softness_Dual	= Dual*grd.softness;
-	Hyper_Softness	= RAS*grd.softness;
-	multifilic		= Dual*grd.Electrophilicity;
+	lrds[14] = lrds[5]*grd.grds[5] - lrds[5]*grd.grds[6];
+	lrds[15] = lrds[8]*grd.grds[9];
+	lrds[16] = lrds[7]*grd.grds[9];
+	lrds[17] = lrds[8]*(grd.grds[9]*grd.grds[9]);
+	lrds[18] = lrds[8]*grd.grds[10];
 }
 /***********************************************************************************/
-void local_rd::calculate_hardness(const global_rd& grd, string method){
-	locHardness = true;
-	if ( method == "LCP" ){
-		double numofelec	= elec_dens.calc_cube_integral();
-		double val1			= grd.chemical_pot/numofelec;
-		double val2			= grd.hardness*2; 	
+void local_rd::calculate_Fukui_potential(const Imolecule& mol){
 	
-		Icube elec_dens_norm= elec_dens / numofelec ;
-		Icube elec_dens_hard= elec_dens_norm*val2;
-		Icube homo_elec_dens= homo.normalize() - elec_dens_norm;
-		homo_elec_dens		= homo_elec_dens*val1;
-		Hardness			= homo_elec_dens + elec_dens_hard;
-	}
-	else if ( method == "mepFukui" ){
-		vector<double> elec_H(homo.voxelN);
-		vector<double> nuc_H(homo.voxelN);
-		unsigned int i,j,k,x,y,z;
-		double ii	= 0;
-		double jj	= 0;
-		double kk	= 0;
-		double xx	= 0;
-		double yy	= 0;
-		double zz	= 0;
-		double r	= 0;
-		double s1	= homo.gridsides[0];
-		double s2	= homo.gridsides[1];
-		double s3	= homo.gridsides[2];
-		double o1	= homo.origin[0];
-		double o2	= homo.origin[1];
-		double o3	= homo.origin[2];
-		unsigned int g1 = homo.grid[0];
-		unsigned int g2 = homo.grid[1];
-		unsigned int g3 = homo.grid[2];
+	vector<double> elec_H(lrds[5].voxelN);
+	vector<double> nuc_H(lrds[5].voxelN);
+	vector<double> rad_H(lrds[5].voxelN);
+	unsigned int i,j,k,x,y,z;
+	double ii	= 0;
+	double jj	= 0;
+	double kk	= 0;
+	double xx	= 0;
+	double yy	= 0;
+	double zz	= 0;
+	double r	= 0;
+	double s1	= lrds[5].gridsides[0];
+	double s2	= lrds[5].gridsides[1];
+	double s3	= lrds[5].gridsides[2];
+	double o1	= lrds[5].origin[0];
+	double o2	= lrds[5].origin[1];
+	double o3	= lrds[5].origin[2];
+	unsigned int g1 = lrds[5].grid[0];
+	unsigned int g2 = lrds[5].grid[1];
+	unsigned int g3 = lrds[5].grid[2];
 		
-		#pragma omp declare reduction(vec_d_plus : std::vector<double> : \
-					std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>())) \
-                    initializer(omp_priv = omp_orig)
+	#pragma omp declare reduction(vec_d_plus : std::vector<double> : \
+				std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>())) \
+				initializer(omp_priv = omp_orig)
 
-		#pragma omp parallel default(shared) private(i,j,k,x,y,z,r,xx,yy,zz,ii,jj,kk)
-		{
-		#pragma omp parallel for reduction(vec_d_plus:elec_H,nuc_H)
-		for(i=0;i<g1;i++){
-			for(j=0;j<g2;j++){
-				for(k=0;k<g3;k++){
-					for (x=0;x<g1;x++){
-						for (y=0;y<g2;y++){
-							for (z=0;z<g3;z++){
-								xx	= x*s1 + o1;
-								yy	= y*s2 + o2;
-								zz	= z*s3 + o3;
-								ii	= i*s1 + o1;
-								jj	= j*s2 + o2;
-								kk	= k*s3 + o3;
-								xx 	-= ii;
-								xx 	*= xx;
-								yy 	-= jj;
-								yy 	*= yy;
-								zz 	-= kk;
-								zz 	*= zz;
-								r  		= sqrt(xx + yy + zz);
-								if ( r == 0.000 ){
-									elec_H[i*g1*g1+j*g2+k]	+= 0;
-									nuc_H[i*g1*g1+j*g2+k] 	+= 0;
-								}else{
-									elec_H[i*g1*g1+j*g2+k] += homo.scalar[x*g1*g1+y*g2+z]/r;
-								}
+	#pragma omp parallel default(shared) private(i,j,k,x,y,z,r,xx,yy,zz,ii,jj,kk)
+	{
+	#pragma omp parallel for reduction(vec_d_plus:elec_H,nuc_H,rad_H)
+	for(i=0;i<g1;i++){
+		for(j=0;j<g2;j++){
+			for(k=0;k<g3;k++){
+				for (x=0;x<g1;x++){
+					for (y=0;y<g2;y++){
+						for (z=0;z<g3;z++){
+							xx	= x*s1 + o1;
+							yy	= y*s2 + o2;
+							zz	= z*s3 + o3;
+							ii	= i*s1 + o1;
+							jj	= j*s2 + o2;
+							kk	= k*s3 + o3;
+							xx 	-= ii;
+							xx 	*= xx;
+							yy 	-= jj;
+							yy 	*= yy;
+							zz 	-= kk;
+							zz 	*= zz;
+							r  	= sqrt(xx + yy + zz);
+							if ( r == 0.000 ){
+								elec_H[i*g1*g1+j*g2+k]	+= 0;
+								nuc_H[i*g1*g1+j*g2+k] 	+= 0;
+								rad_H[i*g1*g1+j*g2+k] 	+= 0;
+							}else{
+								elec_H[i*g1*g1+j*g2+k] += lrds[5].scalar[x*g1*g1+y*g2+z]/r;
+								nuc_H[i*g1*g1+j*g2+k] += lrds[6].scalar[x*g1*g1+y*g2+z]/r;
+								rad_H[i*g1*g1+j*g2+k] += lrds[7].scalar[x*g1*g1+y*g2+z]/r;
 							}
 						}
 					}
 				}
 			}
 		}
-		
-		}
-		double volume = std::abs(s1*s2*s3);
-		Hardness = homo;
-		for(i=0;i<elec_H.size();i++) { Hardness.scalar[i] = elec_H[i]; }
-		Hardness = Hardness * volume;
 	}
-	else if ( method == "mepEE" ){
-		vector<double> elec_H(homo.voxelN);
-		unsigned int i,j,k,x,y,z;
-		double ii	= 0;
-		double jj	= 0;
-		double kk	= 0;
-		double xx	= 0;
-		double yy	= 0;
-		double zz	= 0;
-		double r	= 0;
-		double s1	= homo.gridsides[0];
-		double s2	= homo.gridsides[1];
-		double s3	= homo.gridsides[2];
-		double o1	= homo.origin[0];
-		double o2	= homo.origin[1];
-		double o3	= homo.origin[2];
-		unsigned int g1 = homo.grid[0];
-		unsigned int g2 = homo.grid[1];
-		unsigned int g3 = homo.grid[2];
+	}
+	
+	double volume = std::abs(s1*s2*s3);
+	lrds[11] = lrds[5];
+	lrds[12] = lrds[5];
+	lrds[13] = lrds[5];
+	for(i=0;i<elec_H.size();i++) { lrds[11].scalar[i] = elec_H[i]; }
+	for(i=0;i<nuc_H.size();i++) { lrds[12].scalar[i] = nuc_H[i]; }
+	for(i=0;i<rad_H.size();i++) { lrds[13].scalar[i] = rad_H[i]; }
+	
+	lrds[11] = lrds[11]*volume;
+	lrds[12] = lrds[12]*volume;
+	lrds[13] = lrds[13]*volume;
+	
+}
+/***********************************************************************************/
+void local_rd::calculate_hardness(const global_rd& grd){
+	locHardness = true;
+	
+	//Local Chemical Potential method
+	double numofelec	= lrds[2].calc_cube_integral();
+	double val1			= grd.grds[7]/numofelec;
+	double val2			= grd.grds[8]*2;
 		
-		#pragma omp declare reduction(vec_d_plus : std::vector<double> : \
-					std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>())) \
-                    initializer(omp_priv = omp_orig)
+	Icube elec_dens_norm= lrds[2]/ numofelec ;
+	Icube elec_dens_hard= elec_dens_norm*val2;
+	Icube homo_elec_dens= lrds[0].normalize() - elec_dens_norm;
+	homo_elec_dens		= homo_elec_dens*val1;
+	lrds[9]				= homo_elec_dens + elec_dens_hard;
+	
 
-		#pragma omp parallel default(shared) private(i,j,k,x,y,z,r,xx,yy,zz,ii,jj,kk)
-		{
-		#pragma omp parallel for reduction(vec_d_plus:elec_H)
-		for(i=0;i<g1;i++){
-			for(j=0;j<g2;j++){
-				for(k=0;k<g3;k++){
-					for (x=0;x<g1;x++){
-						for (y=0;y<g2;y++){
-							for (z=0;z<g3;z++){
-								xx	= x*s1 + o1;
-								yy	= y*s2 + o2;
-								zz	= z*s3 + o3;
-								ii	= i*s1 + o1;
-								jj	= j*s2 + o2;
-								kk	= k*s3 + o3;
-								xx	-= ii;
-								xx 	*= xx;
-								yy 	-= jj;
-								yy 	*= yy;
-								zz 	-= kk;
-								zz 	*= zz;
-								r  	= sqrt(xx + yy + zz);
-								if ( r == 0.000 ){
-									elec_H[i*g1*g1+j*g2+k] += 0;
-								}else{
-									elec_H[i*g1*g1+j*g2+k] += elec_dens.scalar[x*g1*g1+y*g2+z]/r;
-								}
+	//local hardness com aproximação de potencial elétron-elétron
+	vector<double> elec_H(lrds[5].voxelN);
+	unsigned int i,j,k,x,y,z;
+	double ii	= 0;
+	double jj	= 0;
+	double kk	= 0;
+	double xx	= 0;
+	double yy	= 0;
+	double zz	= 0;
+	double r	= 0;
+	double s1	= lrds[5].gridsides[0];
+	double s2	= lrds[5].gridsides[1];
+	double s3	= lrds[5].gridsides[2];
+	double o1	= lrds[5].origin[0];
+	double o2	= lrds[5].origin[1];
+	double o3	= lrds[5].origin[2];
+	unsigned int g1 = lrds[5].grid[0];
+	unsigned int g2 = lrds[5].grid[1];
+	unsigned int g3 = lrds[5].grid[2];
+	
+	#pragma omp declare reduction(vec_d_plus : std::vector<double> : \
+				std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>())) \
+                initializer(omp_priv = omp_orig)
+
+	#pragma omp parallel default(shared) private(i,j,k,x,y,z,r,xx,yy,zz,ii,jj,kk)
+	{
+	#pragma omp parallel for reduction(vec_d_plus:elec_H)
+	for(i=0;i<g1;i++){
+		for(j=0;j<g2;j++){
+			for(k=0;k<g3;k++){
+				for (x=0;x<g1;x++){
+					for (y=0;y<g2;y++){
+						for (z=0;z<g3;z++){
+							xx	= x*s1 + o1;
+							yy	= y*s2 + o2;
+							zz	= z*s3 + o3;
+							ii	= i*s1 + o1;
+							jj	= j*s2 + o2;
+							kk	= k*s3 + o3;
+							xx	-= ii;
+							xx 	*= xx;
+							yy 	-= jj;
+							yy 	*= yy;
+							zz 	-= kk;
+							zz 	*= zz;
+							r  	= sqrt(xx + yy + zz);
+							if ( r == 0.000 ){
+								elec_H[i*g1*g1+j*g2+k] += 0;
+							}else{
+								elec_H[i*g1*g1+j*g2+k] += lrds[2].scalar[x*g1*g1+y*g2+z]/r;
 							}
 						}
 					}
 				}
 			}
 		}
-		}
-		double volume = std::abs(s1*s2*s3);
-		Hardness = homo;
-		for(i=0;i<elec_H.size();i++) { Hardness.scalar[i] = elec_H[i]; }
-		Hardness	= Hardness * volume;
-		int norm	= 2*elec_dens.calc_cube_integral();
-		Hardness	= Hardness/norm;
-	}	
-	else if ( method == "fukui" ){
-		Hardness = lumo*grd.lumo_en - homo*grd.homo_en;
 	}
-	else{
-		locHardness = false;
 	}
+	
+	double volume = std::abs(s1*s2*s3);
+	lrds[10] = lrds[5];
+	for(i=0;i<elec_H.size();i++) { lrds[10].scalar[i] = elec_H[i]; }
+	lrds[10] = lrds[10]*volume;
+	lrds[10] = lrds[10]*(1/numofelec);
+	//----------------------------------------------------------------------------
+	
+	density_rc	= lrds[2].scale_cube(0.3333333);
+	double Ck	= (3/10)*pow((3*M_PI*M_PI),2/3);
+	double Cx	= (3/4*M_PI)*pow((3*M_PI*M_PI),1/3);
+	lrds[21]	= (2/9*numofelec)*density_rc;
+	Icube temp1	= density_rc;
+	Icube temp2	= density_rc;
+	Icube temp3	= density_rc;
+	temp1 = temp1*5*Ck - 2*Cx;
+	temp2 = 0.458*density_rc;
+	temp3 = temp2 + 1; 
+	temp3 = temp3.scale_cube(3.0);
+	
+	temp2 = temp2+2;
+	temp2 = temp2/temp3;
+	temp2 = -0.0466*temp2;
+	lrds[21] = lrds[21]*(temp1-temp2)
+	lrds[21] = lrds[21]+lrds[10];
 }
 /***********************************************************************************/
 local_rd operator-(const local_rd& lrd_lhs,const local_rd& lrd_rhs){
 	local_rd Result(lrd_lhs);
-	if( lrd_lhs.homo == lrd_rhs.homo ) {
-		Result.EAS				= lrd_lhs.EAS			-	lrd_rhs.EAS;
-		Result.NAS				= lrd_lhs.NAS			-	lrd_rhs.NAS;
-		Result.RAS				= lrd_lhs.RAS			-	lrd_rhs.RAS;
-		Result.Dual				= lrd_lhs.Dual			-	lrd_rhs.Dual;
-		Result.Hyper_Softness 	= lrd_lhs.Hyper_Softness-	lrd_rhs.Hyper_Softness;
-		Result.Softness_Dual	= lrd_lhs.Softness_Dual	-	lrd_rhs.Softness_Dual;
-		Result.multifilic		= lrd_lhs.multifilic	-	lrd_rhs.multifilic;
-		if ( lrd_lhs.locHardness ) Result.Hardness = lrd_lhs.Hardness - lrd_rhs.Hardness;
+	for(unsigned int i=0; i<lrd_lhs.lrds.size(); i++){
+		Result.lrds[i] = lrd_lhs.lrds[i] - lrd_rhs.lrds[i];
 	}
 	return Result;
 }
@@ -373,17 +462,54 @@ void local_rd::write_LRD(){
 		typestr2 = "FOA";
 	}
 	
-	string fukui_suc_elec	=	name + typestr2 + "_EAS"; 
-	string fukui_suc_nuc	=	name + typestr2 + "_NAS"; 
-	string fukui_suc_rad	=	name + typestr2 + "_RAS"; 
-	string deltaFukui		=	name + typestr2 + "_dual";
-	string deltaFukui2		=	name + typestr2 + "_dual2";
-	string local_hardness	=	name + typestr2 + "_Hardness";
-	EAS.header				= "Left Fukui function, electrophilic attack succescitibily\n"		+ typestr;
-	NAS.header				= "Right Fukui Function, nucleophilic attack succescitibily\n"		+ typestr;
-	RAS.header				= "Average Fukui Function, radical attack succescitibily\n"			+ typestr;
-	Dual.header				= "Net Fukui Function, dual descriptor of attack succescitibility\n"+ typestr;
-	Hardness.header			= "Local Hardness \n" + typestr;
+	string name_type = name + typestr2;
+	std::vector<string>	cube_names;
+	rd_names = {
+		"HOMO",						// 0  bs
+		"LUMO",						// 1  bs
+		"Elec_Dens",				// 2  bs
+		"ED_cation",				// 3  bs
+		"ED_anion", 				// 4  bs
+		"Nucleophilicity",			// 5  df
+		"Electrophilicity",			// 6  df
+		"Radical_sucseptibility",	// 7  df
+		"Netphilicity",				// 8  df
+		"L_Hardness_LCP",			// 9  if density
+		"L_Hardness_Vee",			// 10 if density
+		"Fukui_Potential_left",		// 11 df 
+		"Fukui_Potential_right",	// 12 ex
+		"Fukui_Potential_avg",		// 13 ex
+		"L_Hardness_INT",			// 14 ex
+		"Softness_Dual",			// 15 df
+		"Softness_AVG",				// 16 ex
+		"Hyper_Softess",			// 17 ex
+		"Multiphilicity"			// 18 ex
+		"MEP",						// 19 if density
+		"MO_BAND",					// 20 if band
+		"L_Hardness_TFD"			// 21 if density
+	};
+	
+	cube_names.push_back(name_type+"_left_Fukui");
+	cube_names.push_back(name_type+"_right_Fukui");
+	cube_names.push_back(name_type+"_zero_Fukui");
+	cube_names.push_back(name_type+"_net_Fukui_ph1");
+	cube_names.push_back(name_type+"_net_Fukui_ph2");
+	cube_names.push_back(name_type+"_left_Fukui");
+	cube_names.push_back(name_type+"_left_Fukui");
+	cube_names.push_back(name_type+"_left_Fukui");
+	cube_names.push_back(name_type+"_left_Fukui");
+	string fukui_suc_elec	= name + typestr2 + "_left_Fukui"; 
+	string fukui_suc_nuc	= name + typestr2 + "_right_Fukui"; 
+	string fukui_suc_rad	= name + typestr2 + "_zero_Fukui"; 
+	string deltaFukui		= name + typestr2 + "_net_Fukui_ph1";
+	string deltaFukui2		= name + typestr2 + "_net_Fukui_ph2";
+	string local_hardnessA	= name + typestr2 + "_hardness_Vee";
+	string local_hardnessB	= name + typestr2 + "_hardness_LCP";
+	
+	lrds[5].header	= "Left Fukui function, electrophilic attack succescitibily or local electofilicity\n"	+ typestr;
+	lrds[6].header	= "Right Fukui Function, nucleophilic attack succescitibily or local nucleofilicity\n"	+ typestr;
+	lrds[7].header	= "Average Fukui Function, radical attack succescitibily\n"								+ typestr;
+	lrds[8].header	= "Net Fukui Function, dual descriptor of attack succescitibility\n"					+ typestr;
 	
 	string loc_softdual		= name + typestr2 + "_softdual"; 
 	string local_mult		= name + typestr2 + "_multifilic";

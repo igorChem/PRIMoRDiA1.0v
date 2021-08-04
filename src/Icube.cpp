@@ -228,36 +228,24 @@ bool operator==(const Icube& lhs_cube,const Icube& rhs_cube){
 /***************************************************************************/
 Icube operator-(const Icube& lhs_cube, const Icube& rhs_cube){
 	Icube Result(lhs_cube);
-	//if ( lhs_cube == rhs_cube ) {	Result.print();}
-	omp_set_num_threads(NP);
-	#pragma omp parallel for
 	for(unsigned int x=0;x<lhs_cube.voxelN;x++) { Result.scalar[x] -= rhs_cube.scalar[x]; }
 	return Result;
 } 
 /***************************************************************************/
 Icube operator+(const Icube& lhs_cube, const Icube& rhs_cube){	
 	Icube Result(lhs_cube);
-	//if ( lhs_cube == rhs_cube ) { Result.print();}
-	omp_set_num_threads(NP);
-	#pragma omp parallel for
 	for(unsigned int x=0;x<lhs_cube.voxelN;x++) { Result.scalar[x] += rhs_cube.scalar[x]; }
 	return Result;
 }
 /***************************************************************************/
 Icube operator*(const Icube& lhs_cube, const  Icube& rhs_cube){
 	Icube Result(lhs_cube);
-	//if ( lhs_cube == rhs_cube ) { Result.print(); }
-	omp_set_num_threads(NP);
-	#pragma omp parallel for
 	for(unsigned int x=0;x<lhs_cube.voxelN;x++) { Result.scalar[x] *= rhs_cube.scalar[x] ;}
 	return Result;
 }
 /***************************************************************************/
 Icube operator/(const Icube& lhs_cube, const Icube& rhs_cube){
 	Icube Result(lhs_cube);
-	//f ( lhs_cube == rhs_cube ) { Result.print(); }
-	omp_set_num_threads(NP);
-	#pragma omp parallel for
 	for(unsigned int x=0;x<lhs_cube.voxelN;x++) {
 		if ( rhs_cube.scalar[x] == 0.00 ) Result.scalar[x] = 1000.0;
 		else Result.scalar[x] /= rhs_cube.scalar[x]; 
@@ -267,40 +255,32 @@ Icube operator/(const Icube& lhs_cube, const Icube& rhs_cube){
 /***************************************************************************/
 Icube operator-(const Icube& lhs_cube, double value){
 	Icube Result(lhs_cube);
-	omp_set_num_threads(NP);
-	#pragma omp parallel for
+	
 	for(unsigned int x=0;x<lhs_cube.voxelN;x++) { Result.scalar[x] -=  value; } 
 	return Result;	
 }
 /***************************************************************************/
 Icube operator+(const Icube& lhs_cube, double value){
 	Icube Result(lhs_cube);
-	omp_set_num_threads(NP);
-	#pragma omp parallel for
+	
 	for(unsigned int x=0;x<lhs_cube.voxelN;x++) { Result.scalar[x] +=  value; }
 	return Result;	
 }
 /***************************************************************************/
 Icube operator*(const Icube& lhs_cube, double value){
 	Icube Result(lhs_cube);
-	omp_set_num_threads(NP);
-	#pragma omp parallel for
 	for(unsigned int x=0;x<lhs_cube.voxelN;x++) { Result.scalar[x] *=  value; }
 	return Result;	
 }
 /***************************************************************************/
 Icube operator/(const Icube& lhs_cube, double value){
 	Icube Result(lhs_cube);
-	omp_set_num_threads(NP);
-	#pragma omp parallel for
 	for(int x=0;x<lhs_cube.voxelN;x++) { Result.scalar[x] /= value; }
 	return Result;
 }
 /***************************************************************************/
 Icube Icube::scale_cube(double val){
-	Icube Result(*this);
-	omp_set_num_threads(NP);
-	#pragma omp parallel for
+	Icube Result(*this);	
 	for(int x=0;x<voxelN;x++) { Result.scalar[x] = pow(scalar[x],val); }
 	return Result;
 }
@@ -319,9 +299,16 @@ double Icube::calc_cube_integral(){
 	return integral;
 }
 /***************************************************************************/
-Icube Icube::normalize(){
+void Icube::normalize( double norm ){
 	double inte = this->calc_cube_integral();
-	return *this/inte;
+	for( int x=0; x<voxelN; x++ ) { 
+		scalar[x] /= inte;
+	}
+	if ( norm > 0 ){
+		for( int x=0; x<voxelN; x++ ) { 
+			scalar[x] *= norm;
+		}
+	}
 }
 /***************************************************************************/
 double Icube::diff_integral(const Icube& cube){

@@ -41,21 +41,9 @@ class global_rd{
 	public:
 		//member variables
 		std::string name;
-		double homo_en; 
-		double lumo_en;
-		double energ_tot;
-		double energ_cat;
-		double energ_an;
-		double hardness;
-		double chemical_pot;
-		double softness;
-		double IP;
-		double EA;
-		double Electrophilicity;
-		double gap;
-		double deltaN;
-		double nMax;
-		double HOF; 
+		std::vector<std::string> rd_names;
+		std::vector<std::string> rd_abrev;
+		std::vector<double> grds;
 		bool KA;
 		bool DF;
 		//constructors/destructor

@@ -44,23 +44,9 @@ class local_rd_cnd{
 		bool finite_diff;
 		int charge;
 		Imolecule molecule;
-		std::vector<double> EAS;
-		std::vector<double> NAS;
-		std::vector<double> RAS;
-		std::vector<double> dual;
-		std::vector<double> Softness_Dual;
-		std::vector<double> Hyper_softness;
-		std::vector<double> hardness_A;
-		std::vector<double> hardness_B;
-		std::vector<double> hardness_C;
-		std::vector<double> hardness_D;
-		std::vector<double> multifilic;
-		std::vector<double> electrophilicity;
-		std::vector<double> fukushima;
-		std::vector<double> electron_density;
 		//constructors/destructor
 		local_rd_cnd();
-		local_rd_cnd(Imolecule&& mol) noexcept;
+		local_rd_cnd(const Imolecule& mol);
 		local_rd_cnd(const Imolecule& mol_neut,const Imolecule& mol_cation,const Imolecule& mol_anion);
 		local_rd_cnd(const local_rd_cnd& lrd_rhs);
 		local_rd_cnd& operator=(const local_rd_cnd& lrd_rhs);
