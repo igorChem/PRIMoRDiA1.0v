@@ -580,7 +580,6 @@ Icube gridgen::calc_band_NAS(int bandn){
 		}
 	}
 	temp = temp/cnt;
-	//cout << "used " << cnt << " MO" << endl;
 	return temp;
 }
 /***********************************************************************/
@@ -588,16 +587,13 @@ Icube gridgen::calc_EBLC_EAS(){
 	Icube temp = density;
 	double coefficient = 0.0;
 	temp 	= temp*0.0;
-	//int cnt 	= 0;
 	for ( int i=0;i<=molecule.homoN;i++){
 		coefficient = exp(-abs(molecule.orb_energies[i]-molecule.homo_energy ) );
 		if ( coefficient > 0.36 ){
 			this->calculate_orb(i,false);
 			temp = temp + density.SQ()*coefficient;
-			//cnt++;
 		}
 	}
-	//cout << "used " << cnt << " MO" << endl;
 	return temp;
 } 
 /***********************************************************************/
@@ -605,7 +601,6 @@ Icube gridgen::calc_EBLC_NAS( ){
 	Icube temp = density;
 	double coefficient = 0.0;
 	temp = temp*0.0;
-	//int cnt = 0;
 	for ( int i=molecule.lumoN;i<=molecule.orb_energies.size();i++){
 		coefficient = exp(-abs(molecule.orb_energies[i]-molecule.lumo_energy ) );
 		if ( coefficient > 0.36 ){
@@ -614,7 +609,6 @@ Icube gridgen::calc_EBLC_NAS( ){
 			//cnt++;
 		}
 	}
-	//cout << "used " << cnt << " MO" << endl;
 	return temp;
 } 
 /***********************************************************************/

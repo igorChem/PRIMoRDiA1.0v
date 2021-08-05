@@ -40,46 +40,52 @@ using std::unique_ptr;
 using std::string;
 using std::vector;
 
+std::vector<std::string> descriptor_names = {
+	"HOMO",						// 0  bs
+	"LUMO",						// 1  bs
+	"Elec_Dens",				// 2  bs
+	"ED_cation",				// 3  bs
+	"ED_anion", 				// 4  bs
+	"Nucleophilicity",			// 5  df
+	"Electrophilicity",			// 6  df
+	"Radical_sucseptibility",	// 7  df
+	"Netphilicity",				// 8  df
+	"L_Hardness_LCP",			// 9  if density
+	"L_Hardness_Vee",			// 10 if density
+	"Fukui_Potential_left",		// 11 df 
+	"Fukui_Potential_right",	// 12 ex
+	"Fukui_Potential_avg",		// 13 ex
+	"L_Hardness_INT",			// 14 ex
+	"Softness_Dual",			// 15 df
+	"Softness_AVG",				// 16 ex
+	"Hyper_Softess",			// 17 ex
+	"Multiphilicity"			// 18 ex
+	"MEP",						// 19 if density
+	"MO_BAND",					// 20 if Band
+	"L_Hardness_TFD"			// 21 if TFD
+};
+
+
 //==========================================================================
 //Class member functions definitions
 /****************************************************************************/
-local_rd::local_rd()	:
-	name("nonamed")		,
-	finite_diff(false)	,
-	locHardness(false)	,
-	charge(1)			{
-		
-	rd_names = {
-		"HOMO",						// 0  bs
-		"LUMO",						// 1  bs
-		"Elec_Dens",				// 2  bs
-		"ED_cation",				// 3  bs
-		"ED_anion", 				// 4  bs
-		"Nucleophilicity",			// 5  df
-		"Electrophilicity",			// 6  df
-		"Radical_sucseptibility",	// 7  df
-		"Netphilicity",				// 8  df
-		"L_Hardness_LCP",			// 9  if density
-		"L_Hardness_Vee",			// 10 if density
-		"Fukui_Potential_left",		// 11 df 
-		"Fukui_Potential_right",	// 12 ex
-		"Fukui_Potential_avg",		// 13 ex
-		"L_Hardness_INT",			// 14 ex
-		"Softness_Dual",			// 15 df
-		"Softness_AVG",				// 16 ex
-		"Hyper_Softess",			// 17 ex
-		"Multiphilicity"			// 18 ex
-		"MEP",						// 19 if density
-		"MO_BAND"					// 20
-	};
+local_rd::local_rd()			:
+	name("nonamed")				,
+	FD(false)					,
+	LH(false)					,
+	band(false)					,
+	charge(1)					,
+	rd_names(descriptor_names)	{
 }
 /***********************************************************************************/
 local_rd::local_rd(const Icube& HOmo		,
 				   const Icube& LUmo)		:
 	name(HOmo.name)							,
-	finite_diff(false)						,
-	locHardness(false)						{
-		
+	FD(false)								,
+	LH(false)								,
+	band(false)								,
+	charge(1)								,
+	rd_names(descriptor_names)				{
 	
 	lrds[0] = HOmo;
 	lrds[1] = LUmo;
@@ -87,74 +93,26 @@ local_rd::local_rd(const Icube& HOmo		,
 	lrds[6] = lrds[1]*lrds[1];
 	lrds[7] = (lrds[5]+lrds[6])/2.0;
 	lrds[8] = lrds[6]-lrds[5];
-	
-	
-	rd_names = {
-		"HOMO",						// 0  bs
-		"LUMO",						// 1  bs
-		"Elec_Dens",				// 2  bs
-		"ED_cation",				// 3  bs
-		"ED_anion", 				// 4  bs
-		"Nucleophilicity",			// 5  df
-		"Electrophilicity",			// 6  df
-		"Radical_sucseptibility",	// 7  df
-		"Netphilicity",				// 8  df
-		"L_Hardness_LCP",			// 9  if density
-		"L_Hardness_Vee",			// 10 if density
-		"Fukui_Potential_left",		// 11 df 
-		"Fukui_Potential_right",	// 12 ex
-		"Fukui_Potential_avg",		// 13 ex
-		"L_Hardness_INT",			// 14 ex
-		"Softness_Dual",			// 15 df
-		"Softness_AVG",				// 16 ex
-		"Hyper_Softess",			// 17 ex
-		"Multiphilicity"			// 18 ex
-		"MEP",						// 19 if density
-		"MO_BAND"					// 20 if band
-	};
-
 }
 /***********************************************************************************/
 local_rd::local_rd(const Icube& elec_dens	,
 				   const Icube& HOmo		,
 				   const Icube& LUmo		):
 	name(HOmo.name)							,
-	finite_diff(false)						,
-	locHardness(true)						,
-	charge(1)								{
+	FD(false)								,
+	LH(true)								,
+	band(false)								,
+	charge(1)								,
+	rd_names(descriptor_names)				{
 		
 	lrds[0] = HOmo;
 	lrds[1] = LUmo;
 	lrds[2] = elec_dens;
-	lrds[5] = lrds[0];
-	lrds[6] = lrds[1];
+	lrds[5] = lrds[0]*lrds[0];
+	lrds[6] = lrds[1]*lrds[1];
 	lrds[7] = (lrds[5]+lrds[6])/2.0;
 	lrds[8] = lrds[6]-lrds[5];
 	
-	
-	rd_names = {
-		"HOMO",						// 0  bs
-		"LUMO",						// 1  bs
-		"Elec_Dens",				// 2  bs
-		"ED_cation",				// 3  bs
-		"ED_anion", 				// 4  bs
-		"Nucleophilicity",			// 5  df
-		"Electrophilicity",			// 6  df
-		"Radical_sucseptibility",	// 7  df
-		"Netphilicity",				// 8  df
-		"L_Hardness_LCP",			// 9  if density
-		"L_Hardness_Vee",			// 10 if density
-		"Fukui_Potential_left",		// 11 df 
-		"Fukui_Potential_right",	// 12 ex
-		"Fukui_Potential_avg",		// 13 ex
-		"L_Hardness_INT",			// 14 ex
-		"Softness_Dual",			// 15 df
-		"Softness_AVG",				// 16 ex
-		"Hyper_Softess",			// 17 ex
-		"Multiphilicity"			// 18 ex
-		"MEP",						// 19 if density
-		"MO_BAND"					// 20 if band
-	};
 }
 /***********************************************************************************/
 local_rd::local_rd(const Icube& elecDens	,
@@ -162,11 +120,11 @@ local_rd::local_rd(const Icube& elecDens	,
 					const Icube& anionDens	,
 					int chg					):
 	name(elecDens.name)						,
-	finite_diff(true)						,
-	locHardness(true)						,
-	charge(chg)								{
+	FD(true)								,
+	LH(true)								,
+	charge(chg)								,
+	rd_names(descriptor_names)				,{
 
-	
 	lrds[2] = elec_dens;
 	lrds[3] = cationDens;
 	lrds[4] = anionDens;
@@ -174,31 +132,7 @@ local_rd::local_rd(const Icube& elecDens	,
 	lrds[6] = lrds[4] - lrds[2];
 	lrds[7] = (lrds[5]+lrds[6])/2.0;
 	lrds[8] = lrds[6]-lrds[5];	
-	
-	rd_names = {
-		"HOMO",						// 0  bs
-		"LUMO",						// 1  bs
-		"Elec_Dens",				// 2  bs
-		"ED_cation",				// 3  bs
-		"ED_anion", 				// 4  bs
-		"Nucleophilicity",			// 5  df
-		"Electrophilicity",			// 6  df
-		"Radical_sucseptibility",	// 7  df
-		"Netphilicity",				// 8  df
-		"L_Hardness_LCP",			// 9  if density
-		"L_Hardness_Vee",			// 10 if density
-		"Fukui_Potential_left",		// 11 df 
-		"Fukui_Potential_right",	// 12 ex
-		"Fukui_Potential_avg",		// 13 ex
-		"L_Hardness_INT",			// 14 ex
-		"Softness_Dual",			// 15 df
-		"Softness_AVG",				// 16 ex
-		"Hyper_Softess",			// 17 ex
-		"Multiphilicity"			// 18 ex
-		"MEP",						// 19 if density
-		"MO_BAND",					// 20 if band
-		"L_Hardness_TFD"			// 21 if density
-	};
+
 }
 /***********************************************************************************/
 local_rd::local_rd(const local_rd& lrd_rhs)	:
@@ -261,7 +195,7 @@ void local_rd::calculate_RD(const global_rd& grd){
 	lrds[18] = lrds[8]*grd.grds[10];
 }
 /***********************************************************************************/
-void local_rd::calculate_Fukui_potential(const Imolecule& mol){
+void local_rd::calculate_Fukui_potential(){
 	
 	vector<double> elec_H(lrds[5].voxelN);
 	vector<double> nuc_H(lrds[5].voxelN);
@@ -315,9 +249,9 @@ void local_rd::calculate_Fukui_potential(const Imolecule& mol){
 								nuc_H[i*g1*g1+j*g2+k] 	+= 0;
 								rad_H[i*g1*g1+j*g2+k] 	+= 0;
 							}else{
-								elec_H[i*g1*g1+j*g2+k] += lrds[5].scalar[x*g1*g1+y*g2+z]/r;
-								nuc_H[i*g1*g1+j*g2+k] += lrds[6].scalar[x*g1*g1+y*g2+z]/r;
-								rad_H[i*g1*g1+j*g2+k] += lrds[7].scalar[x*g1*g1+y*g2+z]/r;
+								elec_H[i*g1*g1+j*g2+k]	+= lrds[5].scalar[x*g1*g1+y*g2+z]/r;
+								nuc_H[i*g1*g1+j*g2+k]	+= lrds[6].scalar[x*g1*g1+y*g2+z]/r;
+								rad_H[i*g1*g1+j*g2+k]	+= lrds[7].scalar[x*g1*g1+y*g2+z]/r;
 							}
 						}
 					}
@@ -439,6 +373,7 @@ void local_rd::calculate_hardness(const global_rd& grd){
 	temp2 = -0.0466*temp2;
 	lrds[21] = lrds[21]*(temp1-temp2)
 	lrds[21] = lrds[21]+lrds[10];
+	
 }
 /***********************************************************************************/
 local_rd operator-(const local_rd& lrd_lhs,const local_rd& lrd_rhs){
@@ -464,82 +399,106 @@ void local_rd::write_LRD(){
 	
 	string name_type = name + typestr2;
 	std::vector<string>	cube_names;
-	rd_names = {
-		"HOMO",						// 0  bs
-		"LUMO",						// 1  bs
-		"Elec_Dens",				// 2  bs
-		"ED_cation",				// 3  bs
-		"ED_anion", 				// 4  bs
-		"Nucleophilicity",			// 5  df
-		"Electrophilicity",			// 6  df
-		"Radical_sucseptibility",	// 7  df
-		"Netphilicity",				// 8  df
-		"L_Hardness_LCP",			// 9  if density
-		"L_Hardness_Vee",			// 10 if density
-		"Fukui_Potential_left",		// 11 df 
-		"Fukui_Potential_right",	// 12 ex
-		"Fukui_Potential_avg",		// 13 ex
-		"L_Hardness_INT",			// 14 ex
-		"Softness_Dual",			// 15 df
-		"Softness_AVG",				// 16 ex
-		"Hyper_Softess",			// 17 ex
-		"Multiphilicity"			// 18 ex
-		"MEP",						// 19 if density
-		"MO_BAND",					// 20 if band
-		"L_Hardness_TFD"			// 21 if density
-	};
+
+	cube_names.push_back(name_type+"_HOMO_ph1");			// 0
+	cube_names.push_back(name_type+"_HOMO_ph2");			// 1
+	cube_names.push_back(name_type+"_LUMO_ph1");			// 2
+	cube_names.push_back(name_type+"_LUMO_ph2");			// 3
+	cube_names.push_back(name_type+"_Elec_Dens");			// 4
+	cube_names.push_back(name_type+"_Elec_Dens_Cation");	// 5
+	cube_names.push_back(name_type+"_Elec_Dens_Anion");		// 6
+	cube_names.push_back(name_type+"_left_Fukui");			// 7
+	cube_names.push_back(name_type+"_right_Fukui");			// 8
+	cube_names.push_back(name_type+"_zero_Fukui");			// 9
+	cube_names.push_back(name_type+"_net_Fukui_ph1");		// 10
+	cube_names.push_back(name_type+"_net_Fukui_ph2");		// 11
+	cube_names.push_back(name_type+"_l_hardness_lcp");		// 12
+	cube_names.push_back(name_type+"_l_hardness_Vee");		// 13
+	cube_names.push_back(name_type+"_Fukui_pot_left");		// 14
+	cube_names.push_back(name_type+"_Fukui_pot_right");		// 15
+	cube_names.push_back(name_type+"_Fukui_pot_avg");		// 16
+	cube_names.push_back(name_type+"_l_hardness_int_ph1");	// 17
+	cube_names.push_back(name_type+"_l_hardness_int_ph2");	// 18
+	cube_names.push_back(name_type+"_softness_dual_ph1");	// 19
+	cube_names.push_back(name_type+"_softness_dual_ph2");	// 20
+	cube_names.push_back(name_type+"_softness_avg");		// 21
+	cube_names.push_back(name_type+"_hyper_softness");		// 22
+	cube_names.push_back(name_type+"_mep_ph1");				// 23
+	cube_names.push_back(name_type+"_mep_ph2");				// 24
+	cube_names.push_back(name_type+"_mo_band");				// 25
+	cube_names.push_back(name_type+"_l_hardness_tfd");		// 26
+	cube_names.push_back(name_type+"_multifilicity_ph1");	// 27
+	cube_names.push_back(name_type+"_multifilicity_ph2");	// 28
 	
-	cube_names.push_back(name_type+"_left_Fukui");
-	cube_names.push_back(name_type+"_right_Fukui");
-	cube_names.push_back(name_type+"_zero_Fukui");
-	cube_names.push_back(name_type+"_net_Fukui_ph1");
-	cube_names.push_back(name_type+"_net_Fukui_ph2");
-	cube_names.push_back(name_type+"_left_Fukui");
-	cube_names.push_back(name_type+"_left_Fukui");
-	cube_names.push_back(name_type+"_left_Fukui");
-	cube_names.push_back(name_type+"_left_Fukui");
-	string fukui_suc_elec	= name + typestr2 + "_left_Fukui"; 
-	string fukui_suc_nuc	= name + typestr2 + "_right_Fukui"; 
-	string fukui_suc_rad	= name + typestr2 + "_zero_Fukui"; 
-	string deltaFukui		= name + typestr2 + "_net_Fukui_ph1";
-	string deltaFukui2		= name + typestr2 + "_net_Fukui_ph2";
-	string local_hardnessA	= name + typestr2 + "_hardness_Vee";
-	string local_hardnessB	= name + typestr2 + "_hardness_LCP";
-	
+	lrds[0].header	= "Highest energy Occupied Molecular Orbital\n";
+	lrds[1].header	= "Lowest energy Unnocupied Molecular Orbital\n";
+	lrds[2].header	= "Total electron density calculated with PRIMoRDiA\n";
+	lrds[3].header	= "Total electron density calculated with PRIMoRDiA\n";
+	lrds[4].header	= "Total electron density calculated with PRIMoRDiA\n";
 	lrds[5].header	= "Left Fukui function, electrophilic attack succescitibily or local electofilicity\n"	+ typestr;
 	lrds[6].header	= "Right Fukui Function, nucleophilic attack succescitibily or local nucleofilicity\n"	+ typestr;
 	lrds[7].header	= "Average Fukui Function, radical attack succescitibily\n"								+ typestr;
-	lrds[8].header	= "Net Fukui Function, dual descriptor of attack succescitibility\n"					+ typestr;
+	lrds[8].header	= "Dual deacriptor definition from Fukui function, or netfilicity\n"					+ typestr;
+	lrds[9].header	= "Local hardness, calculated with working equation based on local chemical potential definition\n" + typestr;
+	lrds[10].header	= "Local hardness, calculated with working equation based on eletron-eletron potential \n" + typestr;
+	lrds[11].header	= "Fukui potential, using the left Fukui function to approximate the electron density\n" + typestr;
+	lrds[12].header	= "Fukui potential, using the right Fukui function to approximate the electron density\n"					+ typestr;
+	lrds[13].header	= "Fukui potential, using the zero Fukui function to approximate the electron density\n"					+ typestr;
+	lrds[14].header	= "Local hardness, using the Fukui function to distribute the global hardness\n" + typestr;
+	lrds[15].header	= "Local softness, using the the net Fukui function to distribute the global sofntess\n"+ typestr;
+	lrds[16].header	= "Local softness, using the the average Fukui function to distribute the global sofntess\n"+ typestr;
+	lrds[17].header	= "Hiper local softness\n" + typestr;
+	lrds[18].header	= "Multifilicity\n" + typestr;	
+	lrds[19].header	= "Molecular Electrostatic Potential\n" + typestr;
+	lrds[20].header	= "Molecular Orbitals band localization\n" + typestr;
+	lrds[21].header	= "Local hardness based on the Thomas-Fermi-Dirac functionals definitions\n" + typestr;
 	
-	string loc_softdual		= name + typestr2 + "_softdual"; 
-	string local_mult		= name + typestr2 + "_multifilic";
-	Softness_Dual.header	= "Local sofntess dual \n" + typestr;
-	multifilic.header		= "Multifilic Descriptor \n" + typestr;
+	if ( FD ){
+		lrds[2].write_cube(cube_names[4]+".cube");
+		lrds[3].write_cube(cube_names[5]+".cube");
+		lrds[4].write_cube(cube_names[6]+".cube");
+	}else{
+		lrds[0].write_cube(cube_names[0]+".cube");
+		lrds[0].write_cube(cube_names[1]+".cube");
+		lrds[1].write_cube(cube_names[2]+".cube");
+		lrds[1].write_cube(cube_names[3]+".cube");
+	}
 	
+	//Default ouutput
+	lrds[5].write_cube(cube_names[7]+".cube");
+	lrds[6].write_cube(cube_names[8]+".cube");
+	lrds[7].write_cube(cube_names[9]+".cube");
+	lrds[8].write_cube(cube_names[10]+".cube");
+	lrds[8].write_cube(cube_names[11]+".cube");
+	lrds[11].write_cube(cube_names[14]+".cube");
+	lrds[14].write_cube(cube_names[17]+".cube");
+	lrds[14].write_cube(cube_names[18]+".cube");
+	lrds[15].write_cube(cube_names[19]+".cube");
+	lrds[15].write_cube(cube_names[20]+".cube");
+
 	
-	EAS.write_cube(fukui_suc_elec + ".cube");
-	EAS.name = fukui_suc_elec;
-	NAS.write_cube(fukui_suc_nuc + ".cube");
-	NAS.name = fukui_suc_nuc;
-	RAS.write_cube(fukui_suc_rad + ".cube");
-	RAS.name = fukui_suc_rad;
-	Dual.write_cube(deltaFukui + ".cube");
-	Dual.name = deltaFukui;
-	Dual.write_cube(deltaFukui2 + ".cube");
+	if ( LH ){
+		lrds[9].write_cube(cube_names[12]+".cube");
+		lrds[10].write_cube(cube_names[13]+".cube");
+		lrds[19].write_cube(cube_names[23]+".cube");
+		lrds[19].write_cube(cube_names[24]+".cube");
+		if ( TFD ){
+			lrds[21].write_cube(cube_names[26]+".cube");
+		}
+	}
 	
 	if ( extra_RD ){
-		multifilic.write_cube(local_mult + ".cube");
-		multifilic.write_cube(local_mult + "2_.cube");
-		multifilic.name = local_mult;
-		Softness_Dual.write_cube(loc_softdual + ".cube");
-		Softness_Dual.write_cube(loc_softdual + "_2.cube");
-		Softness_Dual.name = loc_softdual;
+		lrds[12].write_cube(cube_names[15]+".cube");
+		lrds[13].write_cube(cube_names[16]+".cube");
+		lrds[16].write_cube(cube_names[21]+".cube");
+		lrds[17].write_cube(cube_names[22]+".cube");
+		lrds[18].write_cube(cube_names[27]+".cube");
+		lrds[18].write_cube(cube_names[28]+".cube");
 	}
-	
-	if( locHardness == true ) {
-		Hardness.write_cube(local_hardness + ".cube");
-		Hardness.name = local_hardness;
+	if ( band ){
+		lrds[20].write_cube(cube_names[25]+".cube");
 	}
+
 	m_log->input_message("Finishing writting the local reactivity descriptos grids.\n");
 }
 /***********************************************************************************/

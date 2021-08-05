@@ -48,10 +48,10 @@ const double precision = 1e-08;
 /***********************************************************************************/
 local_rd_cnd::local_rd_cnd()	:
 	name("nonamed")				,
-	finite_diff(true)					,
-	charge(0)							,
-	ed(false)							,
-	mep(false)							{
+	finite_diff(true)			,
+	charge(0)					,
+	ed(false)					,
+	mep(false)					{
 }
 /***********************************************************************************/
 local_rd_cnd::local_rd_cnd(Imolecule&& mol) noexcept:

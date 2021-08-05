@@ -49,8 +49,10 @@ class local_rd {
 	public:
 		//member variables
 		std::string name;
-		bool finite_diff;
-		bool locHardness;
+		bool FD;
+		bool LH;
+		bool band;
+		bool TFD;
 		int charge;
 		std::vector<Icube> lrds;
 		std::vector<std::string> rd_names;
@@ -68,8 +70,9 @@ class local_rd {
 		friend local_rd operator-(const local_rd& lrd_lhs,const local_rd& lrd_rhs);	
 		void calculate_fukui_Band(const Icube& homo_b, const Icube& lumo_b);
 		void calculate_RD(const global_rd& grd);
-		void calculate_Fukui_potential(const Imolecule& mol);
+		void calculate_Fukui_potential();
 		void calculate_hardness(const global_rd& grd, std::string method);
+		void calculate_MEP(const Imolecule& mol);
 		void write_LRD();
 };
 
