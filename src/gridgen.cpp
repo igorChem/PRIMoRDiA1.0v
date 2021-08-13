@@ -456,37 +456,6 @@ void gridgen::calculate_density_orca(){
 	density.name = name;
 }
 /***********************************************************************/
-void gridgen::calculate_mep_from_charges(){
-	unsigned int x,y,z,i;
-	double xi,yi,zi,xj,yj,zj,r,invR,v = 0.0;
-	double precision 				= 1e-13;
-	
-	omp_set_num_threads(NP);
-	#pragma omp parallel for collapse(3) shared(precision) private(xi,yi,zi,xj,yj,zj,r,invR,x,y,z,i) reduction(+:v)
-	for ( x=0;x<grid_len[0];x++ ){
-		for ( y=0;y<grid_len[1];y++ ){
-			for ( z=0;z<grid_len[2];z++ ){
-				xi	=	x*grid_sides[0] + origin[0];
-				yi	=	y*grid_sides[1] + origin[1];
-				zi	=	z*grid_sides[2] + origin[2] ;
-				for ( i=0;i<molecule.atoms.size();i++ ){
-					xj	=	xi -	molecule.atoms[i].xcoord;
-					yj	=	yi -	molecule.atoms[i].ycoord;
-					zj	=	zi -	molecule.atoms[i].zcoord;
-					r	=	sqrt(xj*xj +  yj*yj + zj*zj);
-					invR	= 1/(r+precision);
-					v	+= invR*molecule.atoms[i].charge;
-				}
-				psi[x][y][z] = v;
-				v= 0;
-			}
-		}
-	} 
-	
-	density.add_data(psi);
-	density.name = name;
-}
-/***********************************************************************/
 Icube& gridgen::get_cube(){ return density; }
 /***********************************************************************/
 Icube& gridgen::calc_HOMO(){

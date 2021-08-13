@@ -20,6 +20,7 @@ class global_rd;
 class local_rd_cnd;
 class protein_lrd;
 class Iprotein;
+class Imolecule;
 
 class comp_hard{
 	public:
@@ -28,7 +29,7 @@ class comp_hard{
 		std::vector< std::vector<double> > l_comp_hard_bio;
 		comp_hard();
 		comp_hard(const global_rd& grd, double vm);
-		comp_hard(const global_rd& grd, const local_rd_cnd& lrd, double vm);
+		comp_hard(const global_rd& grd, const local_rd_cnd& lrd, const Imolecule& molecule, double vm);
 		~comp_hard();
 		comp_hard(const comp_hard& rhs);
 		comp_hard& operator=(const comp_hard& rhs);

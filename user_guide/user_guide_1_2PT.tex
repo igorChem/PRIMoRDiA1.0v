@@ -23,10 +23,12 @@
 \usepackage{multirow}                                               
 \usepackage{multicol}                                               
 \usepackage{longtable}
-\usepackage{amsmath}
+\usepackage{amsmath,amssymb,mathtools,amsfonts,textcomp}
 \usepackage{dcolumn}
 \usepackage{booktabs}
 \usepackage{makecell}
+
+\everymath{\displaystyle}
 
 \hypersetup{colorlinks=true,linkcolor=black,citecolor=blue,urlcolor=blue}
 
@@ -565,7 +567,7 @@ Moleza ($S$)  & softness & $1/\eta$ & \makecell{Facilidade do sistema em variar 
 \end{table}	
 \end{minipage}
 
-
+\newpage
 Na \autoref{tab_local1} estão listados todos os descritores locais obtidos pelo programa desde a sua primeira versão estável. 
 
 \hspace*{-\leftmarginwidth}
@@ -573,23 +575,23 @@ Na \autoref{tab_local1} estão listados todos os descritores locais obtidos pelo
 	\begin{table}[H]
 		\centering	
 		\caption{Descritores locais calculados no PRIMoRDiA desde a versão 1.0v e escritos em representação volumétrica}
-		\begin{tabular}{c|c|c|c|c}
+		\begin{tabular}{c|c|c|c}
 			\toprule
-			Descritor &\makecell{Nome do\\ arquivo\\ cube}&\makecell{Definição\\Matemática}&Descrição&Observação \\
+			Descritor &\makecell{Nome do\\ arquivo cube}&\makecell{Definição\\Matemática}&Observação \\
 			\midrule
-			\makecell{Densidade \\eletrônica ($\rho(r)$)} &Elec\_Dens &$\sum_{i}^{occ} |\phi(r)^2_i|$ & & \\\hline
-			\makecell{Densidade \\eletrônica\\ do cátion} &Elec\_Dens\_Cation &$\sum_{i}^{occ} |\phi(r)^2_i|$ & & \\\hline
-			\makecell{Densidade \\eletrônica\\ do anion} &Elec\_Dens\_Anion&$\sum_{i}^{occ} |\phi(r)_i|$ & & \\\hline
-			\makecell{Susceptibilidade\\eletrofílica} &left\_Fukui&$\lim_{\partial N \to 0^-}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$ &  &  \\  \hline	
-			\makecell{Susceptibilidade\\nucleofílica}&right\_Fukui&$\lim_{\partial N \to 0^+}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$  &   & \\ \hline	
-			\makecell{Susceptibilidade\\radical}&zero\_Fukui&$\lim_{\partial N \to 0}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$  &   & \\ \hline
-			\makecell{Descritor Dual}&net\_Fukui &$\left(\frac{\partial ^2 \rho(r)}{\partial N} \right)_\nu$ & & \\ \hline
-			\makecell{Dureza Local}&l\_hardness\_Vee&$\frac{1}{2N} \int \frac{\rho(r')}{|r-r'|} dr'$ & & \\ \hline			
-			\makecell{Dureza Local\\(Potencial Químico)}  & l\_hardness\_lcp &  & & \\ \hline
-			\makecell{Dureza Local\\(Potencial de Fukui)}  &Fukui\_pot\_left  &  & & \\ \hline
-			\makecell{Moleza\\Local Dual}  & softness\_dual &  & &  \\ \hline
-			\makecell{Hiper Moleza\\Local}  & hyper\_softness &  & &  \\ \hline
-			\makecell{Multifilicidade\\Local}  & multifilicity &  & &  \\
+			\makecell{Densidade \\eletrônica ($\rho(r)$)} &Elec\_Dens &$\sum_{i}^{occ} |\phi(r)^2_i|$ &  \\\hline
+			\makecell{Densidade \\eletrônica do \\cátion ($\rho^{N-1}(r)$)} &Elec\_Dens\_Cation &$\sum_{i}^{occ} |\phi(r)^2_i|$ &  \\\hline
+			\makecell{Densidade \\eletrônica do\\ anion ($\rho^{N+1}(r)$)} &Elec\_Dens\_Anion&$\sum_{i}^{occ} |\phi(r)_i|$ &   \\\hline
+			\makecell{Susceptibilidade\\eletrofílica ($f^-(r)$)} &left\_Fukui&$\lim_{\partial N \to 0^-}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$ &    \\  \hline	
+			\makecell{Susceptibilidade\\nucleofílica ($f^+(r)$)}&right\_Fukui&$\lim_{\partial N \to 0^+}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$  &    \\ \hline	
+			\makecell{Susceptibilidade\\radical ($f^0(r)$)}&zero\_Fukui&$\lim_{\partial N \to 0}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$  &    \\ \hline
+			\makecell{Descritor Dual \\($f^{\pm}(r)$)}&net\_Fukui &$\left(\frac{\partial ^2 \rho(r)}{\partial N} \right)_\nu$ &  \\ \hline
+			\makecell{Dureza Local ($h(r)$)} &l\_hardness\_Vee &$\frac{1}{2N} \int \frac{\rho(r')}{|r-r'|} dr'$ &  \\ \hline			
+			\makecell{Dureza Local \\(Potencial\\ Químico) ($h(r)$)}  & l\_hardness\_lcp & $ \left (f^- - \frac{\rho(r)}{N} \right) \frac{\mu}{2N} + \frac{\rho(r)}{N}\eta$ &  \\ \hline
+			\makecell{Dureza Local \\(Potencial\\ de Fukui) ($h^{-}(r)$)}  & Fukui\_pot\_left  & $\int   \frac{f^{-}(r')}{|r - r'|}dr'$ &  \\ \hline
+			\makecell{Moleza Dual\\ Local $s^{\pm}(r)$}  & softness\_dual & $Sf^{\pm}(r)$  &   \\ \hline
+			\makecell{Hiper Moleza\\Local $s^{(2)}(r)$ }  & hyper\_softness & $S^{(2)}f^{0}(r)$ &   \\ \hline
+			\makecell{Multifilicidade\\Local $ \omega^{\pm}(r)$}  & multifilicity & $\omega f^{\pm}(r)$ &   \\
 			\bottomrule
 		\end{tabular} 
 		\label{tab_local1}	
@@ -602,24 +604,23 @@ Na \autoref{tab_local1} estão listados todos os descritores locais obtidos pelo
 	\begin{table}[H]
 		\centering	
 		\caption{Descritores locais calculados pelo PRIMoRDiA 1.0v e escritos em representação condensada}
-		\begin{tabular}{c|c|c|c|c}
+		\begin{tabular}{c|c|c|c}
 			\toprule
-			Descritor &\makecell{Nome no\\ arquivo}&\makecell{Definição\\Matemática}&Descrição&Observação \\
+			Descritor &\makecell{Nome no\\ arquivo}&\makecell{Definição\\Matemática}&Observação \\
 			\midrule
-			\makecell{Densidade \\eletrônica} & & & & \\\hline
-			\makecell{Carga parcial} & & & & \\\hline
-			\makecell{Susceptibilidade\\eletrofílica} &  & &  &  \\  \hline	
-			\makecell{Susceptibilidade\\nucleofílica}&  & &   & \\ \hline	
-			\makecell{Susceptibilidade\\radical}&  & &   & \\ \hline
-			\makecell{Descritor dual}  & & & & \\ \hline			
-			\makecell{Dureza local\\(potencial\\elétron-elétron)}  &  &  & & \\ \hline
-			\makecell{Dureza local\\(potencial químico)}  &  &  & & \\ \hline
-			\makecell{Dureza local\\(potencial\\fukui)}  &  &  & & \\ \hline
-			\makecell{Moleza\\local dual}  &  &  & &  \\ \hline			
-			\makecell{Hiper moleza\\local}  &  &  & &  \\ \hline
-			\makecell{Multifilicidade\\local}  &  &  & &  \\\hline
-			\makecell{Eletrofilicidade\\total local}  &  &  & &  \\\hline
-			\makecell{Localização\\de banda\\de fronteira}  &  &  & &  \\
+			\makecell{Densidade \\eletrônica ($\rho(k)$)} & Electron\_density & &  \\\hline
+			\makecell{Carga parcial ($q(k)$)} & charge & - & \makecell{Extraído do arquivo\\ de saída do pacote de\\ química computacional}  \\\hline
+			\makecell{Susceptibilidade\\eletrofílica ($f^-(k)$) } & eletrophilicidade & &    \\  \hline	
+			\makecell{Susceptibilidade\\nucleofílica ($f^+(k)$)}& nucleophilicity  & &    \\ \hline	
+			\makecell{Susceptibilidade\\radical ($f^0(k))$}& radicality & &    \\ \hline
+			\makecell{Descritor dual ($f^{\pm}(k)$)}  & netphilicity & & \\ \hline			
+			\makecell{Dureza local (potencial\\elétron-elétron)($h(k)^{\nu_{ee}}$) }  & hardness\_Vee &  &  \\ \hline
+			\makecell{Dureza local (potencial\\químico)($h(k)^{LCP}$)}  & hardness\_lcp &  &  \\ \hline
+			\makecell{Dureza local(potencial\\Fukui) ($\nu_{f}^{-}(k)$)}  & Fukui\_pot\_left &  &  \\ \hline
+			\makecell{Moleza local dual ($s^{\pm}(k)$)}  & softness\_dual &  &   \\ \hline			
+			\makecell{Hiper moleza\\local ($s^{(2)}(k)$) }  & hiper\_softness &  &   \\ \hline
+			\makecell{Multifilicidade\\local ($\omega^{\pm}(k)$) }  & multiphilicity &  &   \\\hline
+			\makecell{Localização de banda\\de fronteira}  & fukushima &  &   \\
 			\bottomrule
 		\end{tabular} 
 		\label{tab_local2}	
@@ -638,16 +639,16 @@ Na \autoref{tab_local1} estão listados todos os descritores locais obtidos pelo
 	\begin{table}[H]
 		\centering	
 		\caption{Descritores locais adicionados no PRIMoRDiA a partir da versão 1.25 escritos em representação volumétrica}
-		\begin{tabular}{c|c|c|c|c}
+		\begin{tabular}{c|c|c|c}
 			\toprule
-			Descritor &\makecell{Nome do\\ arquivo\\ cube}&\makecell{Definição\\Matemática}&Descrição&Observação \\
+			Descritor &\makecell{Nome do\\ arquivo\\ cube}&\makecell{Definição\\Matemática}& Observação \\
 			\midrule
-			\makecell{Localização\\de banda\\de fronteira} & & & & \\\hline
-			\makecell{Potencial Fukui\\ nucleofílico} & & & & \\\hline
-			\makecell{Potencial Fukui\\ radical} & & & & \\\hline
-			\makecell{Moleza\\ dual média} & & & & \\\hline
-			\makecell{Potencial\\eletrostático molecular } &$\sum_A\frac{Z_A}{|r-R_A|}  - \int  \frac{\rho(r')}{|r-r'|} dr'$ & & & \\\hline
-			\makecell{Dureza\\local (TFD)} & & & & \\
+			\makecell{Localização de banda\\de fronteira} & & &  \\\hline
+			\makecell{Potencial Fukui\\ nucleofílico ($\nu_{f}^{+}(r)$)} & & &  \\\hline
+			\makecell{Potencial Fukui\\ radical ($\nu_{f}^{0}(r)$)} & & &  \\\hline
+			\makecell{Moleza Local \\média ($s^{\pm}(r)$)} & & &  \\\hline
+			\makecell{Potencial eletrostático\\molecular ($\Phi(r)$) } & & $\sum_{\alpha} \frac{Z_{\alpha}}{|r_{\alpha}-r'|}  - \int\frac{\rho(r')}{|r_-r'|}dr'$&  \\\hline
+			\makecell{Dureza local \\(TFD) ($h(r)^{TFD}$)} & & &  \\
 			\bottomrule
 		\end{tabular} 
 		\label{tab_local3}	
@@ -660,15 +661,15 @@ Na \autoref{tab_local1} estão listados todos os descritores locais obtidos pelo
 	\begin{table}[H]
 		\centering	
 		\caption{Descritores locais adicionados no PRIMoRDiA a partir da versão 1.25 escritos em representação condensada}
-		\begin{tabular}{c|c|c|c|c}
+		\begin{tabular}{c|c|c|c}
 			\toprule
-			Descritor &\makecell{Nome no\\ arquivo}&\makecell{Definição\\matemática}&Descrição&Observação \\
+			Descritor &\makecell{Nome no\\ arquivo}&\makecell{Definição\\matemática}& Observação \\
 			\midrule	
-			\makecell{Potencial\\Fukui nucleofílico}  &  &  & & \\ \hline
-			\makecell{Potencial\\Fukui radical}  &  &  & & \\ \hline
-			\makecell{Potencial\\molecular eletrostático}  &  &  & & \\ \hline
-			\makecell{Moleza\\local média}  &  &  & &  \\ \hline			
-			\makecell{Dureza\\local (TFD)} & & & & \\
+			\makecell{Potencial Fukui \\nucleofílico ($\nu_{f}^{+}(k)$)}  &  &  &  \\ \hline
+			\makecell{Potencial Fukui \\radical ($\nu_{f}^{0}(k)$) }&  &  &  \\ \hline
+			\makecell{Potencial molecular\\ eletrostático ( $\Phi(r)$) } & & $\sum_{\alpha \neq k} \frac{Z_{\alpha}}{|r_k-R_{\alpha}|}  - \int \frac{\rho(r)}{|r-R_{\alpha}|} dr$  & \\ \hline
+			\makecell{Moleza local \\média ($s^{\pm}(k)$)}  &  &  &   \\ \hline			
+			\makecell{Dureza local\\ (TFD) ($h(k)^{TFD}$)} & & &  \\
 			\bottomrule
 		\end{tabular} 
 		\label{tab_local4}	

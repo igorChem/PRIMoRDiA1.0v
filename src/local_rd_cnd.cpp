@@ -26,6 +26,7 @@
 #include <experimental/filesystem>
 // include statements from PRIMORDiA-libs
 #include "../include/common.h"
+#include "../include/Iaorbital.h"
 #include "../include/Iatom.h"
 #include "../include/Imolecule.h"
 #include "../include/QMdriver.h"
@@ -45,306 +46,384 @@ namespace fs = std::experimental::filesystem;
 
 const double precision = 1e-08;
 
+
+std::vector<std::string> rd_names = {
+	"nucleophilicity"				, //0
+	"electrophilicity"				, //1
+	"radicality"					, //2
+	"netphilicity"					, //3
+	"hardness_Vee"					, //4
+	"hardness_lcp"					, //5
+	"Fukui_pot_left"				, //6
+	"Fukui_pot_right"				, //7
+	"Fukui_pot_zero"				, //8
+	"softness_dual"					, //9
+	"hyper_softness"				, //10
+	"multiphilicity"				, //11
+	"fukushima"						, //12
+	"charge"						, //13
+	"electron_density"				, //14
+	"mep"							, //15
+	"hardness_TFD"					, //16
+	"softness_avg"					, //17
+	"hardness_int"					  //18
+};
+
 /***********************************************************************************/
 local_rd_cnd::local_rd_cnd()	:
 	name("nonamed")				,
-	finite_diff(true)			,
-	charge(0)					,
-	ed(false)					,
-	mep(false)					{
+	FD(false)					,
+	charge(0)					{
+	
+	names = rd_names;
+	lrds.resize( rd_names.size() );
 }
 /***********************************************************************************/
-local_rd_cnd::local_rd_cnd(Imolecule&& mol) noexcept:
-	name(mol.name)									,
-	finite_diff(false)								,
-	charge(1)										,
-	ed(false)										,
-	mep(false)										,
-	molecule( move(mol) )							{
+local_rd_cnd::local_rd_cnd(unsigned int nof):
+	FD(false)								,
+	names(rd_names)							,
+	charge(1)								{
 	
-	EAS.resize(molecule.num_of_atoms);
-	NAS.resize(molecule.num_of_atoms);
-	RAS.resize(molecule.num_of_atoms);
-	dual.resize(molecule.num_of_atoms);
-	Softness_Dual.resize(molecule.num_of_atoms);
-	Hyper_softness.resize(molecule.num_of_atoms);
-	hardness_A.resize(molecule.num_of_atoms);
-	hardness_B.resize(molecule.num_of_atoms);
-	hardness_C.resize(molecule.num_of_atoms);
-	hardness_D.resize(molecule.num_of_atoms);
-	multifilic.resize(molecule.num_of_atoms);
-	electrophilicity.resize(molecule.num_of_atoms);
-	electron_density.resize(molecule.num_of_atoms);
-	fukushima.resize(molecule.num_of_atoms);
+	lrds.resize( rd_names.size() );
 	
+	for(unsigned int i=0;i<lrds.size(); i++){
+		lrds.resize( nof );
+	}
 }
 /***********************************************************************************/
 local_rd_cnd::local_rd_cnd(const Imolecule& mol_neut	,
 							const Imolecule& mol_cation	, 
 							const Imolecule& mol_anion)	:
 	name(mol_neut.name)									, 
-	finite_diff(true)									,
-	charge(1)											,
-	ed(false)											,
-	mep(false)											,
-	molecule( Imolecule() )								{
+	FD(true)											,
+	names(rd_names)										,
+	charge(1)											{
 	
-	molecule.atoms				= mol_neut.atoms;
-	molecule.num_of_atoms		= mol_neut.num_of_atoms;
-	molecule.num_of_electrons	= mol_neut.num_of_electrons;
-
-	//molecule.update();
+	lrds.resize( rd_names.size() );
 	
-	EAS.resize(molecule.num_of_atoms);
-	NAS.resize(molecule.num_of_atoms);
-	RAS.resize(molecule.num_of_atoms);
-	dual.resize(molecule.num_of_atoms);
-	Softness_Dual.resize(molecule.num_of_atoms);
-	Hyper_softness.resize(molecule.num_of_atoms);
-	hardness_A.resize(molecule.num_of_atoms);
-	hardness_B.resize(molecule.num_of_atoms);
-	hardness_C.resize(molecule.num_of_atoms);
-	hardness_D.resize(molecule.num_of_atoms);
-	multifilic.resize(molecule.num_of_atoms);
-	electrophilicity.resize(molecule.num_of_atoms);
-	electron_density.resize(molecule.num_of_atoms);
-	fukushima.resize(molecule.num_of_atoms);	
+	for(unsigned int i=0;i<lrds.size(); i++){
+		lrds[i].resize( mol_neut.atoms.size() );
+	}
 	
-	for (unsigned int i=0;i<molecule.num_of_atoms;i++){
-		EAS[i]				= ( (-molecule.atoms[i].charge)		- (-mol_cation.atoms[i].charge) )/charge;
-		NAS[i]				= ( (-mol_anion.atoms[i].charge)	- (-molecule.atoms[i].charge) ) /charge;
-		RAS[i]				= ( ( (-mol_anion.atoms[i].charge)	- (-mol_cation.atoms[i].charge) )/2 ) /charge;
-		dual[i]				= NAS[i] - EAS[i];
+	for (unsigned int i=0;i< mol_neut.atoms.size();i++){
+		lrds[0][i]	= ( (-mol_neut.atoms[i].charge)		- (-mol_cation.atoms[i].charge) )/charge;
+		lrds[1][i]	= ( (-mol_anion.atoms[i].charge)	- (-mol_neut.atoms[i].charge) ) /charge;
+		lrds[2][i]	= ( ( (-mol_anion.atoms[i].charge)	- (-mol_cation.atoms[i].charge) )/2 ) /charge;
+		lrds[3][i]	= lrds[1][i] - lrds[0][i];
+		lrds[13][i]	= mol_neut.atoms[i].charge;
 	}
 }         
 /***********************************************************************************/
 local_rd_cnd::local_rd_cnd(const local_rd_cnd& lrd_rhs)	:
 	name(lrd_rhs.name)									,
-	ed(lrd_rhs.ed)										,
-	mep(lrd_rhs.mep)									,
-	finite_diff(lrd_rhs.finite_diff)					,
+	FD(lrd_rhs.FD)										,
+	names(lrd_rhs.names)								,
 	charge(lrd_rhs.charge)								,
-	molecule( lrd_rhs.molecule )						,
-	EAS(lrd_rhs.EAS)									, 
-	NAS(lrd_rhs.NAS)									,
-	RAS(lrd_rhs.RAS)									,
-	dual(lrd_rhs.dual)									,
-	Softness_Dual(lrd_rhs.Softness_Dual)				,
-	Hyper_softness(lrd_rhs.Hyper_softness)				,
-	hardness_A(lrd_rhs.hardness_A)						,
-	hardness_B(lrd_rhs.hardness_B)						,
-	hardness_C(lrd_rhs.hardness_C)						,
-	hardness_D(lrd_rhs.hardness_D)						,
-	multifilic(lrd_rhs.multifilic)						,
-	electrophilicity(lrd_rhs.electrophilicity)			,
-	electron_density(lrd_rhs.electron_density)			,
-	fukushima(lrd_rhs.fukushima)						{
+	lrds(lrd_rhs.lrds)									{
 }
 /***********************************************************************************/
 local_rd_cnd& local_rd_cnd::operator=(const local_rd_cnd& lrd_rhs){
 	if( this!=&lrd_rhs){
-		name			= lrd_rhs.name;
-		ed 				= lrd_rhs.ed;
-		mep				= lrd_rhs.mep;
-		finite_diff		= lrd_rhs.finite_diff;
-		charge			= lrd_rhs.charge;
-		molecule		= lrd_rhs.molecule;
-		EAS				= lrd_rhs.EAS;
-		NAS				= lrd_rhs.NAS;
-		RAS				= lrd_rhs.RAS;
-		dual			= lrd_rhs.dual;
-		Softness_Dual	= lrd_rhs.Softness_Dual;
-		electron_density= lrd_rhs.electron_density;
-		Hyper_softness	= lrd_rhs.Hyper_softness;
-		hardness_A		= lrd_rhs.hardness_A;
-		hardness_B		= lrd_rhs.hardness_B;
-		hardness_C		= lrd_rhs.hardness_C;
-		hardness_D		= lrd_rhs.hardness_D;
-		multifilic		= lrd_rhs.multifilic;
-		electrophilicity= lrd_rhs.electrophilicity;
-		fukushima		= lrd_rhs.fukushima;
-	}       	
+		name	= lrd_rhs.name;
+		FD		= lrd_rhs.FD;
+		names	= lrd_rhs.names;
+		charge	= lrd_rhs.charge;
+		lrds	= lrd_rhs.lrds;
+	}
 	return *this;
 }                
 /***********************************************************************************/
 local_rd_cnd::local_rd_cnd(local_rd_cnd&& lrd_rhs) noexcept	:
 	name( move(lrd_rhs.name) )								,
-	ed( move(lrd_rhs.ed) )									,
-	mep( move(lrd_rhs.mep) )								,
-	finite_diff( move(lrd_rhs.finite_diff) )				,
+	FD( move(lrd_rhs.FD) ) 									,
+	names( move(lrd_rhs.names) )							,
 	charge( move(lrd_rhs.charge) )							,
-	molecule( move(lrd_rhs.molecule) )						,
-	EAS( move(lrd_rhs.EAS) )								, 
-	NAS( move(lrd_rhs.NAS) )								,
-	RAS( move(lrd_rhs.RAS) )								,
-	dual( move(lrd_rhs.dual) )								,
-	Softness_Dual( move(lrd_rhs.Softness_Dual) )			,
-	electron_density( move(lrd_rhs.electron_density) )		,
-	Hyper_softness( move(lrd_rhs.Hyper_softness) )			,
-	hardness_A( move(lrd_rhs.hardness_A) )					,
-	hardness_B( move(lrd_rhs.hardness_B) )					,
-	hardness_C( move(lrd_rhs.hardness_C) )					,
-	hardness_D( move(lrd_rhs.hardness_D) )					,
-	multifilic( move(lrd_rhs.multifilic) )					,
-	electrophilicity( move(lrd_rhs.electrophilicity) )		,
-	fukushima( move(lrd_rhs.fukushima) )					{
+	lrds( move(lrd_rhs.lrds) )								{
 }
 /***********************************************************************************/
 local_rd_cnd& local_rd_cnd::operator=(local_rd_cnd&& lrd_rhs) noexcept {
 	if( this!=&lrd_rhs){
-		name				= move(lrd_rhs.name);  
-		ed 					= move(lrd_rhs.ed);
-		mep 				= move(lrd_rhs.mep);
-		finite_diff			= move(lrd_rhs.finite_diff);
-		charge				= move(lrd_rhs.charge);
-		molecule			= move(lrd_rhs.molecule);
-		EAS					= move(lrd_rhs.EAS);
-		NAS					= move(lrd_rhs.NAS);
-		RAS					= move(lrd_rhs.RAS);
-		dual				= move(lrd_rhs.dual);
-		Softness_Dual		= move(lrd_rhs.Softness_Dual);
-		Hyper_softness		= move(lrd_rhs.Hyper_softness);
-		electron_density	= move(lrd_rhs.electron_density);
-		hardness_A			= move(lrd_rhs.hardness_A);
-		hardness_B			= move(lrd_rhs.hardness_B);
-		hardness_C			= move(lrd_rhs.hardness_C);
-		hardness_D			= move(lrd_rhs.hardness_D);
-		multifilic			= move(lrd_rhs.multifilic);
-		electrophilicity	= move(lrd_rhs.electrophilicity);
-		fukushima			= move(lrd_rhs.fukushima);
+		name	= move(lrd_rhs.name);
+		FD		= move(lrd_rhs.FD);
+		names	= move(lrd_rhs.names);
+		charge	= move(lrd_rhs.charge);
+		lrds	= move(lrd_rhs.lrds);
 	}       	
 	return *this;
 }
 /***********************************************************************************/
 local_rd_cnd operator-(const local_rd_cnd& lrd_lhs,const local_rd_cnd& lrd_rhs){
 	local_rd_cnd Result = lrd_lhs;
-	if ( lrd_lhs.molecule.num_of_atoms == lrd_rhs.molecule.num_of_atoms) {
-		for (unsigned int i=0;i<lrd_lhs.molecule.num_of_atoms;i++){
-			Result.EAS[i]				= lrd_lhs.EAS[i]				- lrd_rhs.EAS[i];
-			Result.NAS[i]				= lrd_lhs.NAS[i]				- lrd_rhs.NAS[i];
-			Result.RAS[i]				= lrd_lhs.RAS[i]				- lrd_rhs.RAS[i];
-			Result.dual[i]				= lrd_lhs.dual[i]				- lrd_rhs.dual[i];
-			Result.Softness_Dual[i]		= lrd_lhs.Softness_Dual[i] 		- lrd_rhs.Softness_Dual[i];
-			Result.Hyper_softness[i]	= lrd_lhs.Hyper_softness[i] 	- lrd_rhs.Hyper_softness[i];
-			Result.hardness_A[i]		= lrd_lhs.hardness_A[i]			- lrd_rhs.hardness_A[i];
-			Result.hardness_B[i]		= lrd_lhs.hardness_B[i]			- lrd_rhs.hardness_B[i];
-			Result.hardness_C[i]		= lrd_lhs.hardness_C[i]			- lrd_rhs.hardness_C[i];
-			Result.hardness_D[i]		= lrd_lhs.hardness_D[i]			- lrd_rhs.hardness_D[i];
-			Result.electron_density[i] 	= lrd_lhs.electron_density[i] 	- lrd_rhs.electron_density[i];
-			Result.multifilic[i]		= lrd_lhs.multifilic[i]			- lrd_rhs.multifilic[i];				
-			Result.electrophilicity[i]	= lrd_lhs.electrophilicity[i]	- lrd_rhs.electrophilicity[i];
-			Result.fukushima[i]			= lrd_lhs.fukushima[i]			- lrd_rhs.fukushima[i];
+	for (unsigned int i=0;i<lrd_lhs.lrds.size();i++){
+		for (unsigned int j=0;j<lrd_lhs.lrds[i].size();j++){
+			Result.lrds[i][j] = lrd_lhs.lrds[i][j] - lrd_rhs.lrds[i][j];
 		}
 	}
 	return Result;
-}		
+}
 /***********************************************************************************/
-void local_rd_cnd::calculate_Fukui(){
-	int i =0;
-	if ( !finite_diff ) {
-		unique_ptr<QMdriver> qm_calc ( new QMdriver( move(molecule) ) );
-		if ( qm_calc->data_ok ){
-			#pragma omp parallel for default(shared) private(i) 
-			for (i=0;i<molecule.num_of_atoms;i++){
-				EAS[i]			= qm_calc->EAS_in_atoms(i,0);
-				NAS[i]			= qm_calc->NAS_in_atoms(i,0);
-				fukushima[i]	= qm_calc->fukushima(i,0);
-				RAS[i]			= (EAS[i] + NAS[i])/2;
-				dual[i]			= NAS[i] - EAS[i];
-			}
+void local_rd_cnd::calculate_frontier_orbitals( const Imolecule& molecule, unsigned band){
+	name					= molecule.name;
+	double value_h			= 0.0;
+	double value_l			= 0.0;
+	unsigned init_orb		= 0;
+	unsigned n_aorbs		= 0;
+	unsigned ao 			= molecule.num_of_ao;
+	unsigned homon 			= abs(molecule.homoN);
+	unsigned lumon 			= abs(molecule.lumoN);
+	unsigned cnt 			= 0;
+	unsigned init			= homon-band;
+	unsigned fin 			= lumon+band;
+	
+	for( unsigned atom=0; atom<molecule.atoms.size(); atom++ ){
+		//defining the indices of the atomic orbitals
+		if ( atom == 0 ) {
+			init_orb = 0;
+			n_aorbs  = molecule.atoms[0].orbitals.size();
 		}else{
-			m_log->write_warning("Skipping Local RD calculations!");
+			for( unsigned j=0; j<atom; j++ ){
+				init_orb += molecule.atoms[j].norb;
+			}
+			for( unsigned j=0; j<=atom; j++ ){
+				n_aorbs  += molecule.atoms[j].norb;
+			}
 		}
-		molecule = move( qm_calc->molecule );
-	}
-}
-/***********************************************************************************/
-void local_rd_cnd::calculate_Fukui_band(int band){
-	unique_ptr<QMdriver> qm_calc ( new QMdriver( move(molecule) ) );
-	unsigned int nof,i;
-	nof  = molecule.num_of_atoms;
-	if ( qm_calc->data_ok ){
-		omp_set_num_threads(NP);
-		#pragma omp parallel for default(shared) private(i)	
-		for (i=0;i<nof;i++){
-			EAS[i]		= qm_calc->EAS_in_atoms(i,band);
-			NAS[i]		= qm_calc->NAS_in_atoms(i,band);
-			fukushima[i]= qm_calc->fukushima(i,band);
-			RAS[i]		= (EAS[i] + NAS[i])/2;
-			dual[i]		= NAS[i] - EAS[i];
-		}
-	}else{
-		m_log->write_warning("Skipping Local RD calculations!");
-	}
-	molecule = move( qm_calc->molecule );
-	
-}
-/***********************************************************************************/
-void local_rd_cnd::calculate_Fukui_EW(int band){
-	unsigned int nof ,i;
-	nof = molecule.num_of_atoms;
-	unique_ptr<QMdriver> qm_calc ( new QMdriver( move(molecule) ) );
-	if ( qm_calc->data_ok ){
-		omp_set_num_threads(NP);
-		#pragma omp parallel for default(shared) private(i) 
-		for (i=0;i<nof;i++){
-			EAS[i]			= qm_calc->EAS_in_atoms_EW(i);
-			NAS[i] 			= qm_calc->NAS_in_atoms_EW(i);
-			fukushima[i]	= qm_calc->fukushima(i,band);
-			RAS[i] 			= (EAS[i] + NAS[i])/2;
-			dual[i]			= NAS[i] - EAS[i];
-		}
-	}else{
-		m_log->write_warning("Skipping Local RD calculations!");
-	}
-	molecule = move(qm_calc->molecule);
-}
-/***********************************************************************************/
-void local_rd_cnd::calculate_RD(const global_rd& grd){
-	for(unsigned int i=0;i<molecule.num_of_atoms;i++){
-			Softness_Dual[i]	= dual[i]*grd.softness;
-			Hyper_softness[i]	= RAS[i]*grd.softness;
-			multifilic[i]		= dual[i]*grd.Electrophilicity;
-			electrophilicity[i]	= NAS[i]*grd.Electrophilicity;
-		}
-}
-/***********************************************************************************/
-void local_rd_cnd::calculate_Hardness(const global_rd& grd){
-	unsigned int nof = molecule.num_of_atoms;
-	unsigned int i,j;
-	
-	omp_set_num_threads(NP);
-	//-----------------------------------------------------
-	//Estimating electron density
-	if ( !finite_diff ){
-		unique_ptr<QMdriver> qm_calc ( new QMdriver( move(molecule) ) );
-		vector<Iatom> atoms = qm_calc->molecule.atoms;
-		#pragma omp parallel for default(shared) private(i) 
-		for(i=0;i<nof;i++){
-			electron_density[i] = qm_calc->density_in_atoms(i);
-		}
-		molecule = move(qm_calc->molecule);
-	}else{
-		#pragma omp parallel for default(shared) private(i) 
-		for(i=0;i<nof;i++){
-			electron_density[i] = molecule.atoms[i].atomicN - molecule.atoms[i].charge;
-		}
-	}
-	//----------------------------------------------------
-	//calculating local hardness with method A (LCP)
-	#pragma omp parallel for default(shared) private(i) 
-	for(i=0;i<nof;i++){
-		hardness_A[i] = EAS[i]*(grd.chemical_pot/nof)
-						+ (electron_density[i]/nof)*grd.hardness*2;
-	}
-	double r  = 0;
-	double xi, yi,zi;
+		//-------------------------------------------------
 		
-	//-----------------------------------------------------
-	//calculating local hardness with method B (electron-electron interaction)
-	#pragma omp parallel for default(shared) private(i)
-	for (i=0;i<nof;i++){
-		for (j=0;j<nof;j++){
+		//calculating the occupied molecular orbitals
+		unsigned init = homon-band;
+		for( unsigned i=init; i<=homon; i++ ){
+			for( unsigned mu=init_orb; mu<n_aorbs; mu++ ){
+				for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
+					value_h+=molecule.coeff_MO[ao*i + mu]*
+							molecule.coeff_MO[ao*i + nu]*
+							molecule.m_overlap[nu+(mu*(mu+1) )/2];
+				}
+			}
+		}
+		
+		if ( atom == 0 && band > 0 ){
+			m_log->input_message("Number of occupied MO used to calculate condensed to atom descriptors: ");
+			m_log->input_message( int(band) );
+			m_log->input_message("\n");
+		}		
+		//-------------------------------------------------
+		
+		//calculating the virtual molecular orbitals
+		
+		for( unsigned i=lumon; i<=fin; i++ ){
+			for( unsigned mu=init_orb; mu<n_aorbs; mu++ ){
+				for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
+					value_l +=molecule.coeff_MO[ao*i + mu]*
+							molecule.coeff_MO[ao*i + nu]*
+							molecule.m_overlap[nu+(mu*(mu+1))/2];
+				}
+			}
+		}
+		if ( atom == 0  && band > 0 ){
+			m_log->input_message("Number of  virtual MO used to calculate condensed to atom descriptors: ");
+			m_log->input_message( int(band) ) ;
+			m_log->input_message("\n");
+		}
+		
+		//--------------------------------------------------
+		
+		// calculting the beta orbitals
+		if ( molecule.betad ){
+			//calculating the occupied molecular orbitals
+			for( unsigned i=init; i<=homon; i++ ){
+				for( unsigned mu=init_orb; mu<n_aorbs; mu++){
+					for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
+						value_h+=molecule.coeff_MO_beta[ao*i + mu]*
+								molecule.coeff_MO_beta[ao*i + nu]*
+								molecule.m_overlap[nu+(mu*(mu+1) )/2];
+					}
+				}
+			}
+			if ( atom == 0 && band > 0 ){
+				m_log->input_message("Number of occcupied virtual MO used to calculate condensed to atom descriptors: ");
+				m_log->input_message( int(band) );
+				m_log->input_message("\n");
+			}
+			value_h /= 2;
+			//------------------------------------------------
+			
+			//calculating the virtual molecular orbitals
+			for( unsigned i=lumon; i<=fin; i++ ){
+				if ( molecule.orb_energies_beta[i] <= molecule.lumo_energy+energy_crit ){
+					for(unsigned mu=init_orb; mu<n_aorbs; mu++ ){
+						for (unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
+							value_l +=molecule.coeff_MO_beta[ao*i + mu]*
+									molecule.coeff_MO_beta[ao*i + nu]*
+									molecule.m_overlap[nu+(mu*(mu+1))/2];
+						}
+					}
+				}
+			}
+			if ( atom == 0  && band > 0 ){
+				m_log->input_message("Number of  virtual beta MO used to calculate condensed to atom descriptors: ");
+				m_log->input_message( int(band) );
+				m_log->input_message("\n");
+			}
+			value_l /= 2;
+		}
+		lrds[0][atom] = value_h;
+		lrds[1][atom] = value_l;
+		lrds[13][atom]= molecule.atoms[atom].charge;
+		lrds[12][atom]= value_h + value_l;
+	}
+	if ( band > 1 ){
+		lrds[0] = norm_dvec(lrds[0],5);
+		lrds[1] = norm_dvec(lrds[1],5);
+	}else{
+		lrds[0] = norm_dvec(lrds[0],1);
+		lrds[1] = norm_dvec(lrds[1],1);
+	}
+	for( unsigned i=0; i<lrds[0].size(); i++ ){
+		lrds[3][i] = lrds[1][i] - lrds[0][i];
+		lrds[2][i] = (lrds[1][i] + lrds[0][i])/2;
+	}	
+
+}
+/***********************************************************************************/
+void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
+	double pre_coef		= exp( -abs(energy_crit) );
+	double coefficient	= 0.0;
+	int mo_count 		= 0;
+	double value_h		= 0.0;
+	double value_l		= 0.0;
+	unsigned init_orb	= 0;
+	unsigned n_aorbs	= 0;
+	unsigned ao 		= molecule.num_of_ao;
+	unsigned homon 		= abs(molecule.homoN);
+	unsigned lumon 		= abs(molecule.lumoN);
+
+	for( unsigned atom=0; atom<molecule.atoms.size(); atom++ ){
+		// defining the atomic orbitals indices
+		if ( atom == 0 ) {
+			init_orb = 0;
+			n_aorbs  = molecule.atoms[0].orbitals.size();
+		}else{
+			for( unsigned j=0; j<atom; j++ ){
+				init_orb += molecule.atoms[j].norb;
+			}
+			for( unsigned j=0; j<=atom; j++ ){
+				n_aorbs  += molecule.atoms[j].norb;
+			}
+		}		
+		//------------------------------------------------
+		
+		//calculating the occupied molecular orbitals
+		for( unsigned i=0; i<=homon; i++ ){
+			coefficient = exp(-abs( molecule.orb_energies[i]-molecule.homo_energy ) );
+			if ( coefficient > pre_coef ){ 
+				mo_count++;
+				for( unsigned mu=init_orb; mu<n_aorbs; mu++){
+					for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
+						value_h +=coefficient*
+								molecule.coeff_MO[ao*i + mu]*
+								molecule.coeff_MO[ao*i + nu]*
+								molecule.m_overlap[nu+(mu*(mu+1))/2];
+					}
+				}
+			}
+		}
+		
+		if ( atom == 0 ){
+			m_log->input_message("Number of occupied MO used to calculate condensed to atom descriptors: ");
+			m_log->input_message(mo_count);m_log->input_message("\n");	
+		}
+		
+		//------------------------------------------------
+			
+		//calculating the virtual molecular orbitals
+		for( unsigned i=lumon;i<molecule.orb_energies.size();i++){
+			coefficient = exp(-abs( molecule.orb_energies[i]-molecule.lumo_energy ) );
+			if ( coefficient > pre_coef ){ 
+				mo_count++;
+				for(unsigned mu=init_orb;mu<n_aorbs;mu++){
+					for (unsigned nu=init_orb;nu<n_aorbs;nu++) {
+						value_l +=coefficient*
+								molecule.coeff_MO[ao*i + mu]*
+								molecule.coeff_MO[ao*i + nu]*
+								molecule.m_overlap[nu+(mu*(mu+1))/2];
+					}
+				}
+			}
+		}
+		if ( atom == 0 ){
+			m_log->input_message("Number of  virtual  MO used to calculate condensed to atom descriptors: ");
+			m_log->input_message(mo_count);
+			m_log->input_message("\n");	
+		}		
+		
+		//------------------------------------------------
+			
+		//calculating the beta molecular orbitals
+		if ( molecule.betad ){
+			mo_count = 0;
+			for( int i=0;i<=homon;i++){
+				coefficient = exp(-abs(molecule.orb_energies_beta[i]-molecule.homo_energy ) );
+				if ( coefficient > pre_coef ){ 
+					mo_count++;
+					for(int mu=init_orb;mu<n_aorbs;mu++){
+						for (int nu=init_orb;nu<n_aorbs;nu++) {
+							value_h +=coefficient*
+									molecule.coeff_MO_beta[ao*i + mu]*
+									molecule.coeff_MO_beta[ao*i + nu]*
+									molecule.m_overlap[nu+(mu*(mu+1))/2];
+						}
+					}
+				}
+			}
+			value_h /=2;
+			
+			if ( atom == 0 ){
+				m_log->input_message("Number of occupied beta MO used to calculate condensed to atom descriptors: ");
+				m_log->input_message(mo_count);
+				m_log->input_message("\n");			
+			}
+			
+			for( int i=lumon;i<molecule.orb_energies.size();i++){
+				coefficient = exp(-abs(molecule.orb_energies_beta[i]-molecule.lumo_energy ) );
+				if ( coefficient >  pre_coef  ){ 
+					mo_count++;
+					for(int mu=init_orb;mu<n_aorbs;mu++){
+						for (int nu=init_orb;nu<n_aorbs;nu++) {
+							value_l +=coefficient*
+									molecule.coeff_MO_beta[ao*i + mu]*
+									molecule.coeff_MO_beta[ao*i + nu]*
+									molecule.m_overlap[nu+(mu*(mu+1))/2];
+						}
+					}
+				}
+			}
+			value_l /=2;
+			
+			if ( atom == 0 ){
+				m_log->input_message("Number of  virtual  MO used to calculate condensed to atom descriptors: ");
+				m_log->input_message(mo_count);
+				m_log->input_message("\n");	
+			}
+		}
+		lrds[0][atom] = value_h;
+		lrds[1][atom] = value_l;
+		lrds[12][atom]= value_h + value_l;
+		lrds[13][atom]	= molecule.atoms[atom].charge;
+	}
+	lrds[0] = norm_dvec(lrds[0],5);
+	lrds[1] = norm_dvec(lrds[1],5);
+	for( unsigned i=0; i<lrds[0].size(); i++ ){
+		lrds[3][i] = lrds[1][i] - lrds[0][i];
+		lrds[2][i] = (lrds[1][i] + lrds[0][i])/2;
+	}
+}
+/***********************************************************************************/
+void local_rd_cnd::calculate_fukui_potential( const Imolecule& molecule ){
+	double r, xi, yi, zi = 0;
+	unsigned nof = molecule.atoms.size();
+	for (unsigned i=0; i<nof; i++ ){
+		for (unsigned j=0; j<nof; j++ ){
 			if ( i != j ){
 				xi = molecule.atoms[i].xcoord - molecule.atoms[j].xcoord;
 				xi *= xi; 
@@ -353,17 +432,77 @@ void local_rd_cnd::calculate_Hardness(const global_rd& grd){
 				zi = molecule.atoms[i].zcoord - molecule.atoms[j].zcoord;
 				zi *= zi;
 				r  = sqrt(xi+yi+zi);
-				hardness_B[i] += electron_density[j]/r;
+				lrds[6][i] += lrds[0][j]/r;
+				lrds[7][i] += lrds[1][j]/r;
+				lrds[8][i] += lrds[2][j]/r;
 			}
 		}
-		hardness_B[i] /= molecule.num_of_electrons;
 	}
+}
+/***********************************************************************************/
+void local_rd_cnd::calculate_RD(const global_rd& grd){
+	for( unsigned j=0; j<lrds[0].size(); j++ ){
+		lrds[9][j]	= lrds[3][j]*grd.grds[9];
+		lrds[10][j]	= lrds[2][j]*grd.grds[9]*grd.grds[9];
+		lrds[11][j]	= lrds[3][j]*grd.grds[10];
+		lrds[17][j]	= lrds[2][j]*grd.grds[9];
+		lrds[18][j]	= lrds[0][j]*grd.grds[5] - lrds[1][j]*grd.grds[6];
+	}
+}
+/***********************************************************************************/
+void local_rd_cnd::calculate_hardness(const global_rd& grd, const Imolecule& molecule){
+	unsigned nof		= molecule.atoms.size();
+	unsigned init_orb	= 0;
+	unsigned n_aorbs	= 0;
+	double value		= 0.0;
+	double occ 			= 2.0;
+	unsigned ao 		= molecule.num_of_ao; 
+
 	//-----------------------------------------------------
-	//calculating local hardness with method C (Fukui potential)
-	r  = 0;
-	for (i=0;i<nof;i++){
-		for (j=0;j<nof;j++){
-			if ( i != j){
+	//Estimating electron density
+	for( unsigned atom=0; atom<nof; atom++ ){
+		if ( atom == 0 ) {
+			init_orb = 0;
+			n_aorbs  = molecule.atoms[0].orbitals.size();
+		}else{
+			for(unsigned j=0; j<atom; j++ ){
+				init_orb += molecule.atoms[j].norb;
+			}
+			for(unsigned j=0; j<=atom; j++ ){
+				n_aorbs  += molecule.atoms[j].norb;
+			}
+		}
+		if ( molecule.betad ) { occ = 1.0 ;}
+		for( unsigned i=0; i<=molecule.homoN; i++ ){
+			for(unsigned mu=init_orb; mu<n_aorbs; mu++ ){
+				for (unsigned nu=init_orb; nu<n_aorbs; nu++ ){
+					value+=occ*
+							molecule.coeff_MO[ao*i + mu]*
+							molecule.coeff_MO[ao*i + nu];
+				}
+			}
+		}
+		if ( molecule.occupied_beta.size() > 0 ){
+			for( unsigned i=0; i<molecule.homoN; i++ ){
+				if ( molecule.occupied_beta[i] > 0 ){
+					for(unsigned mu=init_orb; mu<n_aorbs; mu++ ){
+						for (unsigned nu=init_orb; nu<n_aorbs; nu++ ){
+							value +=molecule.coeff_MO_beta[ao*i + mu]*
+									molecule.coeff_MO_beta[ao*i + nu];
+						}
+					}
+				}
+			}
+		}
+		lrds[14][atom] = value;
+	}
+	
+	double xi, yi, zi, r = 0.000;
+	//-----------------------------------------------------
+	//calculating local hardness with method (electron-electron interaction)
+	for (unsigned i=0; i<nof; i++ ){
+		for (unsigned j=0; j<nof; j++ ){
+			if ( i != j ){
 				xi = molecule.atoms[i].xcoord - molecule.atoms[j].xcoord;
 				xi *= xi; 
 				yi = molecule.atoms[i].ycoord - molecule.atoms[j].ycoord;
@@ -371,46 +510,76 @@ void local_rd_cnd::calculate_Hardness(const global_rd& grd){
 				zi = molecule.atoms[i].zcoord - molecule.atoms[j].zcoord;
 				zi *= zi;
 				r  = sqrt(xi+yi+zi);
-				hardness_C[i] += EAS[j]/r;
+				lrds[4][i] += lrds[14][j]/r;
+			}
+		}
+		lrds[4][i] /= molecule.num_of_electrons;
+	}
+	
+	//----------------------------------------------------
+	//calculating local hardness with method (LCP)
+	for(unsigned i=0; i<nof; i++ ){
+		lrds[5][i] = lrds[0][i]*( grd.grds[7] /nof )
+						+ (lrds[14][i]/nof)*grd.grds[8]*2;
+	}
+	
+	//----------------------------------------------------
+	//calculating local hardness with method (tomas-fermi-dirac statistical treatment)
+	if (TFD){
+		double Ck	= (3/10)*pow((3*M_PI*M_PI),2/3);
+		double Cx	= (3/4*M_PI)*pow((3*M_PI*M_PI),1/3);
+		std::vector<double> temp1 = lrds[14];
+		std::vector<double> temp2 = lrds[14];
+		std::vector<double> temp3 = lrds[14];
+		std::vector<double> temp4 = lrds[14];
+		
+		for ( unsigned i=0; i<nof; i++ ){
+			temp1[i]	= pow(temp1[i],0.33333333);
+			lrds[16][i]	= (2/(9*molecule.num_of_electrons))*temp1[i];
+			temp2[i]	= temp2[i]*5*Ck - 2*Cx;
+			temp3[i]	= 0.458*temp1[i];
+			temp4[i]	= pow((temp3[i]+1),3);
+			temp4[i]	= -00466*( (temp3[i]+2) / temp4[i] );
+			lrds[16][i]	= lrds[16][i]*(temp2[i] - temp4[i]);
+			lrds[16][i] += lrds[4][i];
+		}
+	}
+}
+/*************************************************************************************/
+void local_rd_cnd::calculate_mep(const Imolecule& molecule){
+	double xi, yi, zi, r = 0.000;
+	for( unsigned i=0; i<molecule.atoms.size(); i++ ){
+		for( unsigned j=0; j<molecule.atoms.size(); j++ ){
+			if (i != j){
+				xi = molecule.atoms[i].xcoord - molecule.atoms[j].xcoord;
+				xi *= xi; 
+				yi = molecule.atoms[i].ycoord - molecule.atoms[j].ycoord;
+				yi *= yi;
+				zi = molecule.atoms[i].zcoord - molecule.atoms[j].zcoord;
+				zi *= zi;
+				r  = sqrt(xi+yi+zi);
+				lrds[15][i] += molecule.atoms[j].atomicN/r;
+				lrds[15][i] -= lrds[4][i];
 			}
 		}
 	}
-	//--------------------------------------------------------
-	//calculating local hardness with method D (Fukui distribution)
-	for(i=0;i<nof;i++){	hardness_D[i] = NAS[i]*grd.lumo_en - EAS[i]*grd.homo_en; }
-	
 }
 /*************************************************************************************/
 protein_lrd local_rd_cnd::rd_protein(const Iprotein& prot){
-	
-	unsigned int i,j;
-	
+
 	vector<residue_lrd> res_rd( prot.residues.size() );
-	unsigned int nof = molecule.num_of_atoms;
-	int cnt = 0;
-	for( i=0; i<prot.residues.size(); i++ ){
-		for( j=0; j<prot.residues[i].atom_s; j++ ){
-			res_rd[i].rd_sum[0]	+= EAS[cnt];
-			res_rd[i].rd_sum[1] += NAS[cnt];
-			res_rd[i].rd_sum[2] += RAS[cnt];
-			res_rd[i].rd_sum[3] += dual[cnt];
-			res_rd[i].rd_sum[4] += Hyper_softness[cnt];
-			res_rd[i].rd_sum[5] += hardness_A[cnt];
-			res_rd[i].rd_sum[6] += hardness_B[cnt];
-			res_rd[i].rd_sum[7] += hardness_C[cnt];
-			res_rd[i].rd_sum[8] += hardness_D[cnt];
-			res_rd[i].rd_sum[9] += multifilic[cnt];
-			res_rd[i].rd_sum[10] += electrophilicity[cnt];
-			res_rd[i].rd_sum[11] += fukushima[cnt];
-			res_rd[i].rd_sum[12] += electron_density[cnt];
-			res_rd[i].rd_sum[13] += Softness_Dual[cnt];
-			res_rd[i].rd_sum[14] += molecule.atoms[cnt].charge;
-			cnt++;
+	unsigned nof = lrds[0].size();
+	unsigned cnt = 0;
+	for( unsigned i=0; i<prot.residues.size(); i++ ){
+		for( unsigned j=0; j<prot.residues[i].atom_s; j++ ){
+			for( unsigned k=0; k<lrds.size(); k++ ){
+				res_rd[i].rd_sum[k]	+= lrds[k][cnt++];
+			}
 		}
 	}
 
-	for( i=0; i<res_rd.size(); i++ ){
-		for( j=0; j<res_rd[i].rd_sum.size(); j++ ){
+	for( unsigned i=0; i<res_rd.size(); i++ ){
+		for( unsigned j=0; j<res_rd[i].rd_sum.size(); j++ ){
 			res_rd[i].rd_avg[j]	+= res_rd[i].rd_sum[j]/nof;
 		}
 	}
@@ -423,7 +592,6 @@ protein_lrd local_rd_cnd::rd_protein(const Iprotein& prot){
 		protein_react_descriptors.labels[i] += prot.residues[i].type;
 	}	
 	return protein_react_descriptors;
-	
 }
 /*******************************************************************************************/
 void local_rd_cnd::write_rd_protein_pdb(const Iprotein& protein){
@@ -431,110 +599,119 @@ void local_rd_cnd::write_rd_protein_pdb(const Iprotein& protein){
 	Iprotein prot = protein;
 	pdb rd_results;
 	rd_results.name = get_file_name( protein.name.c_str() );
-	prot.load_b_column(EAS);
-	prot.title	= rd_results.name + "_EAS";
+	prot.load_b_column(lrds[0]);
+	prot.title	= rd_results.name + "_nucleophilicity";
 	prot.remark	= "Electrophilic Attack Suscptibility at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(NAS);
-	prot.title	= rd_results.name +"_NAS";
+	prot.load_b_column(lrds[1]);
+	prot.title	= rd_results.name +"_electrophilicity";
 	prot.remark	= "Nucleophilic Attack Susceptibility at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(RAS);
-	prot.title	= rd_results.name +"_RAS";
+	prot.load_b_column(lrds[2]);
+	prot.title	= rd_results.name +"_radicality";
 	prot.remark	= "Radical Attack Susceptibility at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(dual);
-	prot.title	= rd_results.name +"_Netphilicity";
+	prot.load_b_column(lrds[3]);
+	prot.title	= rd_results.name +"_netphilicity";
 	prot.remark	= "Local netphilicity Descriptor Attack Susceptibility at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(hardness_A);
-	prot.title	= rd_results.name + "_hardness_A";
+	prot.load_b_column(lrds[4]);
+	prot.title	= rd_results.name + "_hardness_lcp";
 	prot.remark	= "Local Hardness (local chemical potential based) at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(hardness_B);
-	prot.title 	= rd_results.name +"_hardness_B";
+	prot.load_b_column(lrds[5]);
+	prot.title 	= rd_results.name +"_hardness_Vee";
 	prot.remark	= "Local Hardness (Electron-electron potential based) at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(hardness_C);
-	prot.title	= rd_results.name +"_hardness_C";
-	prot.remark	= "Local Hardness (Fukui potential based) at b-factor column calculated by PRIMoRDiA";
+	prot.load_b_column(lrds[6]);
+	prot.title	= rd_results.name +"_fukui_pot_left";
+	prot.remark	= "Local Hardness (left-Fukui potential based) at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(hardness_D);
-	prot.title	= rd_results.name +"_hardness_D";
-	prot.remark	= "Local Hardness (Fukui distribution based) at b-factor column calculated by PRIMoRDiA";
+	prot.load_b_column(lrds[7]);
+	prot.title	= rd_results.name +"_fukui_pot_right";
+	prot.remark	= "Local Hardness (right-Fukui potential based) at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(Softness_Dual);
-	prot.title	= rd_results.name +"_softness";
-	prot.remark	= "Local Softness Dual at b-factor column calculated by PRIMoRDiA";
+	prot.load_b_column(lrds[8]);
+	prot.title	= rd_results.name +"_fukui_pot_zero";
+	prot.remark	= "Local Hardness (zero-Fukui potential based) at b-factor column calculated by PRIMoRDiA";
+	rd_results.models.emplace_back(prot);	
+	prot.load_b_column(lrds[9]);
+	prot.title	= rd_results.name +"_softness_dual";
+	prot.remark	= "Local Softness (dual descriptor distribution based) at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(Hyper_softness);
-	prot.title	= rd_results.name +"_hypersoftness";
+	prot.load_b_column(lrds[10]);
+	prot.title	= rd_results.name +"_hyper_softness";
 	prot.remark	= "Local Hyper Softness at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(fukushima);
+	prot.load_b_column(lrds[11]);
+	prot.title	= rd_results.name +"_multiphilicity";
+	prot.remark	= "Local Multiphilicity at b-factor column calculated by PRIMoRDiA";
+	rd_results.models.emplace_back(prot);
+	prot.load_b_column(lrds[12]);
 	prot.title	= rd_results.name +"_fukushima";
 	prot.remark	= "Localization of frontier band orbitals at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(multifilic);
-	prot.title	= rd_results.name +"_multiphilic";
+	prot.load_b_column(lrds[13]);
+	prot.title	= rd_results.name +"_charge";
 	prot.remark	= "Local Multiphilic descriptor  at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	prot.load_b_column(electrophilicity);
-	prot.title	= rd_results.name +"_electrophilicity";
-	prot.remark	= "Local Electrophilicity descriptor  at b-factor column calculated by PRIMoRDiA";
-	rd_results.models.emplace_back(prot);	
-	prot.load_b_column(electron_density);
+	prot.load_b_column(lrds[14]);
 	prot.title	= rd_results.name +"_electron_density";
-	prot.remark	= "Electronic density per atom at b-factor column calculated by PRIMoRDiA";
+	prot.remark	= "Electron Density at b-factor column calculated by PRIMoRDiA";
+	rd_results.models.emplace_back(prot);	
+	prot.load_b_column(lrds[15]);
+	prot.title	= rd_results.name +"_mep";
+	prot.remark	= "Molecular electrostatic potential per atom at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	prot.load_b_column(lrds[16]);
+	prot.title	= rd_results.name +"_hardness_TFD";
+	prot.remark	= "Local hardness with complete DFT functional per atom at b-factor column calculated by PRIMoRDiA";
+	rd_results.models.emplace_back(prot);
+	prot.load_b_column(lrds[17]);
+	prot.title	= rd_results.name +"_softness_avg";
+	prot.remark	= "Local softness using zero Fukui function per atom at b-factor column calculated by PRIMoRDiA";
+	rd_results.models.emplace_back(prot);
+	prot.load_b_column(lrds[18]);
+	prot.title	= rd_results.name +"_hardness_int";
+	prot.remark	= "Local hardness distributed by the Fukui function per atom at b-factor column calculated by PRIMoRDiA";
+	rd_results.models.emplace_back(prot);
+	
 	m_log->input_message("Finishing the writting of the condensed local reactivity descriptors in PDBs.\n");
 	m_log->inp_delim(1);
-
-	vector<double> pcharges( molecule.atoms.size() );
-	for(unsigned int i=0; i<molecule.atoms.size();i++) {
-		pcharges[i] = molecule.atoms[i].charge;
-	}
-	prot.load_b_column(pcharges);
-	prot.title 	= rd_results.name +"_mep";
-	prot.remark	= "Partial charge per atom at b-factor column calculated by PRIMoRDiA";
-	rd_results.models.emplace_back(prot);
-	//rd_results.write_pdb(rd_results.name +"_RD.pdb");
+	
 	fs::create_directory(name+"_PDB_RD");
 	rd_results.write_models(name+"_PDB_RD");
 }
 /*************************************************************************************/
 void local_rd_cnd::write_LRD(){
 	std::string temps;
-	if ( finite_diff ) { temps = name+"FD.lrd";
-	}else{	temps = name+"FOA.lrd";	}
-	const char* names = temps.c_str();
+	if ( FD ) { 
+		temps = name+"FD.lrd";
+	}else{
+		temps = name+"FOA.lrd";
+	}
+	const char* Name_s = temps.c_str();
 	std::ofstream lrd_file;
-	lrd_file.open(names);
+	lrd_file.open(Name_s);
 	
-	lrd_file.precision(8);
+	lrd_file.precision(6);
 	lrd_file << std::fixed;
 	lrd_file << name << " " << "\n" <<  std::left;
-	lrd_file << "n atom charge Nucleophilicity Electrophilicity RAS Netphilicity Softness Hardness_A Hardness_B Hardness_C Hardness_D Multiphilic T_Electrohilicity Fukushima Electron_density Softness_dual\n";
+	lrd_file << "n atom ";
 	
-	for(int i=0;i<molecule.num_of_atoms;i++){
-		lrd_file	<< (i+1) 
-					<< " "
-					<< molecule.atoms[i].element	<< " "
-					<< molecule.atoms[i].charge		<< " "
-					<< EAS[i]						<< " "
-					<< NAS[i]						<< " "
-					<< RAS[i]						<< " "
-					<< dual[i]						<< " "
-					<< Hyper_softness[i]			<< " "
-					<< hardness_A[i]				<< " "
-					<< hardness_B[i]				<< " "
-					<< hardness_C[i]				<< " "
-					<< hardness_D[i]				<< " "
-					<< multifilic[i]				<< " "
-					<< electrophilicity[i]			<< " "
-					<< fukushima[i] 				<< " "
-					<< electron_density[i]			<< " "
-					<< Softness_Dual[i]				<< "\n";
+	for( unsigned i=0; i<names.size(); i++){
+		lrd_file << names[i] << " ";
+	}
+	lrd_file << endl;
+	
+	for( unsigned i=0; i<lrds[0].size(); i++){
+		lrd_file	<< (i+1)
+					<< " ";
+		for(unsigned j=0; j<lrds.size(); j++ ){
+			lrd_file	<< lrds[j][i]
+						<< " ";
+		}
+		lrd_file << endl;
 	}
 	lrd_file.close();
 	m_log->input_message("Finishing the writting of the condensed local reactivity descriptors.\n");

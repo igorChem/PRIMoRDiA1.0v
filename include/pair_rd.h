@@ -28,7 +28,6 @@ class pair_rd{
 		std::vector<double> HPI_A;	// hard-hard pair interactions
 		std::vector<double> HPI_B;	// hard-hard pair interactions
 		std::vector<double> HPI_C;	// hard-hard pair interactions
-		std::vector<double> HPI_D;	// hard-hard pair interactions
 		std::vector<double> SPI;	// softness pair interactions
 		std::vector<double> EEP;	// Estabilization energy interactions
 		pair_rd();

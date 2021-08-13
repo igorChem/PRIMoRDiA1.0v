@@ -476,14 +476,11 @@ void AutoPrimordia::reaction_analysis(){
 			file_lrd << pairs_lrds[n].SPI[i]	<< " ";
 			file_lrd << pairs_lrds[n].EEP[i]	<< " ";
 		}
-		file_lrd	<< RDs[i].grd.energ_tot - RDs[0].grd.energ_tot			<< " "
-					<< RDs[i].grd.HOF - RDs[0].grd.HOF						<< " "
-					<< RDs[i].grd.chemical_pot - RDs[0].grd.chemical_pot	<< " "
-					<< RDs[i].grd.hardness - RDs[0].grd.hardness			<< " "
-					<< RDs[i].grd.softness - RDs[0].grd.softness			<< " "
-					<< RDs[i].grd.Electrophilicity - RDs[0].grd.softness	<< " ";
-					
-		
+		file_lrd	<< RDs[i].grd.grds[2]	- RDs[0].grd.grds[2]		<< " "
+					<< RDs[i].grd.grds[13]	- RDs[0].grd.grds[13]		<< " "
+					<< RDs[i].grd.grds[7]	- RDs[0].grd.grds[7]		<< " "
+					<< RDs[i].grd.grds[8]	- RDs[0].grd.grds[8]		<< " "
+					<< RDs[i].grd.grds[9]	- RDs[0].grd.grds[9]		<< " ";
 		file_lrd << endl;
 	}
 	file_lrd.close();
@@ -527,20 +524,11 @@ void AutoPrimordia::write_global(){
 	file_grd << std::fixed;
 	file_grd.precision(8);
 	for(unsigned i = 0; i<RDs.size(); i++ ){
-		file_grd << RDs[i].grd.name					<< " "
-					<< RDs[i].grd.energ_tot			<< " "
-					<< RDs[i].grd.energ_cat			<< " "
-					<< RDs[i].grd.energ_an 			<< " "
-					<< RDs[i].grd.HOF				<< " "
-					<< RDs[i].grd.IP				<< " "
-					<< RDs[i].grd.EA				<< " "
-					<< RDs[i].grd.chemical_pot		<< " "
-					<< RDs[i].grd.hardness			<< " "
-					<< RDs[i].grd.softness			<< " "
-					<< RDs[i].grd.Electrophilicity	<< " "
-					<< RDs[i].grd.nMax				<< " "
-					<< RDs[i].grd.gap
-					<< endl;
+		file_grd << RDs[i].grd.name				<< " ";
+			for(unsigned j = 0; j<RDs[i].grd.grds.size(); j++ ){
+				file_grd << RDs[i].grd.grds[i] << " ";
+			}
+			file_grd << endl;
 	} 
 	file_grd.close();
 }

@@ -187,7 +187,7 @@ void global_rd::calculate_rd(){
 		grds[9] = 1/grds[8]; // softness
 		
 		grds[10] = grds[7]*grds[7]*grds[9]/2; // total electrophilicity
-		grds[12] = -chemical_pot*softness*2; // nmax of electrons that the system would receive
+		grds[12] = -grds[7]*grds[9]*2; // nmax of electrons that the system would receive
 		if ( grds[11] < 0 ){
 			grds[11] *=-1;
 		}
@@ -219,8 +219,8 @@ void global_rd::print_rd(){
 /*****************************************************************************************/
 global_rd operator-(const global_rd& lhs_grd, const global_rd& rhs_grd){
 	global_rd Result(lhs_grd);	
-	for (unsigned i=0; i<lhs_grd.size() ;i++ ){
-		Result.grds[i] = lhs_grd - rhs_grd;
+	for (unsigned i=0; i<lhs_grd.grds.size() ;i++ ){
+		Result.grds[i] = lhs_grd.grds[i] - rhs_grd.grds[i];
 	}
 	return Result;
 } 

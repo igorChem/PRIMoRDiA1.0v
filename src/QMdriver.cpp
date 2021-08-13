@@ -43,7 +43,7 @@ QMdriver::QMdriver(Imolecule&& mol) noexcept:
 	
 	if ( molecule.m_overlap.size() <= 0		||
 		 molecule.coeff_MO.size() <= 0		|| 
-		 molecule.orb_energies.size() <=0  ) {
+		 molecule.orb_energies.size() <=0	) {
 		cout << "There are required molecular information that were not properly stored!\n" << endl;
 		m_log->input_message("Molecular information checking for local consended reactivity descriptors ended with problems.\n");
 		m_log->input_message("Current molecular storage containers size: ");
@@ -181,16 +181,15 @@ double QMdriver::NAS_in_atoms(int atom,int band){
 	}
 	
 	for( int i=lumon;i<=fin;i++){
-		if ( molecule.orb_energies[i] <= molecule.lumo_energy+energy_crit ){
-			for(int mu=init_orb;mu<n_aorbs;mu++){
-				for (int nu=init_orb;nu<n_aorbs;nu++) {
-					value +=molecule.coeff_MO[ao*i + mu]*
-								molecule.coeff_MO[ao*i + nu]*
-								molecule.m_overlap[nu+(mu*(mu+1))/2];
-				}
+		for(int mu=init_orb;mu<n_aorbs;mu++){
+			for (int nu=init_orb;nu<n_aorbs;nu++) {
+				value +=molecule.coeff_MO[ao*i + mu]*
+						molecule.coeff_MO[ao*i + nu]*
+						molecule.m_overlap[nu+(mu*(mu+1))/2];
 			}
-			cnt++;
 		}
+		cnt++;
+
 	}
 	if ( atom == 0  && band > 0 ){
 			m_log->input_message("Number of  virtual MO used to calculate condensed to atom descriptors: ");
@@ -256,7 +255,7 @@ double QMdriver::EAS_in_atoms_EW(int atom){
 					value +=coefficient*
 								molecule.coeff_MO[ao*i + mu]*
 								molecule.coeff_MO[ao*i + nu]*
-								molecule.m_overlap[nu+(mu*(mu+1))/2];	
+								molecule.m_overlap[nu+(mu*(mu+1))/2];
 				}
 			}
 		}

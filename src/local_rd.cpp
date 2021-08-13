@@ -75,6 +75,7 @@ local_rd::local_rd()			:
 	LH(false)					,
 	band(false)					,
 	charge(1)					,
+	TFD(false)					,
 	rd_names(descriptor_names)	{
 }
 /***********************************************************************************/
@@ -85,7 +86,10 @@ local_rd::local_rd(const Icube& HOmo		,
 	LH(false)								,
 	band(false)								,
 	charge(1)								,
+	TFD(false)								,
 	rd_names(descriptor_names)				{
+	
+	lrds.resize( rd_names.size() );
 	
 	lrds[0] = HOmo;
 	lrds[1] = LUmo;
@@ -103,8 +107,11 @@ local_rd::local_rd(const Icube& elec_dens	,
 	LH(true)								,
 	band(false)								,
 	charge(1)								,
+	TFD(false)								,
 	rd_names(descriptor_names)				{
-		
+	
+	lrds.resize( rd_names.size() );
+
 	lrds[0] = HOmo;
 	lrds[1] = LUmo;
 	lrds[2] = elec_dens;
@@ -123,9 +130,13 @@ local_rd::local_rd(const Icube& elecDens	,
 	FD(true)								,
 	LH(true)								,
 	charge(chg)								,
-	rd_names(descriptor_names)				,{
+	TFD(false)								,
+	band(false)								,
+	rd_names(descriptor_names)				{
+	
+	lrds.resize( rd_names.size() );
 
-	lrds[2] = elec_dens;
+	lrds[2] = elecDens;
 	lrds[3] = cationDens;
 	lrds[4] = anionDens;
 	lrds[5] = lrds[2] - lrds[3];
@@ -137,8 +148,8 @@ local_rd::local_rd(const Icube& elecDens	,
 /***********************************************************************************/
 local_rd::local_rd(const local_rd& lrd_rhs)	:
 	name(lrd_rhs.name)						,
-	finite_diff(lrd_rhs.finite_diff)		,
-	locHardness(lrd_rhs.locHardness)		,
+	FD(lrd_rhs.FD)		,
+	LH(lrd_rhs.LH)		,
 	charge(lrd_rhs.charge)					,
 	rd_names(lrd_rhs.rd_names)				,
 	lrds(lrd_rhs.lrds)						{
@@ -147,9 +158,9 @@ local_rd::local_rd(const local_rd& lrd_rhs)	:
 local_rd& local_rd::operator=(const local_rd& lrd_rhs){
 	if( this!=&lrd_rhs ){
 		name			= lrd_rhs.name;
-		finite_diff		= lrd_rhs.finite_diff;
+		FD				= lrd_rhs.FD;
 		charge			= lrd_rhs.charge;
-		locHardness		= lrd_rhs.locHardness;
+		LH				= lrd_rhs.LH;
 		rd_names		= lrd_rhs.rd_names;
 		lrds			= lrd_rhs.lrds;
 	}
@@ -158,8 +169,8 @@ local_rd& local_rd::operator=(const local_rd& lrd_rhs){
 /***********************************************************************************/
 local_rd::local_rd(local_rd&& lrd_rhs) noexcept	:
 	name(lrd_rhs.name)							,
-	finite_diff(lrd_rhs.finite_diff)			,
-	locHardness(lrd_rhs.locHardness)			,
+	FD(lrd_rhs.FD)								,
+	LH(lrd_rhs.LH)								,
 	charge(lrd_rhs.charge)						,
 	rd_names( move(lrd_rhs.rd_names) )			,
 	lrds( move(lrd_rhs.lrds) )					{
@@ -168,9 +179,9 @@ local_rd::local_rd(local_rd&& lrd_rhs) noexcept	:
 local_rd& local_rd::operator=(local_rd&& lrd_rhs) noexcept {
 	if( this!=&lrd_rhs ){
 		name			= move(lrd_rhs.name);
-		finite_diff		= lrd_rhs.finite_diff;
+		FD				= lrd_rhs.FD;
 		charge			= lrd_rhs.charge;
-		locHardness		= lrd_rhs.locHardness;
+		LH				= lrd_rhs.LH;
 		rd_names		= move(rd_names);
 		lrds			= move(lrds);
 	}
@@ -276,7 +287,7 @@ void local_rd::calculate_Fukui_potential(){
 }
 /***********************************************************************************/
 void local_rd::calculate_hardness(const global_rd& grd){
-	locHardness = true;
+	LH = true;
 	
 	//Local Chemical Potential method
 	double numofelec	= lrds[2].calc_cube_integral();
@@ -285,7 +296,7 @@ void local_rd::calculate_hardness(const global_rd& grd){
 		
 	Icube elec_dens_norm= lrds[2]/ numofelec ;
 	Icube elec_dens_hard= elec_dens_norm*val2;
-	Icube homo_elec_dens= lrds[0].normalize() - elec_dens_norm;
+	Icube homo_elec_dens= lrds[5] - elec_dens_norm;
 	homo_elec_dens		= homo_elec_dens*val1;
 	lrds[9]				= homo_elec_dens + elec_dens_hard;
 	
@@ -350,30 +361,86 @@ void local_rd::calculate_hardness(const global_rd& grd){
 	}
 	
 	double volume = std::abs(s1*s2*s3);
-	lrds[10] = lrds[5];
+	lrds[10] = lrds[2];
 	for(i=0;i<elec_H.size();i++) { lrds[10].scalar[i] = elec_H[i]; }
 	lrds[10] = lrds[10]*volume;
 	lrds[10] = lrds[10]*(1/numofelec);
 	//----------------------------------------------------------------------------
 	
-	density_rc	= lrds[2].scale_cube(0.3333333);
-	double Ck	= (3/10)*pow((3*M_PI*M_PI),2/3);
-	double Cx	= (3/4*M_PI)*pow((3*M_PI*M_PI),1/3);
-	lrds[21]	= (2/9*numofelec)*density_rc;
-	Icube temp1	= density_rc;
-	Icube temp2	= density_rc;
-	Icube temp3	= density_rc;
-	temp1 = temp1*5*Ck - 2*Cx;
-	temp2 = 0.458*density_rc;
-	temp3 = temp2 + 1; 
-	temp3 = temp3.scale_cube(3.0);
+	if ( TFD ){
+		Icube density_rc	= lrds[2].scale_cube(0.3333333);
+		double Ck	= (3/10)*pow((3*M_PI*M_PI),2/3);
+		double Cx	= (3/4*M_PI)*pow((3*M_PI*M_PI),1/3);
+		double con	= 2/(9*numofelec);
+		lrds[21]	= density_rc*con;
+		Icube temp1	= density_rc;
+		Icube temp2	= density_rc;
+		Icube temp3	= density_rc;
+		temp1 = temp1*5*Ck - 2*Cx;
+		temp2 = density_rc*0.458;
+		temp3 = temp2 + 1; 
+		temp3 = temp3.scale_cube(3.0);
+		
+		temp2 = temp2+2;
+		temp2 = temp2/temp3;
+		temp2 = temp2*-0.0466;
+		lrds[21] = lrds[21]*(temp1-temp2);
+		lrds[21] = lrds[21]+lrds[10];
+	}
+}
+/***********************************************************************************/
+void local_rd::calculate_MEP(const Imolecule& mol){
 	
-	temp2 = temp2+2;
-	temp2 = temp2/temp3;
-	temp2 = -0.0466*temp2;
-	lrds[21] = lrds[21]*(temp1-temp2)
-	lrds[21] = lrds[21]+lrds[10];
+	vector<double> MEP(lrds[5].voxelN);
+	unsigned int x,y,z;
+	double ii	= 0;
+	double jj	= 0;
+	double kk	= 0;
+	double xx	= 0;
+	double yy	= 0;
+	double zz	= 0;
+	double r	= 0;
+	double s1	= lrds[5].gridsides[0];
+	double s2	= lrds[5].gridsides[1];
+	double s3	= lrds[5].gridsides[2];
+	double o1	= lrds[5].origin[0];
+	double o2	= lrds[5].origin[1];
+	double o3	= lrds[5].origin[2];
+	unsigned int g1 = lrds[5].grid[0];
+	unsigned int g2 = lrds[5].grid[1];
+	unsigned int g3 = lrds[5].grid[2];
 	
+	#pragma omp declare reduction(vec_d_plus : std::vector<double> : \
+				std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>())) \
+                initializer(omp_priv = omp_orig)
+
+	#pragma omp parallel default(shared) private(x,y,z,r,xx,yy,zz,ii,jj,kk)
+	{
+	#pragma omp parallel for reduction(vec_d_plus:MEP)
+	for (x=0;x<g1;x++){
+		for (y=0;y<g2;y++){
+			for (z=0;z<g3;z++){
+				xx	= x*s1 + o1;
+				yy	= y*s2 + o2;
+				zz	= z*s3 + o3;
+				for (int na=0; na<mol.atoms.size(); na++ ){
+					ii	= mol.atoms[na].xcoord - xx;
+					jj	= mol.atoms[na].ycoord - yy;
+					kk	= mol.atoms[na].zcoord - zz;
+					ii *= ii;
+					jj *= jj;
+					kk *= kk;
+					r = sqrt(ii+jj+kk);
+					if ( r == 0.000 ){
+						MEP[x*g1*g1+y*g2+z] += 0;
+					}else{
+						MEP[x*g1*g1+y*g2+z] += mol.atoms[na].atomicN/r - lrds[10].scalar[x*g1*g1+y*g2+z];
+					}
+				}
+			}
+		}
+	}
+	}
 }
 /***********************************************************************************/
 local_rd operator-(const local_rd& lrd_lhs,const local_rd& lrd_rhs){
@@ -389,7 +456,7 @@ void local_rd::write_LRD(){
 	std::string typestr;
 	std::string typestr2;
 	
-	if ( finite_diff )  {
+	if ( FD )  {
 		typestr = "Descriptor calculated with Finite Differences approximation \n";
 		typestr2 = "FD";
 	}else{

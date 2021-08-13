@@ -33,8 +33,8 @@ using std::endl;
 
 /****************************************************/
 residue_lrd::residue_lrd(){
-	rd_sum.resize(15);
-	rd_avg.resize(15);
+	rd_sum.resize(19);
+	rd_avg.resize(19);
 }
 /****************************************************/
 residue_lrd::residue_lrd(const residue_lrd& rhs):
@@ -158,9 +158,7 @@ protein_lrd& protein_lrd::operator=(protein_lrd&& rhs) noexcept{
 	return *this;
 }
 /****************************************************/
-protein_lrd::~protein_lrd(){
-	
-}
+protein_lrd::~protein_lrd(){}
 /****************************************************/
 void protein_lrd::write_protein_lrd(const Iprotein& prot){
 	
@@ -170,7 +168,7 @@ void protein_lrd::write_protein_lrd(const Iprotein& prot){
 	name_f_file += "_residues.rslrd";
 	std::ofstream lrd_file( name_f_file.c_str() );
 	
-	lrd_file.precision(8);
+	lrd_file.precision(6);
 	lrd_file  << std::fixed;
 	
 	lrd_file << "#res Nucleophilicity Electrophilicity RAS Netphilicity Softness Hardness_A Hardness_B Hardness_C Hardness_D Multiphilic Electrophilic Fukushima Electron_Density Softness_dual MEP\n";

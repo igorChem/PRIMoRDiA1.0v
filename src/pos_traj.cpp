@@ -97,10 +97,10 @@ traj_rd::traj_rd(	vector<primordia>& rds	,
 		atoms_labels[8+i*9] +="\\nPartial\\nCharge";
 	
 		tmp_name2 = tmp_name;		
-		tmp_name2+= "_NUphilicity";
+		tmp_name2+= "_Nphilicity";
 		rds_labels.push_back(tmp_name2);
 		tmp_name2 = tmp_name;
-		tmp_name2+="_ELEphilicity";
+		tmp_name2+="_Ephilicity";
 		rds_labels.push_back(tmp_name2);
 		tmp_name2 = tmp_name;
 		tmp_name2+="_NET";
@@ -109,13 +109,13 @@ traj_rd::traj_rd(	vector<primordia>& rds	,
 		tmp_name2+="_Soft";
 		rds_labels.push_back(tmp_name2);
 		tmp_name2 = tmp_name;
-		tmp_name2+="_hardA";
+		tmp_name2+="_hard_Vee";
 		rds_labels.push_back(tmp_name2);
 		tmp_name2 = tmp_name;
-		tmp_name2+="_hardB";
+		tmp_name2+="_hard_lcp";
 		rds_labels.push_back(tmp_name2);
 		tmp_name2 = tmp_name;
-		tmp_name2+="_hardC";
+		tmp_name2+="_Fukui_pot";
 		rds_labels.push_back(tmp_name2);
 		tmp_name2 = tmp_name;
 		tmp_name2+="_ED";
@@ -135,15 +135,15 @@ traj_rd::traj_rd(	vector<primordia>& rds	,
 	
 	for ( i=0; i<atoms_rd.size(); i++ ){
 		for( j=0; j<rds.size(); j++ ){
-			atoms_rd[i][0][j] = rds[j].lrdCnd.EAS[ ats[i]-1 ];
-			atoms_rd[i][1][j] = rds[j].lrdCnd.NAS[ ats[i]-1 ];
-			atoms_rd[i][2][j] = rds[j].lrdCnd.dual[ ats[i]-1 ];
-			atoms_rd[i][3][j] = rds[j].lrdCnd.Hyper_softness[ ats[i]- 1];
-			atoms_rd[i][4][j] = rds[j].lrdCnd.hardness_A[ ats[i]-1 ];
-			atoms_rd[i][5][j] = rds[j].lrdCnd.hardness_B[ ats[i]-1 ];
-			atoms_rd[i][6][j] = rds[j].lrdCnd.hardness_C[ ats[i]-1 ];
-			atoms_rd[i][7][j] = rds[j].lrdCnd.electron_density[ ats[i]-1 ];
-			atoms_rd[i][8][j] = rds[j].mol_info.atoms[ ats[i]-1 ].charge;
+			atoms_rd[i][0][j] = rds[j].lrdCnd.lrds[0][ ats[i]-1 ];
+			atoms_rd[i][1][j] = rds[j].lrdCnd.lrds[1][ ats[i]-1 ];
+			atoms_rd[i][2][j] = rds[j].lrdCnd.lrds[3][ ats[i]-1 ];
+			atoms_rd[i][3][j] = rds[j].lrdCnd.lrds[18][ ats[i]- 1];
+			atoms_rd[i][4][j] = rds[j].lrdCnd.lrds[4][ ats[i]-1 ];
+			atoms_rd[i][5][j] = rds[j].lrdCnd.lrds[5][ ats[i]-1 ];
+			atoms_rd[i][6][j] = rds[j].lrdCnd.lrds[6][ ats[i]-1 ];
+			atoms_rd[i][7][j] = rds[j].lrdCnd.lrds[14][ ats[i]-1 ];
+			atoms_rd[i][8][j] = rds[j].lrdCnd.lrds[13][ ats[i]-1 ];
 		}
 	}
 

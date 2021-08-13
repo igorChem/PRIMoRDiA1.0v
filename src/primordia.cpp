@@ -1,3 +1,22 @@
+// source file for the trajectory reactivity descriptor calculations 
+// primordia.cpp
+
+// include statements from c++ library
+
+/*********************************************************************/
+/* This source code file is part of PRIMoRDiA software project created 
+ * by Igor Barden Grillo at Federal University of Paraíba. 
+ * barden.igor@gmail.com ( Personal e-mail ) 
+ * igor.grillo@acad.pucrs.br ( Academic e-mail )
+ * quantum-chem.pro.br ( group site )
+ * IgorChem ( Git Hub account )
+ */ 
+
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ 
+/*********************************************************************/
 //include c++ headers 
 #include <iostream>
 #include <string>
@@ -90,7 +109,7 @@ void primordia::init_FOA(const char* file_neutro,
 
 	name = remove_extension(file_neutro);
 	//-------------------------------------------------------------------
-	// log messages
+	// log messages about the calculation options
 	m_log->inp_delim(1);
 	m_log->input_message("molecule name "+name);
 	m_log->input_message("\nParameters for calculating the Reactivity descriptors:\n\t");
@@ -101,6 +120,8 @@ void primordia::init_FOA(const char* file_neutro,
 	m_log->inp_delim(2);
 	//-------------------------------------------------------------------
 	
+	//-----------------------------
+	//loading molecular information
 	QMparser qmfile(file_neutro,Program); 
 	Imolecule molecule( move ( qmfile.get_molecule() ) ); 
 	if ( molecule.name == "empty"){
@@ -112,47 +133,50 @@ void primordia::init_FOA(const char* file_neutro,
 		if ( dos ){
 			scripts dos( molecule.name.c_str(), "DOS");
 			dos.write_r_dos( molecule.orb_energies );
-		}		
+		}
 		molecule.light_copy(mol_info);
 		molecule.mol_density = den;
-		grd = global_rd(molecule) ;
+		// Calculating global descriptors
+		grd = global_rd(molecule);
 		grd.calculate_rd();
 		grd.write_rd();
-		lrdCnd = local_rd_cnd( move(molecule) );
-		lrdCnd.calculate_Fukui();
+		//calculating condensed to atom local descriptors
+		lrdCnd = local_rd_cnd( molecule.atoms.size() );
+		lrdCnd.calculate_frontier_orbitals(molecule,0);
+		lrdCnd.calculate_fukui_potential(molecule);
+		lrdCnd.calculate_hardness(grd,molecule);
 		lrdCnd.calculate_RD(grd);
-		lrdCnd.calculate_Hardness(grd);
+		lrdCnd.calculate_mep(molecule);
 		lrdCnd.write_LRD();
+		// if composite hardness was used 
 		if ( comp_H ){
-			ch_rd = comp_hard(grd,lrdCnd,den);
+			ch_rd = comp_hard(grd,lrdCnd,molecule,den);
 			ch_rd.write_comp_hardness( name.c_str() );
 		}
+		// calculating volumetric local descriptors if required
 		if ( grdN  > 0 ){
-			gridgen grid1( grdN, move(lrdCnd.molecule) );
-			Icube homo_cub	= grid1.calc_HOMO_density();
-			Icube lumo_cub	= grid1.calc_LUMO_density();
-			if ( loc_hard == "mepEE" || loc_hard == "LCP" ) {
+			gridgen grid1( grdN, move(molecule) );
+			Icube homo_cub	= grid1.calc_HOMO();
+			Icube lumo_cub	= grid1.calc_LUMO();
+			if ( loc_hard == "true" ) {
 				if ( Program == "orca" ) {
 					grid1.calculate_density_orca();
 				}
-				else { 
+				else{ 
 					grid1.calculate_density();
 				}
 				Icube dens	= grid1.density;
 				lrdVol		= local_rd( dens,homo_cub,lumo_cub );
-			}else { 
+			}else{ 
 				lrdVol = local_rd( homo_cub,lumo_cub );
-			}		
-			lrdVol.calculate_fukui();
-			lrdVol.calculate_RD(grd);
-			if ( loc_hard !="not" ){ 
-				lrdVol.calculate_hardness(grd,loc_hard);
+				lrdVol.calculate_hardness(grd);
 			}
+			lrdVol.calculate_RD(grd);
+			lrdVol.calculate_Fukui_potential();			
 			lrdVol.write_LRD();
 			if ( mep ){
-				grid1.calculate_mep_from_charges();
-				grid1.density.write_cube(grid1.name+"_mep.cube");
-				grid1.density.write_cube(grid1.name+"_mep2.cube");
+				molecule = move(grid1.molecule);
+				lrdVol.calculate_MEP(molecule);
 				m_log->input_message("MEP grid calculations required \n");
 			}
 			if ( pymol_script ) {
@@ -160,7 +184,7 @@ void primordia::init_FOA(const char* file_neutro,
 				scripts pymol_s( name,"pymols" );
 				pymol_s.write_pymol_cube(lrdVol, true);
 			}					
-		}		
+		}
 	}
 }
 /*************************************************************************************/
@@ -215,15 +239,20 @@ void primordia::init_FD(const char* file_neutro			,
 	}else{
 		molecule_a.light_copy(mol_info);
 		molecule_a.mol_density = den;
+		//calculating global descriptors
 		grd = global_rd(molecule_a,molecule_b,molecule_c);
 		grd.calculate_rd();
-		grd.write_rd();			
-		lrdCnd = local_rd_cnd(molecule_a, molecule_b, molecule_c);	
+		grd.write_rd();
+		//calculating condensed local descriptors
+		lrdCnd = local_rd_cnd(molecule_a, molecule_b, molecule_c);
+		lrdCnd.calculate_fukui_potential(molecule_a);
+		lrdCnd.calculate_hardness(grd,molecule_a);
 		lrdCnd.calculate_RD(grd);
-		lrdCnd.calculate_Hardness(grd);
+		lrdCnd.calculate_mep(molecule_a);
 		lrdCnd.write_LRD();
+		// calculates composite hardness if required
 		if ( comp_H ){
-			ch_rd = comp_hard(grd,lrdCnd,den);
+			ch_rd = comp_hard(grd,lrdCnd,molecule_a,den);
 			ch_rd.write_comp_hardness( name.c_str() );
 		}
 		if ( grdN > 0 ){
@@ -249,16 +278,11 @@ void primordia::init_FD(const char* file_neutro			,
 				grid3.calculate_density();
 			}		
 			lrdVol = local_rd(grid1.density,grid2.density,grid3.density,charge);
-			lrdVol.calculate_fukui();
+			lrdVol.calculate_Fukui_potential();
 			lrdVol.calculate_RD(grd);
-			lrdVol.calculate_hardness(grd,loc_hard);
+			lrdVol.calculate_hardness(grd);
+			lrdVol.calculate_MEP(molecule_a);
 			lrdVol.write_LRD();
-			if ( mep ){
-				grid1.calculate_mep_from_charges();
-				grid1.density.write_cube(name+"_mep.cube");
-				grid1.density.write_cube(name+"_mep2.cube");
-				m_log->input_message("MEP grid calculations required\n");
-			}
 			if ( pymol_script ) {
 				mol_info.write_pdb();
 				scripts pymol_s( name,"pymols" );
@@ -299,7 +323,7 @@ void primordia::init_protein_RD(const char* file_name	,
 	//---------------------------------------------------------------------
 	
 	QMparser fileQM ( file_name,Program );
-	Imolecule molecule( fileQM.get_molecule() );			
+	Imolecule molecule( fileQM.get_molecule() );
 	if ( molecule.name == "empty"){
 		m_log->write_warning("Molecular information not used for calculations! Entry "+name);
 		m_log->input_message("Skipping reactivity descriptors calculations for:");
@@ -315,45 +339,53 @@ void primordia::init_protein_RD(const char* file_name	,
 		}
 	
 		grd		= global_rd( molecule );
-		lrdCnd	= local_rd_cnd( move(molecule) );
-		lrdCnd.mep	= mep;
+		lrdCnd	= local_rd_cnd( molecule.atoms.size() );
 		grd.calculate_rd();
 	
 		if ( band > 0 ) {
-			if 	( bt == "EW" )	lrdCnd.calculate_Fukui_EW(band);
-			else{ 				lrdCnd.calculate_Fukui_band(band); }
+			if 	( bt == "EW" )	{
+				lrdCnd.energy_weighted_fukui_functions(molecule);
+			}
+			else{ 
+				lrdCnd.calculate_frontier_orbitals(molecule,band);
+			}
+			lrdCnd.calculate_fukui_potential(molecule);
 			lrdCnd.calculate_RD(grd);
-			lrdCnd.calculate_Hardness(grd);
+			lrdCnd.calculate_hardness(grd,molecule);
+			lrdCnd.calculate_mep(molecule);
 			bio_rd = lrdCnd.rd_protein(pdbfile);
 			lrdCnd.write_rd_protein_pdb(pdbfile);
 			lrdCnd.write_LRD();
 		}else{
-			lrdCnd.calculate_Fukui();
+			lrdCnd.calculate_frontier_orbitals(molecule,0);
+			lrdCnd.calculate_fukui_potential(molecule);
+			lrdCnd.calculate_hardness(grd,molecule);
 			lrdCnd.calculate_RD(grd);
-			lrdCnd.calculate_Hardness(grd);
-			bio_rd = lrdCnd.rd_protein(pdbfile);
-			lrdCnd.write_rd_protein_pdb(pdbfile);
+			lrdCnd.calculate_mep(molecule);
 			lrdCnd.write_LRD();
-			
 		}
 		if ( pymol_script ) { 
 			scripts pymol_pdb( name, "pymols_pdb" );
 			pymol_pdb.write_pymol_pdb();
-		}	
+		}
 		if ( comp_H ){
 			double dens_tmp = 0;
-			ch_rd = comp_hard(grd,lrdCnd,dens_tmp);
+			ch_rd = comp_hard(grd,lrdCnd,molecule,dens_tmp);
 			ch_rd.calculate_protein(bio_rd,pdbfile);
 			ch_rd.write_comp_hardness( name.c_str() );
 		}
 		if ( gridN > 0 ){
-			gridgen grid ( gridN,move(lrdCnd.molecule) );
+			gridgen grid ( gridN,move(molecule) );
 			if ( size > 0 ) { 
 				grid.redefine_lim(ref_atom[0],ref_atom[1],ref_atom[2],size);
 			}
+			Icube HOMO;
+			Icube LUMO;
 			Icube EAS;
 			Icube NAS;
 			if ( band  > 0 ) {
+				HOMO = grid.calc_HOMO();
+				LUMO = grid.calc_LUMO();
 				if ( bt == "BD" ){
 					EAS  = grid.calc_band_EAS(bandgap);
 					NAS  = grid.calc_band_NAS(bandgap);
@@ -361,43 +393,40 @@ void primordia::init_protein_RD(const char* file_name	,
 					EAS = grid.calc_EBLC_EAS();
 					NAS = grid.calc_EBLC_NAS();
 				}
-				if ( locHardness == "LCP" || locHardness == "mepEE" ){
+				if (  locHardness == "true" ){
 					grid.calculate_density();
-					lrdVol = local_rd(grid.density,EAS,NAS);
+					lrdVol = local_rd(grid.density,HOMO,LUMO);
+					lrdVol.calculate_hardness(grd);
+					lrdVol.calculate_MEP(molecule);
+
 				}else{ 
-					lrdVol = local_rd(EAS,NAS);
+					lrdVol = local_rd(HOMO,LUMO);
 				}
+				lrdVol.calculate_fukui_Band(EAS,NAS);
 				lrdVol.name = name;
-				lrdVol.calculate_fukui();
+				lrdVol.calculate_Fukui_potential();
 				lrdVol.calculate_RD(grd);
-				lrdVol.calculate_hardness(grd,locHardness);
 				lrdVol.write_LRD();
 			}else{
-				EAS = grid.calc_HOMO_density() ;
-				NAS = grid.calc_LUMO_density() ;
-				if ( locHardness == "LCP" || locHardness == "mepEE" ){ 
+				HOMO = grid.calc_HOMO() ;
+				LUMO = grid.calc_LUMO() ;
+				if ( locHardness == "true" ){ 
 					grid.calculate_density();
-					lrdVol = local_rd(grid.density,EAS,NAS);
+					lrdVol = local_rd(grid.density,HOMO,LUMO);
+					lrdVol.calculate_hardness(grd);
+					lrdVol.calculate_MEP(molecule);
 				}else{ 
-					lrdVol = local_rd(EAS,NAS);
+					lrdVol = local_rd(HOMO,LUMO);
 				}
 				lrdVol.name = name;
-				lrdVol.calculate_fukui();
+				lrdVol.calculate_Fukui_potential();
 				lrdVol.calculate_RD(grd);
-				lrdVol.calculate_hardness(grd,locHardness);
 				lrdVol.write_LRD();
-			}
-			if ( mep ){
-				grid.calculate_mep_from_charges();
-				grid.density.write_cube(name+"_mep.cube");
-				grid.density.write_cube(name+"_mep2.cube");
-			}
+			}			
 			if ( pymol_script ){
 				scripts pymol_s (name, "pymols");
 				pymol_s.write_pymol_cube(lrdVol, true);
 			}
-		}else{
-			lrdCnd.molecule.clear();
 		}
 	}
 }

@@ -71,7 +71,7 @@ class local_rd {
 		void calculate_fukui_Band(const Icube& homo_b, const Icube& lumo_b);
 		void calculate_RD(const global_rd& grd);
 		void calculate_Fukui_potential();
-		void calculate_hardness(const global_rd& grd, std::string method);
+		void calculate_hardness(const global_rd& grd);
 		void calculate_MEP(const Imolecule& mol);
 		void write_LRD();
 };

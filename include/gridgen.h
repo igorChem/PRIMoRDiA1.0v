@@ -65,7 +65,7 @@ class gridgen {
 		//member functions
 		double calc_slater_orb(int i, int x, int y, int z);
 		double calc_gauss_orb(int i, int x, int y, int z);
-		double calc_orca_sphe(int i, int x, int y, int z);	
+		double calc_orca_sphe(int i, int x, int y, int z);
 		double calc_aorb(int i, int x, int y, int z);
 		double calc_orb_voxel(int nm,int x,int y,int z, bool beta);
 		double calc_orb_voxel_orca(int nm,int x,int y,int z,bool beta);

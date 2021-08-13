@@ -53,11 +53,11 @@ pair_rd::pair_rd(vector<primordia>& lrd, int ax, int ay){
 	rd_labels.push_back(label);
 	rd_labels[0] += "_NCTP";
 	rd_labels.push_back(label);
-	rd_labels[1] += "_HPI_A";
+	rd_labels[1] += "_HPI_Vee";
 	rd_labels.push_back(label);
-	rd_labels[2] += "_HPI_B";
+	rd_labels[2] += "_HPI_LCP";
 	rd_labels.push_back(label);
-	rd_labels[3] += "_HPI_C";
+	rd_labels[3] += "_HPI_FP";
 	rd_labels.push_back(label);
 	rd_labels[4] += "_SPI";
 	rd_labels.push_back(label);
@@ -67,20 +67,19 @@ pair_rd::pair_rd(vector<primordia>& lrd, int ax, int ay){
 	HPI_A.resize( lrd.size() );
 	HPI_B.resize( lrd.size() );
 	HPI_C.resize( lrd.size() );
-	HPI_D.resize( lrd.size() );
 	SPI.resize( lrd.size() );
 	EEP.resize( lrd.size() );
 
 	for( int k=0; k<lrd.size(); k++ ){
 		tmp_dist= lrd[k].mol_info.calc_dist( a1 , a2 );
-		ct_tmp1 = lrd[k].lrdCnd.EAS[ a1 ] - lrd[k].lrdCnd.NAS[ a2 ];
-		ct_tmp2	= lrd[k].lrdCnd.EAS[ a2 ] - lrd[k].lrdCnd.NAS[ a1 ];
+		ct_tmp1 = lrd[k].lrdCnd.lrds[0][ a1 ] - lrd[k].lrdCnd.lrds[1][ a2 ];
+		ct_tmp2	= lrd[k].lrdCnd.lrds[0][ a2 ] - lrd[k].lrdCnd.lrds[1][ a1 ];
 		CTP[k]	= 2*( (ct_tmp1 - ct_tmp2)/tmp_dist );
-		HPI_A[k]= lrd[k].lrdCnd.hardness_A[a1]*lrd[k].lrdCnd.hardness_A[a2];
-		HPI_B[k]= lrd[k].lrdCnd.hardness_B[a1]*lrd[k].lrdCnd.hardness_B[a2];
-		HPI_C[k]= lrd[k].lrdCnd.hardness_C[a1]*lrd[k].lrdCnd.hardness_C[a2];
-		SPI[k]	= lrd[k].lrdCnd.Hyper_softness[a1]*lrd[k].lrdCnd.Hyper_softness[a2];
-		EEP[k]	= lrd[k].lrdCnd.electrophilicity[a1]*ct_tmp2 + lrd[k].lrdCnd.electrophilicity[a2]*ct_tmp1;
+		HPI_A[k]= lrd[k].lrdCnd.lrds[4][a1]*lrd[k].lrdCnd.lrds[4][a2];
+		HPI_B[k]= lrd[k].lrdCnd.lrds[5][a1]*lrd[k].lrdCnd.lrds[5][a2];
+		HPI_C[k]= lrd[k].lrdCnd.lrds[6][a1]*lrd[k].lrdCnd.lrds[6][a2];
+		SPI[k]	= lrd[k].lrdCnd.lrds[17][a1]*lrd[k].lrdCnd.lrds[17][a2];
+		EEP[k]	= lrd[k].lrdCnd.lrds[11][a1]*ct_tmp2 + lrd[k].lrdCnd.lrds[11][a2]*ct_tmp1;
 	}
 }
 /***********************************************************************/

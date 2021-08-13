@@ -108,10 +108,10 @@ void scripts::write_r_dos(vector<double>& energies){
 /****************************************************************************/
 void scripts::write_pymol_cube(local_rd& lrdVol, bool fixed){
 	
-	if ( lrdVol.EAS.voxelN > 0 ){
+	if ( lrdVol.lrds[0].voxelN > 0 ){
 		string pdb_name = file_name + ".pdb";
 		std::string typestr;
-		if ( lrdVol.finite_diff ){ 
+		if ( lrdVol.FD ){ 
 			typestr = "_FD";
 		}
 		else{ 
@@ -124,35 +124,35 @@ void scripts::write_pymol_cube(local_rd& lrdVol, bool fixed){
 		double iso3 = 0.0005;
 		double iso4 = 0.005;
 		if  ( !fixed ) {	
-			lrdVol.EAS.get_cube_stats(mean,max,sd,min);
+			lrdVol.lrds[5].get_cube_stats(mean,max,sd,min);
 			iso1 = mean;
 			iso2 = iso1*20;
-			lrdVol.NAS.get_cube_stats(mean,max,sd,min);
+			lrdVol.lrds[6].get_cube_stats(mean,max,sd,min);
 			iso3 = mean;
 			iso4 = iso3*20;
 		}
-		lrdVol.Hardness.get_cube_stats(mean,max,sd,min);
+		lrdVol.lrds[10].get_cube_stats(mean,max,sd,min);
 		double iso5 = mean;
 		double iso6 = iso5*10;
 		
 		script_file	<< "load "	<< pdb_name						<<  " \n"
-					<< "load "	<< lrdVol.EAS.name				<< ".cube\n"
-					<< "load "	<< lrdVol.NAS.name				<< ".cube\n"
-					<< "load "	<< lrdVol.RAS.name				<< ".cube\n"
-					<< "load "	<< lrdVol.Dual.name				<< ".cube\n"
-					<< "load "	<< lrdVol.Hardness.name			<< ".cube\n"
-					<< "volume " << lrdVol.EAS.name				<< "_vol, "	<< lrdVol.EAS.name			<< " \n" 
-					<< "volume " << lrdVol.NAS.name				<< "_vol, " << lrdVol.NAS.name			<< " \n" 
-					<< "volume " << lrdVol.RAS.name				<< "_vol, " << lrdVol.RAS.name			<< " \n" 
-					<< "volume " << lrdVol.Dual.name			<< "_vol, " << lrdVol.Dual.name			<< " \n" 
-					<< "volume " << lrdVol.Dual.name			<< "2_vol, "<< lrdVol.Dual.name			<< " \n" 
-					<< "volume " << lrdVol.Hardness.name		<< "_vol, " << lrdVol.Hardness.name		<< " \n" 
-					<< "volume_color " << lrdVol.EAS.name		<< "_vol, " << iso1 << " cyan 0.02 "	<< iso2 	<< " blue 0.05 \n"
-					<< "volume_color " << lrdVol.NAS.name		<< "_vol, " << iso3 << " pink 0.02 "	<< iso4		<< " red  0.05 \n"
-					<< "volume_color " << lrdVol.RAS.name		<< "_vol, " << iso1 << " yellow 0.02 "	<< iso2		<< " green 0.05 \n"
-					<< "volume_color " << lrdVol.Dual.name		<< "_vol, " << iso1 << " pink 0.03 "	<< iso2		<< " red 0.05 \n"
-					<< "volume_color " << lrdVol.Dual.name		<< "2_vol, "<< (-iso4) << " blue 0.05 "	<< (-iso3)	<< " cyan 0.02 \n"
-					<< "volume_color " << lrdVol.Hardness.name	<< "_vol, " << iso5 << " orange 0.003 "	<< iso6		<< " purple 0.05 \n";
+					<< "load "	<< lrdVol.lrds[5].name			<< ".cube\n"
+					<< "load "	<< lrdVol.lrds[6].name			<< ".cube\n"
+					<< "load "	<< lrdVol.lrds[7].name			<< ".cube\n"
+					<< "load "	<< lrdVol.lrds[8].name			<< ".cube\n"
+					<< "load "	<< lrdVol.lrds[10].name			<< ".cube\n"
+					<< "volume " << lrdVol.lrds[5].name			<< "_vol, "	<< lrdVol.lrds[5].name			<< " \n" 
+					<< "volume " << lrdVol.lrds[6].name			<< "_vol, " << lrdVol.lrds[6].name			<< " \n" 
+					<< "volume " << lrdVol.lrds[7].name			<< "_vol, " << lrdVol.lrds[7].name			<< " \n" 
+					<< "volume " << lrdVol.lrds[8].name			<< "_vol, " << lrdVol.lrds[8].name			<< " \n" 
+					<< "volume " << lrdVol.lrds[8].name			<< "2_vol, "<< lrdVol.lrds[8].name			<< " \n" 
+					<< "volume " << lrdVol.lrds[10].name		<< "_vol, " << lrdVol.lrds[10].name		<< " \n" 
+					<< "volume_color " << lrdVol.lrds[5].name	<< "_vol, " << iso1 << " cyan 0.02 "	<< iso2 	<< " blue 0.05 \n"
+					<< "volume_color " << lrdVol.lrds[6].name	<< "_vol, " << iso3 << " pink 0.02 "	<< iso4		<< " red  0.05 \n"
+					<< "volume_color " << lrdVol.lrds[7].name	<< "_vol, " << iso1 << " yellow 0.02 "	<< iso2		<< " green 0.05 \n"
+					<< "volume_color " << lrdVol.lrds[8].name	<< "_vol, " << iso1 << " pink 0.03 "	<< iso2		<< " red 0.05 \n"
+					<< "volume_color " << lrdVol.lrds[8].name	<< "2_vol, "<< (-iso4) << " blue 0.05 "	<< (-iso3)	<< " cyan 0.02 \n"
+					<< "volume_color " << lrdVol.lrds[10].name	<< "_vol, " << iso5 << " orange 0.003 "	<< iso6		<< " purple 0.05 \n";
 	}
 }
 /**************************************************************************/
