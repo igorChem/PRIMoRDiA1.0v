@@ -695,7 +695,7 @@ void local_rd_cnd::write_LRD(){
 	
 	lrd_file.precision(6);
 	lrd_file << std::fixed;
-	lrd_file << name << " " << "\n" <<  std::left;
+	lrd_file << name << " " << "\n" <<  std::left; 
 	lrd_file << "n atom ";
 	
 	for( unsigned i=0; i<names.size(); i++){
