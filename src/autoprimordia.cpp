@@ -448,7 +448,7 @@ void AutoPrimordia::reaction_analysis(){
 		}
 	}
 		
-	file_lrd << "Energy HOF ECP Hardness Softness Electrophilicity";	
+	file_lrd << "Energy HOF ECP Hardness Softness Electrophilicity";
 	
 	file_lrd << endl;
 	

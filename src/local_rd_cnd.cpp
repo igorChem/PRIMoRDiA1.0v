@@ -29,7 +29,6 @@
 #include "../include/Iaorbital.h"
 #include "../include/Iatom.h"
 #include "../include/Imolecule.h"
-#include "../include/QMdriver.h"
 #include "../include/global_rd.h"
 #include "../include/local_rd_cnd.h"
 #include "../include/Iprotein.h"

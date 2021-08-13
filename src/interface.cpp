@@ -87,7 +87,7 @@ interface::interface(int argc, char** argv) :
 	m_log->input_message("\n");
 	m_log->inp_delim(2);
 	m_log->input_message("Provided Arguments: ");
-	for ( int i=0;i<m_argc;i++){
+	for ( unsigned i=0; i<m_argc; i++ ){
 		m_log->input_message("\n\t");
 		m_log->input_message(m_argv[i]);
 	}
@@ -181,7 +181,7 @@ void interface::Comp_cube(){
 	unique_ptr<QMparser> qmfile ( new QMparser ( m_argv[2].c_str(),m_argv[4]) );
 	Imolecule molecule ( move(qmfile->get_molecule() ) );
 	qmfile.reset(nullptr);
-	unique_ptr<gridgen> dens ( new gridgen(stoi(m_argv[3].c_str() ),move(molecule) ) );
+	unique_ptr<gridgen> dens ( new gridgen( stoi(m_argv[3].c_str() ),move(molecule) ) );
 	dens->calculate_density();
 	dens->write_grid();
 	Icube comple  = dens->density.calculate_complement(false);
@@ -215,9 +215,9 @@ void interface::write_help(){
 /***********************************************************************/
 void interface::test_run(){
 	test_p teste;
-	//teste.init_general_test();
+	teste.init_general_test();
 	//teste.test_reaction_analysis();
-	teste.test_traj_analysis();
+	//teste.test_traj_analysis();
 }
 /***********************************************************************/
 void interface::write_input(){
