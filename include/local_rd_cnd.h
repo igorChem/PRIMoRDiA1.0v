@@ -55,7 +55,7 @@ class local_rd_cnd{
 		~local_rd_cnd(){};
 		//member functions
 		friend local_rd_cnd operator-(const local_rd_cnd& lrd_lhs,const local_rd_cnd& lrd_rhs);
-		void calculate_frontier_orbitals( const Imolecule& molecule, unsigned band );
+		void calculate_frontier_orbitals( Imolecule& molecule, unsigned band );
 		void energy_weighted_fukui_functions( const Imolecule& molecule );
 		void calculate_fukui_potential( const Imolecule& molecule);
 		void calculate_hardness(const global_rd& grd, const Imolecule& molecule);

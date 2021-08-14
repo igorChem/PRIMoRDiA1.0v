@@ -41,8 +41,8 @@ test_p::test_p(){
 test_p::~test_p(){}
 /************************************************************************************/
 void test_p::init_general_test(){
-	//AutoPrimordia run_test("/home/igorchem/primordia-code/PRIMoRDiA1.0v/data_test/primordia.input");
-	AutoPrimordia run_test("/media/igorchem/CCDIR/ccdir/primordia_testes/data_test_1_2/primordia.input");
+	AutoPrimordia run_test("/home/igorchem/Documents/tutorials_1.2/Tutorial_1/primordia.input");
+	//AutoPrimordia run_test("/media/igorchem/CCDIR/ccdir/primordia_testes/data_test_1_2/primordia.input");
 	run_test.init();
 }
 /************************************************************************************/

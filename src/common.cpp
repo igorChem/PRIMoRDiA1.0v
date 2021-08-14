@@ -217,6 +217,7 @@ std::vector<double> norm_dvec(std::vector<double>& vec, double size){
 		vec[i] /= max;
 		vec[i] *= size;
 	}
+	return norma;
 }
 /********************************************************************************/
 string str_array(std::string& line, int in, int fin){

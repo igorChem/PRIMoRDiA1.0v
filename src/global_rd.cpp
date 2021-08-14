@@ -249,9 +249,9 @@ void global_rd::write_rd(){
 	file_grd <<  std::endl;
 	
 	for( unsigned int i=0; i<rd_abrev.size(); i++){
-		file_grd << rd_abrev[i] << std::setw(10) << std::left;
+		file_grd << rd_abrev[i] << " " << std::setw(10) << std::left;
 	}	
-	file_grd <<  std::endl;
+	file_grd <<	std::endl;
 	
 	for( unsigned int i=0; i<grds.size(); i++){
 		file_grd << grds[i] << std::setw(10) << std::left;

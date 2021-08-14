@@ -72,9 +72,9 @@ std::vector<std::string> rd_names = {
 local_rd_cnd::local_rd_cnd()	:
 	name("nonamed")				,
 	FD(false)					,
+	names(rd_names)				,
 	charge(0)					{
 	
-	names = rd_names;
 	lrds.resize( rd_names.size() );
 }
 /***********************************************************************************/
@@ -86,7 +86,7 @@ local_rd_cnd::local_rd_cnd(unsigned int nof):
 	lrds.resize( rd_names.size() );
 	
 	for(unsigned int i=0;i<lrds.size(); i++){
-		lrds.resize( nof );
+		lrds[i].resize( nof );
 	}
 }
 /***********************************************************************************/
@@ -161,13 +161,13 @@ local_rd_cnd operator-(const local_rd_cnd& lrd_lhs,const local_rd_cnd& lrd_rhs){
 	return Result;
 }
 /***********************************************************************************/
-void local_rd_cnd::calculate_frontier_orbitals( const Imolecule& molecule, unsigned band){
+void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned band){
 	name					= molecule.name;
 	double value_h			= 0.0;
 	double value_l			= 0.0;
 	unsigned init_orb		= 0;
 	unsigned n_aorbs		= 0;
-	unsigned ao 			= molecule.num_of_ao;
+	unsigned ao 			= molecule.get_ao_number();
 	unsigned homon 			= abs(molecule.homoN);
 	unsigned lumon 			= abs(molecule.lumoN);
 	unsigned cnt 			= 0;
@@ -176,6 +176,8 @@ void local_rd_cnd::calculate_frontier_orbitals( const Imolecule& molecule, unsig
 	
 	for( unsigned atom=0; atom<molecule.atoms.size(); atom++ ){
 		//defining the indices of the atomic orbitals
+		init_orb	= 0;
+		n_aorbs		= 0;
 		if ( atom == 0 ) {
 			init_orb = 0;
 			n_aorbs  = molecule.atoms[0].orbitals.size();
@@ -188,28 +190,18 @@ void local_rd_cnd::calculate_frontier_orbitals( const Imolecule& molecule, unsig
 			}
 		}
 		//-------------------------------------------------
-		
 		//calculating the occupied molecular orbitals
-		unsigned init = homon-band;
 		for( unsigned i=init; i<=homon; i++ ){
 			for( unsigned mu=init_orb; mu<n_aorbs; mu++ ){
 				for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
 					value_h+=molecule.coeff_MO[ao*i + mu]*
 							molecule.coeff_MO[ao*i + nu]*
-							molecule.m_overlap[nu+(mu*(mu+1) )/2];
+							molecule.m_overlap[ nu+( mu*(mu+1) )/2];
 				}
 			}
-		}
-		
-		if ( atom == 0 && band > 0 ){
-			m_log->input_message("Number of occupied MO used to calculate condensed to atom descriptors: ");
-			m_log->input_message( int(band) );
-			m_log->input_message("\n");
 		}		
 		//-------------------------------------------------
-		
 		//calculating the virtual molecular orbitals
-		
 		for( unsigned i=lumon; i<=fin; i++ ){
 			for( unsigned mu=init_orb; mu<n_aorbs; mu++ ){
 				for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
@@ -219,14 +211,8 @@ void local_rd_cnd::calculate_frontier_orbitals( const Imolecule& molecule, unsig
 				}
 			}
 		}
-		if ( atom == 0  && band > 0 ){
-			m_log->input_message("Number of  virtual MO used to calculate condensed to atom descriptors: ");
-			m_log->input_message( int(band) ) ;
-			m_log->input_message("\n");
-		}
 		
-		//--------------------------------------------------
-		
+		//--------------------------------------------------		
 		// calculting the beta orbitals
 		if ( molecule.betad ){
 			//calculating the occupied molecular orbitals
@@ -238,11 +224,6 @@ void local_rd_cnd::calculate_frontier_orbitals( const Imolecule& molecule, unsig
 								molecule.m_overlap[nu+(mu*(mu+1) )/2];
 					}
 				}
-			}
-			if ( atom == 0 && band > 0 ){
-				m_log->input_message("Number of occcupied virtual MO used to calculate condensed to atom descriptors: ");
-				m_log->input_message( int(band) );
-				m_log->input_message("\n");
 			}
 			value_h /= 2;
 			//------------------------------------------------
@@ -259,19 +240,17 @@ void local_rd_cnd::calculate_frontier_orbitals( const Imolecule& molecule, unsig
 					}
 				}
 			}
-			if ( atom == 0  && band > 0 ){
-				m_log->input_message("Number of  virtual beta MO used to calculate condensed to atom descriptors: ");
-				m_log->input_message( int(band) );
-				m_log->input_message("\n");
-			}
 			value_l /= 2;
 		}
+		
 		lrds[0][atom] = value_h;
 		lrds[1][atom] = value_l;
 		lrds[13][atom]= molecule.atoms[atom].charge;
 		lrds[12][atom]= value_h + value_l;
+		value_h = 0;
+		value_l = 0;
 	}
-	if ( band > 1 ){
+	if ( band >= 1 ){
 		lrds[0] = norm_dvec(lrds[0],5);
 		lrds[1] = norm_dvec(lrds[1],5);
 	}else{
@@ -281,7 +260,16 @@ void local_rd_cnd::calculate_frontier_orbitals( const Imolecule& molecule, unsig
 	for( unsigned i=0; i<lrds[0].size(); i++ ){
 		lrds[3][i] = lrds[1][i] - lrds[0][i];
 		lrds[2][i] = (lrds[1][i] + lrds[0][i])/2;
-	}	
+	}
+	
+	if ( band > 0 ){
+		m_log->input_message("Number of  occupp ied MO used to calculate condensed to atom descriptors: ");
+		m_log->input_message( int(band) ) ;
+		m_log->input_message("Number of  virtual MO used to calculate condensed to atom descriptors: ");
+		m_log->input_message( int(band) ) ;
+		m_log->input_message("\n");
+		
+	}
 
 }
 /***********************************************************************************/
