@@ -59,7 +59,7 @@ std::vector<std::string> descriptor_names = {
 	"Softness_Dual",			// 15 df
 	"Softness_AVG",				// 16 ex
 	"Hyper_Softess",			// 17 ex
-	"Multiphilicity"			// 18 ex
+	"Multiphilicity",			// 18 ex
 	"MEP",						// 19 if density
 	"MO_BAND",					// 20 if Band
 	"L_Hardness_TFD"			// 21 if TFD
@@ -77,10 +77,12 @@ local_rd::local_rd()			:
 	charge(1)					,
 	TFD(false)					,
 	rd_names(descriptor_names)	{
+		
+	lrds.resize( rd_names.size() );
 }
 /***********************************************************************************/
-local_rd::local_rd(const Icube& HOmo		,
-				   const Icube& LUmo)		:
+local_rd::local_rd(Icube HOmo		,
+				   Icube LUmo)		:
 	name(HOmo.name)							,
 	FD(false)								,
 	LH(false)								,
@@ -99,9 +101,9 @@ local_rd::local_rd(const Icube& HOmo		,
 	lrds[8] = lrds[6]-lrds[5];
 }
 /***********************************************************************************/
-local_rd::local_rd(const Icube& elec_dens	,
-				   const Icube& HOmo		,
-				   const Icube& LUmo		):
+local_rd::local_rd(Icube elec_dens	,
+					Icube HOmo		,
+					Icube LUmo		):
 	name(HOmo.name)							,
 	FD(false)								,
 	LH(true)								,
@@ -122,9 +124,9 @@ local_rd::local_rd(const Icube& elec_dens	,
 	
 }
 /***********************************************************************************/
-local_rd::local_rd(const Icube& elecDens	,
-					const Icube& cationDens	, 
-					const Icube& anionDens	,
+local_rd::local_rd(Icube elecDens			,
+					Icube cationDens		, 
+					Icube anionDens			,
 					int chg					):
 	name(elecDens.name)						,
 	FD(true)								,
@@ -148,9 +150,10 @@ local_rd::local_rd(const Icube& elecDens	,
 /***********************************************************************************/
 local_rd::local_rd(const local_rd& lrd_rhs)	:
 	name(lrd_rhs.name)						,
-	FD(lrd_rhs.FD)		,
-	LH(lrd_rhs.LH)		,
+	FD(lrd_rhs.FD)							,
+	LH(lrd_rhs.LH)							,
 	charge(lrd_rhs.charge)					,
+	TFD(lrd_rhs.TFD)						,
 	rd_names(lrd_rhs.rd_names)				,
 	lrds(lrd_rhs.lrds)						{
 }
@@ -161,6 +164,7 @@ local_rd& local_rd::operator=(const local_rd& lrd_rhs){
 		FD				= lrd_rhs.FD;
 		charge			= lrd_rhs.charge;
 		LH				= lrd_rhs.LH;
+		TFD				= lrd_rhs.TFD;
 		rd_names		= lrd_rhs.rd_names;
 		lrds			= lrd_rhs.lrds;
 	}
@@ -172,6 +176,7 @@ local_rd::local_rd(local_rd&& lrd_rhs) noexcept	:
 	FD(lrd_rhs.FD)								,
 	LH(lrd_rhs.LH)								,
 	charge(lrd_rhs.charge)						,
+	TFD(lrd_rhs.TFD)							,
 	rd_names( move(lrd_rhs.rd_names) )			,
 	lrds( move(lrd_rhs.lrds) )					{
 }
@@ -199,7 +204,8 @@ void local_rd::calculate_fukui_Band(const Icube& homo_b, const Icube& lumo_b){
 }
 /***********************************************************************************/
 void local_rd::calculate_RD(const global_rd& grd){
-	lrds[14] = lrds[5]*grd.grds[5] - lrds[5]*grd.grds[6];
+	lrds[14] = lrds[5]*grd.grds[5];
+	lrds[14] = lrds[5]*grd.grds[5] - (lrds[6]*grd.grds[6]);
 	lrds[15] = lrds[8]*grd.grds[9];
 	lrds[16] = lrds[7]*grd.grds[9];
 	lrds[17] = lrds[8]*(grd.grds[9]*grd.grds[9]);
@@ -288,7 +294,6 @@ void local_rd::calculate_Fukui_potential(){
 /***********************************************************************************/
 void local_rd::calculate_hardness(const global_rd& grd){
 	LH = true;
-	
 	//Local Chemical Potential method
 	double numofelec	= lrds[2].calc_cube_integral();
 	double val1			= grd.grds[7]/numofelec;
@@ -369,19 +374,19 @@ void local_rd::calculate_hardness(const global_rd& grd){
 	
 	if ( TFD ){
 		Icube density_rc	= lrds[2].scale_cube(0.3333333);
-		double Ck	= (3/10)*pow((3*M_PI*M_PI),2/3);
-		double Cx	= (3/4*M_PI)*pow((3*M_PI*M_PI),1/3);
-		double con	= 2/(9*numofelec);
+		double Ck	= (3.0/10.0)*pow((3.0*M_PI*M_PI),2.0/3.0);
+		double Cx	= (3.0/4.0*M_PI)*pow((3*M_PI*M_PI),1.0/3.0);
+		double con	= 2.0/(9.0*numofelec);
 		lrds[21]	= density_rc*con;
 		Icube temp1	= density_rc;
 		Icube temp2	= density_rc;
 		Icube temp3	= density_rc;
-		temp1 = temp1*5*Ck - 2*Cx;
+		temp1 = temp1*5.0*Ck - 2.0*Cx;
 		temp2 = density_rc*0.458;
-		temp3 = temp2 + 1; 
+		temp3 = temp2 + 1.0; 
 		temp3 = temp3.scale_cube(3.0);
 		
-		temp2 = temp2+2;
+		temp2 = temp2+2.0;
 		temp2 = temp2/temp3;
 		temp2 = temp2*-0.0466;
 		lrds[21] = lrds[21]*(temp1-temp2);
@@ -441,6 +446,9 @@ void local_rd::calculate_MEP(const Imolecule& mol){
 		}
 	}
 	}
+	
+	lrds[19] = lrds[2];
+	for(unsigned i=0;i<MEP.size();i++) { lrds[19].scalar[i] = MEP[i]; }
 }
 /***********************************************************************************/
 local_rd operator-(const local_rd& lrd_lhs,const local_rd& lrd_rhs){
@@ -460,7 +468,7 @@ void local_rd::write_LRD(){
 		typestr = "Descriptor calculated with Finite Differences approximation \n";
 		typestr2 = "FD";
 	}else{
-		typestr = " Descriptor calculated with Frozen Orbital Approximation \n";
+		typestr = "Descriptor calculated with Frozen Orbital Approximation \n";
 		typestr2 = "FOA";
 	}
 	
@@ -497,11 +505,11 @@ void local_rd::write_LRD(){
 	cube_names.push_back(name_type+"_multifilicity_ph1");	// 27
 	cube_names.push_back(name_type+"_multifilicity_ph2");	// 28
 	
-	lrds[0].header	= "Highest energy Occupied Molecular Orbital\n";
-	lrds[1].header	= "Lowest energy Unnocupied Molecular Orbital\n";
-	lrds[2].header	= "Total electron density calculated with PRIMoRDiA\n";
-	lrds[3].header	= "Total electron density calculated with PRIMoRDiA\n";
-	lrds[4].header	= "Total electron density calculated with PRIMoRDiA\n";
+	lrds[0].header	= "Highest energy Occupied Molecular Orbital\n" + typestr;
+	lrds[1].header	= "Lowest energy Unnocupied Molecular Orbital\n"+ typestr;
+	lrds[2].header	= "Total electron density calculated with PRIMoRDiA\n"+ typestr;
+	lrds[3].header	= "Total electron density calculated with PRIMoRDiA\n"+ typestr;
+	lrds[4].header	= "Total electron density calculated with PRIMoRDiA\n"+ typestr;
 	lrds[5].header	= "Left Fukui function, electrophilic attack succescitibily or local electofilicity\n"	+ typestr;
 	lrds[6].header	= "Right Fukui Function, nucleophilic attack succescitibily or local nucleofilicity\n"	+ typestr;
 	lrds[7].header	= "Average Fukui Function, radical attack succescitibily\n"								+ typestr;
@@ -569,7 +577,9 @@ void local_rd::write_LRD(){
 	m_log->input_message("Finishing writting the local reactivity descriptos grids.\n");
 }
 /***********************************************************************************/
-local_rd::~local_rd(){}
+local_rd::~local_rd(){
+
+}
 //================================================================================
 //END OF FILE
 //================================================================================

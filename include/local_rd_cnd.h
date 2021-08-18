@@ -41,7 +41,7 @@ class local_rd_cnd{
 		std::string name;
 		bool FD;
 		bool TFD;
-		int charge;
+		unsigned charge;
 		std::vector< std::vector<double> > lrds;
 		std::vector<std::string> names;
 		//constructors/destructor
@@ -52,7 +52,7 @@ class local_rd_cnd{
 		local_rd_cnd& operator=(const local_rd_cnd& lrd_rhs);
 		local_rd_cnd(local_rd_cnd&& lrd_rhs) noexcept;
 		local_rd_cnd& operator=(local_rd_cnd&& lrd_rhs) noexcept;
-		~local_rd_cnd(){};
+		~local_rd_cnd();
 		//member functions
 		friend local_rd_cnd operator-(const local_rd_cnd& lrd_lhs,const local_rd_cnd& lrd_rhs);
 		void calculate_frontier_orbitals( Imolecule& molecule, unsigned band );

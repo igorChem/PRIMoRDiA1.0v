@@ -142,6 +142,7 @@ void primordia::init_FOA(const char* file_neutro,
 		grd.write_rd();
 		//calculating condensed to atom local descriptors
 		lrdCnd = local_rd_cnd( molecule.atoms.size() );
+		if ( loc_hard == "TFD" ) { lrdCnd.TFD = true; }
 		lrdCnd.calculate_frontier_orbitals(molecule,0);
 		lrdCnd.calculate_fukui_potential(molecule);
 		lrdCnd.calculate_hardness(grd,molecule);
@@ -154,49 +155,44 @@ void primordia::init_FOA(const char* file_neutro,
 			ch_rd.write_comp_hardness( name.c_str() );
 		}
 		// calculating volumetric local descriptors if required
-		if ( grdN  > 0 ){
+		if ( grdN  > 0 ){ 
 			gridgen grid1( grdN, move(molecule) );
 			Icube homo_cub	= grid1.calc_HOMO();
 			Icube lumo_cub	= grid1.calc_LUMO();
-			if ( loc_hard == "true" ) {
-				if ( Program == "orca" ) {
-					grid1.calculate_density_orca();
-				}
-				else{ 
-					grid1.calculate_density();
-				}
-				Icube dens	= grid1.density;
-				lrdVol		= local_rd( dens,homo_cub,lumo_cub );
-			}else{ 
-				lrdVol = local_rd( homo_cub,lumo_cub );
-				lrdVol.calculate_hardness(grd);
+			Icube e_density;
+			if ( loc_hard == "true" || loc_hard == "TFD" ) {
+				if ( Program == "orca" ) { grid1.calculate_density_orca(); }
+				else{ grid1.calculate_density(); }
+				e_density = grid1.density;
 			}
-			lrdVol.calculate_RD(grd);
-			lrdVol.calculate_Fukui_potential();			
-			lrdVol.write_LRD();
-			if ( mep ){
-				molecule = move(grid1.molecule);
-				lrdVol.calculate_MEP(molecule);
-				m_log->input_message("MEP grid calculations required \n");
+			local_rd lrdVol_1( e_density,homo_cub, lumo_cub );
+			if ( loc_hard == "true" || loc_hard == "TFD"  ){
+				if ( loc_hard == "TFD" ){ lrdVol_1.TFD = true; }
+				lrdVol_1.calculate_hardness(grd);
+				lrdVol_1.calculate_MEP(molecule);
 			}
+			lrdVol_1.calculate_Fukui_potential();
+			lrdVol_1.calculate_RD(grd);
+			lrdVol_1.write_LRD();
+			lrdVol = lrdVol_1;
 			if ( pymol_script ) {
 				mol_info.write_pdb();
 				scripts pymol_s( name,"pymols" );
 				pymol_s.write_pymol_cube(lrdVol, true);
-			}					
+			}
 		}
 	}
 }
 /*************************************************************************************/
-void primordia::init_FD(const char* file_neutro			,
-							  const char* file_cation	,
-							  const char* file_anion	, 
-							  const int grdN			, 
-							  int charge				,
-							  bool mep					,
-							  string loc_hard			, 
-							  string Program			,
-							  double den)				{
+void primordia::init_FD(const char* file_neutro	,
+						const char* file_cation	,
+						const char* file_anion	, 
+						const int grdN			, 
+						int charge				,
+						bool mep				,
+						string loc_hard			, 
+						string Program			,
+						double den)				{
 
 	name	= remove_extension(file_neutro);
 	
@@ -245,6 +241,7 @@ void primordia::init_FD(const char* file_neutro			,
 		grd.write_rd();
 		//calculating condensed local descriptors
 		lrdCnd = local_rd_cnd(molecule_a, molecule_b, molecule_c);
+		if ( loc_hard == "TFD" ) { lrdCnd.TFD == true; }
 		lrdCnd.calculate_fukui_potential(molecule_a);
 		lrdCnd.calculate_hardness(grd,molecule_a);
 		lrdCnd.calculate_RD(grd);
@@ -257,27 +254,17 @@ void primordia::init_FD(const char* file_neutro			,
 		}
 		if ( grdN > 0 ){
 			gridgen grid1 ( grdN,move(molecule_a) );
-			if ( Program == "orca" ) {
-				grid1.calculate_density_orca();
-			}
-			else {
-				grid1.calculate_density();
-			}	 
+			if ( Program == "orca" ) { grid1.calculate_density_orca(); }
+			else { grid1.calculate_density(); }	 
 			gridgen grid2 ( grdN,move(molecule_b) );
-			if ( Program == "orca" ) {
-				grid2.calculate_density_orca();
-			}
-			else { 
-				grid2.calculate_density();
-			}	
+			if ( Program == "orca" ) { grid2.calculate_density_orca(); }
+			else { grid2.calculate_density(); }
 			gridgen grid3 ( grdN, move(molecule_c) );
-			if ( Program == "orca" ) {
-				grid3.calculate_density_orca();
-			}
-			else { 
-				grid3.calculate_density();
-			}		
+			if ( Program == "orca" ) { grid3.calculate_density_orca(); }
+			else { grid3.calculate_density(); }
+			
 			lrdVol = local_rd(grid1.density,grid2.density,grid3.density,charge);
+			if ( loc_hard == "TFD" ){ lrdVol.TFD = true;};
 			lrdVol.calculate_Fukui_potential();
 			lrdVol.calculate_RD(grd);
 			lrdVol.calculate_hardness(grd);

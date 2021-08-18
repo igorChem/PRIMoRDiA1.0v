@@ -58,9 +58,9 @@ class local_rd {
 		std::vector<std::string> rd_names;
 		//constructors/destructor
 		local_rd();
-		local_rd(const Icube& HOmo, const Icube& LUmo);
-		local_rd(const Icube& elec_dens, const Icube& HOmo, const Icube& LUmo);
-		local_rd(const Icube& elecDens, const Icube& cationDens, const Icube& anionDens,int chg);
+		local_rd(Icube HOmo,  Icube LUmo);
+		local_rd(Icube elec_dens, Icube HOmo, Icube LUmo);
+		local_rd(Icube elecDens, Icube cationDens, Icube anionDens,int chg);
 		local_rd(const local_rd& lrd_rhs);
 		local_rd& operator=(const local_rd& lrd_rhs);
 		local_rd(local_rd&& lrd_rhs) noexcept;

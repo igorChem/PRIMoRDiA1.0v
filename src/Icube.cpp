@@ -145,7 +145,7 @@ Icube::Icube(const Icube& rhs_cube)	:
 		MOn(rhs_cube.MOn)				,
 		voxelN(rhs_cube.voxelN)			,
 		header(rhs_cube.header)			,
-		molecule( rhs_cube.molecule )	,
+		molecule(rhs_cube.molecule)		,
 		scalar(rhs_cube.scalar)			{
 			
 		for(int i=0;i<3;i++){
@@ -293,7 +293,6 @@ Icube Icube::SQ(){
 /***************************************************************************/
 double Icube::calc_cube_integral(){
 	double integral = 0;
-	#pragma omp parallel for reduction(+:integral)
 	for (int i=0;i<voxelN;i++) { integral += scalar[i]; }
 	integral *= std::abs(gridsides[0]*gridsides[1]*gridsides[2]);
 	return integral;
@@ -462,7 +461,9 @@ void Icube::print(){
 	for(int j=0;j<50;j++) cout << scalar[j] << endl;
 }
 //**************************************************/
-Icube::~Icube(){}
+Icube::~Icube(){
+
+}
 
 //**************************************************/
 cube_diffs::cube_diffs(const char* name){	

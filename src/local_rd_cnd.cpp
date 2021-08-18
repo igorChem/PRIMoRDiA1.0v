@@ -73,6 +73,7 @@ local_rd_cnd::local_rd_cnd()	:
 	name("nonamed")				,
 	FD(false)					,
 	names(rd_names)				,
+	TFD(false)					,
 	charge(0)					{
 	
 	lrds.resize( rd_names.size() );
@@ -81,6 +82,7 @@ local_rd_cnd::local_rd_cnd()	:
 local_rd_cnd::local_rd_cnd(unsigned int nof):
 	FD(false)								,
 	names(rd_names)							,
+	TFD(false)								,
 	charge(1)								{
 	
 	lrds.resize( rd_names.size() );
@@ -95,6 +97,7 @@ local_rd_cnd::local_rd_cnd(const Imolecule& mol_neut	,
 							const Imolecule& mol_anion)	:
 	name(mol_neut.name)									, 
 	FD(true)											,
+	TFD(false)											,
 	names(rd_names)										,
 	charge(1)											{
 	
@@ -116,6 +119,7 @@ local_rd_cnd::local_rd_cnd(const Imolecule& mol_neut	,
 local_rd_cnd::local_rd_cnd(const local_rd_cnd& lrd_rhs)	:
 	name(lrd_rhs.name)									,
 	FD(lrd_rhs.FD)										,
+	TFD(lrd_rhs.TFD)									,
 	names(lrd_rhs.names)								,
 	charge(lrd_rhs.charge)								,
 	lrds(lrd_rhs.lrds)									{
@@ -125,6 +129,7 @@ local_rd_cnd& local_rd_cnd::operator=(const local_rd_cnd& lrd_rhs){
 	if( this!=&lrd_rhs){
 		name	= lrd_rhs.name;
 		FD		= lrd_rhs.FD;
+		TFD		= lrd_rhs.TFD;
 		names	= lrd_rhs.names;
 		charge	= lrd_rhs.charge;
 		lrds	= lrd_rhs.lrds;
@@ -135,6 +140,7 @@ local_rd_cnd& local_rd_cnd::operator=(const local_rd_cnd& lrd_rhs){
 local_rd_cnd::local_rd_cnd(local_rd_cnd&& lrd_rhs) noexcept	:
 	name( move(lrd_rhs.name) )								,
 	FD( move(lrd_rhs.FD) ) 									,
+	TFD( move(lrd_rhs.TFD) )								,
 	names( move(lrd_rhs.names) )							,
 	charge( move(lrd_rhs.charge) )							,
 	lrds( move(lrd_rhs.lrds) )								{
@@ -144,10 +150,11 @@ local_rd_cnd& local_rd_cnd::operator=(local_rd_cnd&& lrd_rhs) noexcept {
 	if( this!=&lrd_rhs){
 		name	= move(lrd_rhs.name);
 		FD		= move(lrd_rhs.FD);
+		TFD		= move(lrd_rhs.TFD);
 		names	= move(lrd_rhs.names);
 		charge	= move(lrd_rhs.charge);
 		lrds	= move(lrd_rhs.lrds);
-	}       	
+	}
 	return *this;
 }
 /***********************************************************************************/
@@ -272,6 +279,8 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 	}
 
 }
+/***********************************************************************************/
+local_rd_cnd::~local_rd_cnd(){}
 /***********************************************************************************/
 void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
 	double pre_coef		= exp( -abs(energy_crit) );
@@ -448,6 +457,8 @@ void local_rd_cnd::calculate_hardness(const global_rd& grd, const Imolecule& mol
 	//-----------------------------------------------------
 	//Estimating electron density
 	for( unsigned atom=0; atom<nof; atom++ ){
+		init_orb	= 0;
+		n_aorbs		= 0;
 		if ( atom == 0 ) {
 			init_orb = 0;
 			n_aorbs  = molecule.atoms[0].orbitals.size();
@@ -470,7 +481,7 @@ void local_rd_cnd::calculate_hardness(const global_rd& grd, const Imolecule& mol
 			}
 		}
 		if ( molecule.occupied_beta.size() > 0 ){
-			for( unsigned i=0; i<molecule.homoN; i++ ){
+			for( unsigned i=0; i<=molecule.homoN; i++ ){
 				if ( molecule.occupied_beta[i] > 0 ){
 					for(unsigned mu=init_orb; mu<n_aorbs; mu++ ){
 						for (unsigned nu=init_orb; nu<n_aorbs; nu++ ){
@@ -482,6 +493,7 @@ void local_rd_cnd::calculate_hardness(const global_rd& grd, const Imolecule& mol
 			}
 		}
 		lrds[14][atom] = value;
+		value = 0;
 	}
 	
 	double xi, yi, zi, r = 0.000;
@@ -512,9 +524,9 @@ void local_rd_cnd::calculate_hardness(const global_rd& grd, const Imolecule& mol
 	
 	//----------------------------------------------------
 	//calculating local hardness with method (tomas-fermi-dirac statistical treatment)
-	if (TFD){
-		double Ck	= (3/10)*pow((3*M_PI*M_PI),2/3);
-		double Cx	= (3/4*M_PI)*pow((3*M_PI*M_PI),1/3);
+	if ( TFD ){
+		double Ck	= (3.0/10.0)*pow((3*M_PI*M_PI),2.0/3.0);
+		double Cx	= (3.0/4.0*M_PI)*pow((3.0*M_PI*M_PI),1.0/3.0);
 		std::vector<double> temp1 = lrds[14];
 		std::vector<double> temp2 = lrds[14];
 		std::vector<double> temp3 = lrds[14];
@@ -522,14 +534,15 @@ void local_rd_cnd::calculate_hardness(const global_rd& grd, const Imolecule& mol
 		
 		for ( unsigned i=0; i<nof; i++ ){
 			temp1[i]	= pow(temp1[i],0.33333333);
-			lrds[16][i]	= (2/(9*molecule.num_of_electrons))*temp1[i];
-			temp2[i]	= temp2[i]*5*Ck - 2*Cx;
+			lrds[16][i]	= (2.0/(9.0*molecule.num_of_electrons))*temp1[i];
+			temp2[i]	= temp2[i]*5.0*Ck - 2.0*Cx;
 			temp3[i]	= 0.458*temp1[i];
-			temp4[i]	= pow((temp3[i]+1),3);
-			temp4[i]	= -00466*( (temp3[i]+2) / temp4[i] );
+			temp4[i]	= pow((temp3[i]+1.0),3.0);
+			temp4[i]	= -00466*( (temp3[i]+2.0) / temp4[i] );
 			lrds[16][i]	= lrds[16][i]*(temp2[i] - temp4[i]);
 			lrds[16][i] += lrds[4][i];
 		}
+		int i =0;
 	}
 }
 /*************************************************************************************/

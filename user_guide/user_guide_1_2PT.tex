@@ -568,6 +568,7 @@ Moleza ($S$)  & softness & $1/\eta$ & \makecell{Facilidade do sistema em variar 
 \end{minipage}
 
 \newpage
+
 Na \autoref{tab_local1} estão listados todos os descritores locais obtidos pelo programa desde a sua primeira versão estável. 
 
 \hspace*{-\leftmarginwidth}
@@ -579,19 +580,19 @@ Na \autoref{tab_local1} estão listados todos os descritores locais obtidos pelo
 			\toprule
 			Descritor &\makecell{Nome do\\ arquivo cube}&\makecell{Definição\\Matemática}&Observação \\
 			\midrule
-			\makecell{Densidade \\eletrônica ($\rho(r)$)} &Elec\_Dens &$\sum_{i}^{occ} |\phi(r)^2_i|$ &  \\\hline
-			\makecell{Densidade \\eletrônica do \\cátion ($\rho^{N-1}(r)$)} &Elec\_Dens\_Cation &$\sum_{i}^{occ} |\phi(r)^2_i|$ &  \\\hline
-			\makecell{Densidade \\eletrônica do\\ anion ($\rho^{N+1}(r)$)} &Elec\_Dens\_Anion&$\sum_{i}^{occ} |\phi(r)_i|$ &   \\\hline
-			\makecell{Susceptibilidade\\eletrofílica ($f^-(r)$)} &left\_Fukui&$\lim_{\partial N \to 0^-}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$ &    \\  \hline	
-			\makecell{Susceptibilidade\\nucleofílica ($f^+(r)$)}&right\_Fukui&$\lim_{\partial N \to 0^+}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$  &    \\ \hline	
-			\makecell{Susceptibilidade\\radical ($f^0(r)$)}&zero\_Fukui&$\lim_{\partial N \to 0}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$  &    \\ \hline
-			\makecell{Descritor Dual \\($f^{\pm}(r)$)}&net\_Fukui &$\left(\frac{\partial ^2 \rho(r)}{\partial N} \right)_\nu$ &  \\ \hline
-			\makecell{Dureza Local ($h(r)$)} &l\_hardness\_Vee &$\frac{1}{2N} \int \frac{\rho(r')}{|r-r'|} dr'$ &  \\ \hline			
-			\makecell{Dureza Local \\(Potencial\\ Químico) ($h(r)$)}  & l\_hardness\_lcp & $ \left (f^- - \frac{\rho(r)}{N} \right) \frac{\mu}{2N} + \frac{\rho(r)}{N}\eta$ &  \\ \hline
-			\makecell{Dureza Local \\(Potencial\\ de Fukui) ($h^{-}(r)$)}  & Fukui\_pot\_left  & $\int   \frac{f^{-}(r')}{|r - r'|}dr'$ &  \\ \hline
-			\makecell{Moleza Dual\\ Local $s^{\pm}(r)$}  & softness\_dual & $Sf^{\pm}(r)$  &   \\ \hline
-			\makecell{Hiper Moleza\\Local $s^{(2)}(r)$ }  & hyper\_softness & $S^{(2)}f^{0}(r)$ &   \\ \hline
-			\makecell{Multifilicidade\\Local $ \omega^{\pm}(r)$}  & multifilicity & $\omega f^{\pm}(r)$ &   \\
+			\makecell{Densidade \\eletrônica ($\rho(r)$)} &Elec\_Dens &$\sum_{i}^{occ} |\phi(r)^2_i|$ & \makecell{Se requeridos diferenças\\ finitas ou dureza local.} \\\hline
+			\makecell{Densidade \\eletrônica do \\cátion ($\rho^{N-1}(r)$)} &Elec\_Dens\_Cation &$\sum_{i}^{occ} |\phi(r)^2_i|$ & \makecell{Escrito se foi utilizado\\ diferenças finitas.} \\\hline
+			\makecell{Densidade \\eletrônica do\\ anion ($\rho^{N+1}(r)$)} &Elec\_Dens\_Anion&$\sum_{i}^{occ} |\phi(r)_i|$ &   \makecell{Escrito se foi utilizado\\ diferenças finitas.} \\\hline
+			\makecell{Susceptibilidade \\a ataque eletrofílico\\ ($f^-(r)$)} &left\_Fukui&$\lim_{\partial N \to 0^-}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$ &  \makecell{Identifica as regiões\\ nucleofílicas.} \\  \hline	
+			\makecell{Susceptibilidade \\a ataque nucleofílico\\ ($f^+(r)$)}&right\_Fukui&$\lim_{\partial N \to 0^+}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$  & \makecell{Identifica as regiões\\ eletrofílicas.}   \\ \hline	
+			\makecell{Susceptibilidade \\a ataque radical \\($f^0(r)$)}&zero\_Fukui&$\lim_{\partial N \to 0}\left(\frac{\partial  \rho(r)}{\partial N} \right)_\nu$  & \makecell{Reatividade média.\\ Usado para ataques radicais.}   \\ \hline
+			\makecell{Descritor Dual \\($f^{\pm}(r)$)}&net\_Fukui &$\left(\frac{\partial ^2 \rho(r)}{\partial N} \right)_\nu$ & \makecell{Identifica a tendência líquida.} \\ \hline
+			\makecell{Dureza Local ($h(r)$)} &l\_hardness\_Vee &$\frac{1}{2N} \int \frac{\rho(r')}{|r-r'|} dr'$ & \makecell{Equação de trabalho\\mais tradicional.} \\ \hline			
+			\makecell{Dureza Local \\(Potencial\\ Químico) ($h(r)$)}  & l\_hardness\_lcp & $ \left (f^- - \frac{\rho(r)}{N} \right) \frac{\mu}{2N} + \frac{\rho(r)}{N}\eta$ & \makecell{Equação de trabalho\\ que integra para\\ a quantidade global.} \\ \hline
+			\makecell{Dureza Local \\(Potencial\\ de Fukui) ($h^{-}(r)$)}  & Fukui\_pot\_left  & $\int   \frac{f^{-}(r')}{|r - r'|}dr'$ &  \makecell{Equação de trabalho\\ que aproxima a densidade \\de carga para $f^{-}$.} \\ \hline
+			\makecell{Moleza Dual\\ Local $s^{\pm}(r)$}  & softness\_dual & $Sf^{\pm}(r)$  &  - \\ \hline
+			\makecell{Hiper Moleza\\Local $s^{(2)}(r)$ }  & hyper\_softness & $S^{(2)}f^{0}(r)$ & - \\ \hline
+			\makecell{Multifilicidade\\Local $ \omega^{\pm}(r)$}  & multifilicity & $\omega f^{\pm}(r)$ &  - \\
 			\bottomrule
 		\end{tabular} 
 		\label{tab_local1}	
@@ -610,9 +611,9 @@ Na \autoref{tab_local1} estão listados todos os descritores locais obtidos pelo
 			\midrule
 			\makecell{Densidade \\eletrônica ($\rho(k)$)} & Electron\_density & &  \\\hline
 			\makecell{Carga parcial ($q(k)$)} & charge & - & \makecell{Extraído do arquivo\\ de saída do pacote de\\ química computacional}  \\\hline
-			\makecell{Susceptibilidade\\eletrofílica ($f^-(k)$) } & eletrophilicidade & &    \\  \hline	
-			\makecell{Susceptibilidade\\nucleofílica ($f^+(k)$)}& nucleophilicity  & &    \\ \hline	
-			\makecell{Susceptibilidade\\radical ($f^0(k))$}& radicality & &    \\ \hline
+			\makecell{Susceptibilidade \\a ataque eletrofílico\\($f^-(k)$) } & nucleophilicity & &    \\  \hline	
+			\makecell{Susceptibilidade \\a ataque nucleofílico\\($f^+(k)$)}& electrophilicity  & &    \\ \hline	
+			\makecell{Susceptibilidade \\a ataque radical \\($f^0(k))$}& radicality & &    \\ \hline
 			\makecell{Descritor dual ($f^{\pm}(k)$)}  & netphilicity & & \\ \hline			
 			\makecell{Dureza local (potencial\\elétron-elétron)($h(k)^{\nu_{ee}}$) }  & hardness\_Vee &  &  \\ \hline
 			\makecell{Dureza local (potencial\\químico)($h(k)^{LCP}$)}  & hardness\_lcp &  &  \\ \hline
