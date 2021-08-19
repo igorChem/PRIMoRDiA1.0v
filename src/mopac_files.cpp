@@ -670,7 +670,20 @@ void mopac_files::parse_mgf(){
 		m_log->input_message(molecule.get_ao_number() );
 		m_log->input_message("\n");
 		m_log->inp_delim(2);
-	
+		
+		/*
+		if ( molecule.betad ){
+			for(unsigned int i=0;i<=molecule.homoN;i++){
+				molecule.energy_tot += molecule.orb_energies[i];
+				molecule.energy_tot += molecule.orb_energies_beta[i];
+			}
+		}else{
+			for(unsigned int i=0;i<=molecule.homoN;i++){
+				molecule.energy_tot += 2*molecule.orb_energies[i];
+			}
+		}
+		 */
+		
 	}else{
 		m_log->write_error("MGF file does not exist, skipping its parsing process!");
 	}

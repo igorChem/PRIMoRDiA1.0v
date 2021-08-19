@@ -263,13 +263,14 @@ void primordia::init_FD(const char* file_neutro	,
 			if ( Program == "orca" ) { grid3.calculate_density_orca(); }
 			else { grid3.calculate_density(); }
 			
-			lrdVol = local_rd(grid1.density,grid2.density,grid3.density,charge);
+			local_rd lrdVol_1(grid1.density,grid2.density,grid3.density,charge);
 			if ( loc_hard == "TFD" ){ lrdVol.TFD = true;};
-			lrdVol.calculate_Fukui_potential();
-			lrdVol.calculate_RD(grd);
-			lrdVol.calculate_hardness(grd);
-			lrdVol.calculate_MEP(molecule_a);
-			lrdVol.write_LRD();
+			lrdVol_1.calculate_Fukui_potential();
+			lrdVol_1.calculate_RD(grd);
+			lrdVol_1.calculate_hardness(grd);
+			lrdVol_1.calculate_MEP(molecule_a);
+			lrdVol_1.write_LRD();
+			lrdVol = move(lrdVol_1);
 			if ( pymol_script ) {
 				mol_info.write_pdb();
 				scripts pymol_s( name,"pymols" );

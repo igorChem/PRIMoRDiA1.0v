@@ -187,8 +187,8 @@ local_rd& local_rd::operator=(local_rd&& lrd_rhs) noexcept {
 		FD				= lrd_rhs.FD;
 		charge			= lrd_rhs.charge;
 		LH				= lrd_rhs.LH;
-		rd_names		= move(rd_names);
-		lrds			= move(lrds);
+		rd_names		= move(lrd_rhs.rd_names);
+		lrds			= move(lrd_rhs.lrds);
 	}
 	return *this;
 }

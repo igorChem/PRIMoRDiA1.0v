@@ -55,11 +55,11 @@ scripts::scripts(	string Nm	,
 	if ( s_type == "pymols" || s_type == "pymols_pdb" ){
 		fname += ".pym";
 	}else{
-		fname += ".R";		
+		fname += ".R";
 	}
-	script_file.open( fname.c_str() );	
+	script_file.open( fname.c_str() );
 	
-	if( s_type == "pymols" || s_type == "pymols_pdb" ){		
+	if( s_type == "pymols" || s_type == "pymols_pdb" ){
 		script_file << "preset.publication(selection='all')\n"
 					<< "set sphere_scale, 0.2\n"
 					<< "set bg_rgb, white \n"
@@ -108,7 +108,7 @@ void scripts::write_r_dos(vector<double>& energies){
 /****************************************************************************/
 void scripts::write_pymol_cube(local_rd& lrdVol, bool fixed){
 	
-	if ( lrdVol.lrds[0].voxelN > 0 ){
+	if ( lrdVol.lrds[5].voxelN > 0 ){
 		string pdb_name = file_name + ".pdb";
 		std::string typestr;
 		if ( lrdVol.FD ){ 
