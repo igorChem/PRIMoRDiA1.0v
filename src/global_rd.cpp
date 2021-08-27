@@ -183,7 +183,7 @@ global_rd& global_rd::operator=(global_rd&& rd_rhs) noexcept {
 /*****************************************************************************************/
 void global_rd::calculate_rd(){
 		grds[7] = -( grds[5] + grds[6] )/2; // electronic chemical potential
-		grds[8] = ( grds[5] - grds[6] )/2; //hardness
+		grds[8] = ( grds[6] - grds[5] )/2; //hardness
 		grds[9] = 1/grds[8]; // softness
 		
 		grds[10] = grds[7]*grds[7]*grds[9]/2; // total electrophilicity

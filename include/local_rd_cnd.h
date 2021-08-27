@@ -64,7 +64,7 @@ class local_rd_cnd{
 		protein_lrd rd_protein(const Iprotein& prot);
 		void write_rd_protein_pdb(const Iprotein& protein);
 		void write_rd_protein_reaction(const Iprotein& prot);
-		void write_LRD();
+		void write_LRD(const Imolecule& mol);
 };
 
 #endif 

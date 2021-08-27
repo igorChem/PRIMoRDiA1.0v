@@ -160,7 +160,7 @@ void scripts::write_pymol_pdb(){
 	
 	
 	//std::ofstream script_f;
-	string fname = get_file_name( file_name.c_str() );	
+	string fname = get_file_name( file_name.c_str() );
 	fname += ".pym";
 	//script_f.open( fname.c_str() );
 

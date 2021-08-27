@@ -439,7 +439,8 @@ void local_rd::calculate_MEP(const Imolecule& mol){
 					if ( r == 0.000 ){
 						MEP[x*g1*g1+y*g2+z] += 0;
 					}else{
-						MEP[x*g1*g1+y*g2+z] += mol.atoms[na].atomicN/r - lrds[10].scalar[x*g1*g1+y*g2+z];
+						MEP[x*g1*g1+y*g2+z] += mol.atoms[na].charge /r;
+						
 					}
 				}
 			}

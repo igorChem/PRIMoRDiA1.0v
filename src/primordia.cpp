@@ -148,7 +148,7 @@ void primordia::init_FOA(const char* file_neutro,
 		lrdCnd.calculate_hardness(grd,molecule);
 		lrdCnd.calculate_RD(grd);
 		lrdCnd.calculate_mep(molecule);
-		lrdCnd.write_LRD();
+		lrdCnd.write_LRD(molecule);
 		// if composite hardness was used 
 		if ( comp_H ){
 			ch_rd = comp_hard(grd,lrdCnd,molecule,den);
@@ -246,7 +246,7 @@ void primordia::init_FD(const char* file_neutro	,
 		lrdCnd.calculate_hardness(grd,molecule_a);
 		lrdCnd.calculate_RD(grd);
 		lrdCnd.calculate_mep(molecule_a);
-		lrdCnd.write_LRD();
+		lrdCnd.write_LRD(molecule_a);
 		// calculates composite hardness if required
 		if ( comp_H ){
 			ch_rd = comp_hard(grd,lrdCnd,molecule_a,den);
@@ -262,13 +262,14 @@ void primordia::init_FD(const char* file_neutro	,
 			gridgen grid3 ( grdN, move(molecule_c) );
 			if ( Program == "orca" ) { grid3.calculate_density_orca(); }
 			else { grid3.calculate_density(); }
-			
+			grid2.molecule.clear();
+			grid3.molecule.clear();
 			local_rd lrdVol_1(grid1.density,grid2.density,grid3.density,charge);
 			if ( loc_hard == "TFD" ){ lrdVol.TFD = true;};
 			lrdVol_1.calculate_Fukui_potential();
 			lrdVol_1.calculate_RD(grd);
 			lrdVol_1.calculate_hardness(grd);
-			lrdVol_1.calculate_MEP(molecule_a);
+			lrdVol_1.calculate_MEP(grid1.molecule);
 			lrdVol_1.write_LRD();
 			lrdVol = move(lrdVol_1);
 			if ( pymol_script ) {
@@ -343,14 +344,14 @@ void primordia::init_protein_RD(const char* file_name	,
 			lrdCnd.calculate_mep(molecule);
 			bio_rd = lrdCnd.rd_protein(pdbfile);
 			lrdCnd.write_rd_protein_pdb(pdbfile);
-			lrdCnd.write_LRD();
+			lrdCnd.write_LRD(molecule);
 		}else{
 			lrdCnd.calculate_frontier_orbitals(molecule,0);
 			lrdCnd.calculate_fukui_potential(molecule);
 			lrdCnd.calculate_hardness(grd,molecule);
 			lrdCnd.calculate_RD(grd);
 			lrdCnd.calculate_mep(molecule);
-			lrdCnd.write_LRD();
+			lrdCnd.write_LRD(molecule);
 		}
 		if ( pymol_script ) { 
 			scripts pymol_pdb( name, "pymols_pdb" );

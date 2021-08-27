@@ -206,7 +206,7 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 							molecule.m_overlap[ nu+( mu*(mu+1) )/2];
 				}
 			}
-		}		
+		}
 		//-------------------------------------------------
 		//calculating the virtual molecular orbitals
 		for( unsigned i=lumon; i<=fin; i++ ){
@@ -219,7 +219,7 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 			}
 		}
 		
-		//--------------------------------------------------		
+		//--------------------------------------------------
 		// calculting the beta orbitals
 		if ( molecule.betad ){
 			//calculating the occupied molecular orbitals
@@ -558,8 +558,7 @@ void local_rd_cnd::calculate_mep(const Imolecule& molecule){
 				zi = molecule.atoms[i].zcoord - molecule.atoms[j].zcoord;
 				zi *= zi;
 				r  = sqrt(xi+yi+zi);
-				lrds[15][i] += molecule.atoms[j].atomicN/r;
-				lrds[15][i] -= lrds[4][i];
+				lrds[15][i] += molecule.atoms[j].charge/r;
 			}
 		}
 	}
@@ -683,7 +682,7 @@ void local_rd_cnd::write_rd_protein_pdb(const Iprotein& protein){
 	rd_results.write_models(name+"_PDB_RD");
 }
 /*************************************************************************************/
-void local_rd_cnd::write_LRD(){
+void local_rd_cnd::write_LRD(const Imolecule& mol){
 	std::string temps;
 	if ( FD ) { 
 		temps = name+"FD.lrd";
@@ -706,6 +705,8 @@ void local_rd_cnd::write_LRD(){
 	
 	for( unsigned i=0; i<lrds[0].size(); i++){
 		lrd_file	<< (i+1)
+					<< " "
+					<< mol.atoms[i].element
 					<< " ";
 		for(unsigned j=0; j<lrds.size(); j++ ){
 			lrd_file	<< lrds[j][i]
