@@ -115,7 +115,7 @@ mopac_files::mopac_files(const char* file_name):
 							RHF = true;
 						}
 					}
-				}			
+				}
 				else if ( Buffer.lines[i].IF_word(_n_elec,0,13) ){
 					string tmp_a(Buffer.lines[i].words[0],14,Buffer.lines[0].words[0].size()-14);
 					molecule.num_of_electrons = stoi(tmp_a);
@@ -182,7 +182,7 @@ void mopac_files::parse_aux(){
 	vector<unsigned> _out(6);
 	
 	Ibuffer Buffer(name_f,_keywords,_overlap);	
-	for( unsigned i=0; i<Buffer.nLines-1;i++){			
+	for( unsigned i=0; i<Buffer.nLines-1;i++){
 		if ( Buffer.lines[i].IF_word(_atom_el,0,8) ){
 			_in[0] = i+1;
 		}else if ( Buffer.lines[i].IF_word(_atom_cor,0,10) ){
@@ -210,7 +210,7 @@ void mopac_files::parse_aux(){
 	
 	
 	for( unsigned int i=_in[0]; i<_out[0]; i++ ){
-		for ( unsigned j=0;j<Buffer.lines[i].words.size();j++){
+		for ( unsigned j=0; j<Buffer.lines[i].words.size(); j++ ){
 				Iatom atom;
 				atom.set_type( Buffer.lines[i].words[j] );
 				molecule.add_atom(atom);
@@ -219,7 +219,7 @@ void mopac_files::parse_aux(){
 	
 	unsigned counter = 0;
 	
-	for (unsigned i=_out[0]; i<_in[1]; i++ ){
+	for (unsigned i=_out[0]+1; i<_in[1]-1; i++ ){
 		for ( unsigned j=0;j<Buffer.lines[i].words.size();j++){
 			molecule.atoms[counter++].atomicN  = Buffer.lines[i].get_double(0);
 		}

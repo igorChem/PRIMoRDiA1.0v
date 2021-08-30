@@ -161,6 +161,7 @@ double Iline::get_double(int pos){
 		m_log->write_error("In convert some string to int!\n verify you input file, error may be in the position of an argument!\n");
 		m_log->input_message("The problematic line is: \n\t");
 		m_log->input_message( this->get_line() );
+		m_log->input_message("\n");
 	}
 	return res;
 } 

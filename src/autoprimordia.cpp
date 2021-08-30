@@ -51,7 +51,6 @@ using std::cout;
 using std::endl;
 using std::vector;
 using std::to_string;
-
 /*************************************************************/
 AutoPrimordia::AutoPrimordia(){}
 /*************************************************************/

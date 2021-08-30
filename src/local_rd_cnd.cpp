@@ -283,6 +283,7 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 local_rd_cnd::~local_rd_cnd(){}
 /***********************************************************************************/
 void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
+	name =	molecule.name;
 	double pre_coef		= exp( -abs(energy_crit) );
 	double coefficient	= 0.0;
 	int mo_count 		= 0;
@@ -296,6 +297,8 @@ void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
 
 	for( unsigned atom=0; atom<molecule.atoms.size(); atom++ ){
 		// defining the atomic orbitals indices
+		init_orb	= 0;
+		n_aorbs		= 0;
 		if ( atom == 0 ) {
 			init_orb = 0;
 			n_aorbs  = molecule.atoms[0].orbitals.size();
@@ -306,7 +309,7 @@ void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
 			for( unsigned j=0; j<=atom; j++ ){
 				n_aorbs  += molecule.atoms[j].norb;
 			}
-		}		
+		}
 		//------------------------------------------------
 		
 		//calculating the occupied molecular orbitals

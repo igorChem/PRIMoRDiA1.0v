@@ -331,28 +331,19 @@ void primordia::init_protein_RD(const char* file_name	,
 		lrdCnd	= local_rd_cnd( molecule.atoms.size() );
 		grd.calculate_rd();
 	
-		if ( band > 0 ) {
-			if 	( bt == "EW" )	{
-				lrdCnd.energy_weighted_fukui_functions(molecule);
-			}
-			else{ 
-				lrdCnd.calculate_frontier_orbitals(molecule,band);
-			}
-			lrdCnd.calculate_fukui_potential(molecule);
-			lrdCnd.calculate_RD(grd);
-			lrdCnd.calculate_hardness(grd,molecule);
-			lrdCnd.calculate_mep(molecule);
-			bio_rd = lrdCnd.rd_protein(pdbfile);
-			lrdCnd.write_rd_protein_pdb(pdbfile);
-			lrdCnd.write_LRD(molecule);
+		if ( bt == "EW"){
+			lrdCnd.energy_weighted_fukui_functions(molecule);
 		}else{
-			lrdCnd.calculate_frontier_orbitals(molecule,0);
-			lrdCnd.calculate_fukui_potential(molecule);
-			lrdCnd.calculate_hardness(grd,molecule);
-			lrdCnd.calculate_RD(grd);
-			lrdCnd.calculate_mep(molecule);
-			lrdCnd.write_LRD(molecule);
+			lrdCnd.calculate_frontier_orbitals(molecule,band);
 		}
+		lrdCnd.calculate_fukui_potential(molecule);
+		lrdCnd.calculate_RD(grd);
+		lrdCnd.calculate_hardness(grd,molecule);
+		lrdCnd.calculate_mep(molecule);
+		bio_rd = lrdCnd.rd_protein(pdbfile);
+		lrdCnd.write_rd_protein_pdb(pdbfile);
+		lrdCnd.write_LRD(molecule);
+		
 		if ( pymol_script ) { 
 			scripts pymol_pdb( name, "pymols_pdb" );
 			pymol_pdb.write_pymol_pdb();
