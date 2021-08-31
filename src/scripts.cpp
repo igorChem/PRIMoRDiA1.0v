@@ -63,7 +63,7 @@ scripts::scripts(	string Nm	,
 		script_file << "preset.publication(selection='all')\n"
 					<< "set sphere_scale, 0.2\n"
 					<< "set bg_rgb, white \n"
-					<< "set stick_radius, 0.2\n";
+					<< "set stick_radius, 0.18\n";
 	}else{
 		script_file << "#!/usr/bin/env Rscript\n";
 	}	
@@ -106,7 +106,7 @@ void scripts::write_r_dos(vector<double>& energies){
 				 << "p\ndev.off()";
 }
 /****************************************************************************/
-void scripts::write_pymol_cube(local_rd& lrdVol, bool fixed){
+void scripts::write_pymol_cube(local_rd& lrdVol){
 	
 	if ( lrdVol.lrds[5].voxelN > 0 ){
 		string pdb_name = file_name + ".pdb";
@@ -119,41 +119,137 @@ void scripts::write_pymol_cube(local_rd& lrdVol, bool fixed){
 		}
 		
 		double mean,max,sd,min = 0.0;
+		
+		//isos used in the fukui functions and MOs
 		double iso1 = 0.0005;
 		double iso2 = 0.005;
-		double iso3 = 0.0005;
-		double iso4 = 0.005;
-		if  ( !fixed ) {	
-			lrdVol.lrds[5].get_cube_stats(mean,max,sd,min);
-			iso1 = mean;
-			iso2 = iso1*20;
-			lrdVol.lrds[6].get_cube_stats(mean,max,sd,min);
-			iso3 = mean;
-			iso4 = iso3*20;
-		}
-		lrdVol.lrds[10].get_cube_stats(mean,max,sd,min);
-		double iso5 = mean;
-		double iso6 = iso5*10;
+		double iso3 = -0.0005;
+		double iso4 = -0.005;
 		
-		script_file	<< "load "	<< pdb_name						<<  " \n"
+		//iso for LH LCP
+		lrdVol.lrds[9].get_cube_stats(mean,max,sd,min);
+		double iso5 = mean*2;
+		double iso6 = iso54*30;
+		
+		//iso for LH Vee
+		lrdVol.lrds[10].get_cube_stats(mean,max,sd,min);
+		double iso7 = mean;
+		double iso8 = iso7*10;
+		
+		//iso for potential Fukui
+		lrdVol.lrds[11].get_cube_stats(mean,max,sd,min);
+		double iso9 = mean;
+		double iso10 = iso9*10;
+		
+		
+		//iso for LH int 
+		lrdVol.lrds[14].get_cube_stats(mean,max,sd,min);
+		double iso11 = mean;
+		double iso12 = iso11*10;
+		
+		
+		lrdVol.lrds[15].get_cube_stats(mean,max,sd,min);
+		double iso13 = min*0.5;
+		double iso14 = min*0.1;
+		double iso15 = max*0.1;
+		double iso16 = max*0.5;
+		
+		//iso for right potential Fukui
+		lrdVol.lrds[12].get_cube_stats(mean,max,sd,min);
+		double iso17 = mean;
+		double iso18 = iso17*10;
+		
+		//iso for zero potential Fukui
+		lrdVol.lrds[13].get_cube_stats(mean,max,sd,min);
+		double iso19 = mean;
+		double iso20 = iso19*10;
+		
+		
+		
+		
+		script_file	<< "load "	<< pdb_name									<< " \n"
+					<< "load "	<< typestr << lrdVol.lrds[0].name			<< "_ph1.cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[0].name			<< "_ph2.cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[1].name			<< "_ph1.cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[1].name			<< "_ph2.cube\n"
 					<< "load "	<< typestr << lrdVol.lrds[5].name			<< ".cube\n"
 					<< "load "	<< typestr << lrdVol.lrds[6].name			<< ".cube\n"
 					<< "load "	<< typestr << lrdVol.lrds[7].name			<< ".cube\n"
-					<< "load "	<< typestr << lrdVol.lrds[8].name			<< ".cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[8].name			<< "_ph1.cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[8].name			<< "_ph2.cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[9].name			<< ".cube\n"
 					<< "load "	<< typestr << lrdVol.lrds[10].name			<< ".cube\n"
-					<< "volume " << typestr << lrdVol.lrds[5].name			<< "_volume, "		<< typestr << lrdVol.lrds[5].name			<< " \n" 
-					<< "volume " << typestr << lrdVol.lrds[6].name			<< "_volume, "		<< typestr << lrdVol.lrds[6].name			<< " \n" 
-					<< "volume " << typestr << lrdVol.lrds[7].name			<< "_volume, "		<< typestr << lrdVol.lrds[7].name			<< " \n" 
-					<< "volume " << typestr << lrdVol.lrds[8].name			<< "_ph1_volume, "	<< typestr << lrdVol.lrds[8].name			<< " \n" 
-					<< "volume " << typestr << lrdVol.lrds[8].name			<< "_ph2_volume, "	<< typestr << lrdVol.lrds[8].name			<< " \n" 
-					<< "volume " << typestr << lrdVol.lrds[10].name			<< "_volume, "		<< typestr << lrdVol.lrds[10].name		<< " \n" 
-					<< "volume_color " << typestr << lrdVol.lrds[5].name	<< "_volume, "		<< iso1 << " cyan 0.02 "	<< iso2 	<< " blue 0.05 \n"
-					<< "volume_color " << typestr << lrdVol.lrds[6].name	<< "_volume, "		<< iso3 << " pink 0.02 "	<< iso4		<< " red  0.05 \n"
-					<< "volume_color " << typestr << lrdVol.lrds[7].name	<< "_volume, "		<< iso1 << " yellow 0.02 "	<< iso2		<< " green 0.05 \n"
-					<< "volume_color " << typestr << lrdVol.lrds[8].name	<< "_ph1_volume, "	<< iso1 << " pink 0.03 "	<< iso2		<< " red 0.05 \n"
-					<< "volume_color " << typestr << lrdVol.lrds[8].name	<< "_ph2_volume, "	<< (-iso4) << " blue 0.05 "	<< (-iso3)	<< " cyan 0.02 \n"
-					<< "volume_color " << typestr << lrdVol.lrds[10].name	<< "_volume, "		<< iso5 << " orange 0.003 "	<< iso6		<< " purple 0.05 \n";
+					<< "load "	<< typestr << lrdVol.lrds[11].name			<< ".cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[14].name			<< ".cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[15].name			<< "_ph1.cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[15].name			<< "_ph2.cube\n"
+					<< "volume " << typestr << lrdVol.lrds[0].name			<< "_ph1_volume, "	<< typestr << lrdVol.lrds[0].name	<<	"_ph1"	<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[0].name			<< "_ph2_volume, "	<< typestr << lrdVol.lrds[0].name	<<	"_ph2"	<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[1].name			<< "_ph1_volume, "	<< typestr << lrdVol.lrds[1].name	<<	"_ph1"	<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[1].name			<< "_ph2_volume, "	<< typestr << lrdVol.lrds[1].name	<<	"_ph2"	<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[5].name			<< "_volume, "		<< typestr << lrdVol.lrds[5].name				<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[6].name			<< "_volume, "		<< typestr << lrdVol.lrds[6].name				<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[7].name			<< "_volume, "		<< typestr << lrdVol.lrds[7].name				<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[8].name			<< "_ph1_volume, "	<< typestr << lrdVol.lrds[8].name	<<	"_ph1"	<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[8].name			<< "_ph2_volume, "	<< typestr << lrdVol.lrds[8].name	<<	"_ph2"	<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[9].name			<< "_volume, "		<< typestr << lrdVol.lrds[9].name				<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[10].name			<< "_volume, "		<< typestr << lrdVol.lrds[10].name				<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[11].name			<< "_volume, "		<< typestr << lrdVol.lrds[11].name				<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[14].name			<< "_volume, "		<< typestr << lrdVol.lrds[14].name				<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[15].name			<< "_ph1_volume, "	<< typestr << lrdVol.lrds[15].name	<<	"_ph1"	<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[15].name			<< "_ph2_volume, "	<< typestr << lrdVol.lrds[15].name	<<	"_ph2"	<< " \n" 
+					<< "volume_color " << typestr << lrdVol.lrds[0].name	<< "_ph1_volume, "	<< iso1		<< " cyan 0.02 "	<< iso2		<< " blue 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[0].name	<< "_ph2_volume, "	<< iso4		<< " yellow 0.02 "	<< iso3		<< " orange 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[1].name	<< "_ph1_volume, "	<< iso1 	<< " cyan 0.02 "	<< iso2		<< " blue 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[1].name	<< "_ph2_volume, "	<< iso4		<< " yellow 0.02 "	<< iso3		<< " orange 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[5].name	<< "_volume, "		<< iso1		<< " cyan 0.02 "	<< iso2		<< " blue 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[6].name	<< "_volume, "		<< iso1		<< " pink 0.02 "	<< iso2		<< " red  0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[7].name	<< "_volume, "		<< iso1		<< " yellow 0.02 "	<< iso2		<< " green 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[8].name	<< "_ph1_volume, "	<< iso1		<< " pink 0.03 "	<< iso2		<< " red 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[8].name	<< "_ph2_volume, "	<< iso4		<< " blue 0.05 "	<< iso3		<< " cyan 0.02 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[9].name	<< "_volume, "		<< iso5		<< " limon 0.02 "	<< iso6		<< " purpleblue 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[10].name	<< "_volume, "		<< iso7		<< " brightorange 0.003 "	<< iso8	<< " purple 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[11].name	<< "_volume, "		<< iso9		<< " aquamarine 0.003 "	<< iso10 << " purple 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[14].name	<< "_volume, "		<< iso11	<< " salmon 0.003 "	<< iso12	<< " slate 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[15].name	<< "_ph1_volume, "	<< iso13	<< " greencyan  0.003 "	<< iso14	<<" skyblue  0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[15].name	<< "_ph2_volume, "	<< iso15	<< " yelloworange 0.003 "	<< iso16	<< " warmpink 0.05 \n";
+		
+		if ( extra_RD ){
+			script_file	<< "load "	<< pdb_name									<< " \n"
+						<< "load "	<< typestr << lrdVol.lrds[12].name			<< ".cube\n"
+						<< "load "	<< typestr << lrdVol.lrds[13].name			<< ".cube\n"
+						<< "load "	<< typestr << lrdVol.lrds[16].name			<< ".cube\n"
+						<< "load "	<< typestr << lrdVol.lrds[17].name			<< ".cube\n"
+						<< "load "	<< typestr << lrdVol.lrds[18].name			<< "_ph1.cube\n"
+						<< "load "	<< typestr << lrdVol.lrds[18].name			<< "_ph2.cube\n"
+						<< "load "	<< typestr << lrdVol.lrds[19].name			<< "_ph1.cube\n"
+						<< "load "	<< typestr << lrdVol.lrds[19].name			<< "_ph2.cube\n"
+						<< "load "	<< typestr << lrdVol.lrds[20].name			<< ".cube\n"
+						<< "volume " << typestr << lrdVol.lrds[12].name			<< "_volume, "	<< typestr << lrdVol.lrds[12].name		<< " \n" 
+						<< "volume " << typestr << lrdVol.lrds[13].name			<< "_volume, "	<< typestr << lrdVol.lrds[13].name		<< " \n" 
+						<< "volume " << typestr << lrdVol.lrds[16].name			<< "_volume, "	<< typestr << lrdVol.lrds[16].name		<< " \n" 
+						<< "volume " << typestr << lrdVol.lrds[17].name			<< "_volume, "	<< typestr << lrdVol.lrds[17].name		<< " \n" 
+						<< "volume " << typestr << lrdVol.lrds[18].name			<< "_ph1_volume, "	<< typestr << lrdVol.lrds[18].name	<< "_ph1"	<<	" \n" 
+						<< "volume " << typestr << lrdVol.lrds[18].name			<< "_ph2_volume, "	<< typestr << lrdVol.lrds[18].name	<< "_ph2"	<<	" \n" 
+						<< "volume " << typestr << lrdVol.lrds[19].name			<< "_ph1_volume, "	<< typestr << lrdVol.lrds[19].name	<< "_ph1"	<<	" \n" 
+						<< "volume " << typestr << lrdVol.lrds[19].name			<< "_ph2_volume, "	<< typestr << lrdVol.lrds[19].name	<< "_ph2"	<<	" \n" 
+						<< "volume " << typestr << lrdVol.lrds[20].name			<< "_volume, "		<< typestr << lrdVol.lrds[20].name	<< " \n" 
+						<< "volume " << typestr << lrdVol.lrds[21].name			<< "_volume, "		<< typestr << lrdVol.lrds[21].name	<< " \n" 
+						<< "volume_color " << typestr << lrdVol.lrds[12].name	<< "_volume, "	<< iso1	<< " cyan 0.02 "	<< iso2		<< " blue 0.05 \n"
+						<< "volume_color " << typestr << lrdVol.lrds[13].name	<< "_volume, "	<< iso1	<< " yellow 0.02 "	<< iso2		<< " orange 0.05 \n"
+						<< "volume_color " << typestr << lrdVol.lrds[16].name	<< "_volume, "	<< iso1 << " cyan 0.02 "	<< iso2		<< " blue 0.05 \n"
+						<< "volume_color " << typestr << lrdVol.lrds[17].name	<< "_volume, "	<< iso4	<< " yellow 0.02 "	<< iso3		<< " orange 0.05 \n"
+						<< "volume_color " << typestr << lrdVol.lrds[18].name	<< "_ph1_volume, "	<< iso1		<< " cyan 0.02 "	<< iso2	<< " blue 0.05 \n"
+						<< "volume_color " << typestr << lrdVol.lrds[18].name	<< "_ph2_volume, "	<< iso3		<< " pink 0.02 "	<< iso4	<< " red  0.05 \n"
+						<< "volume_color " << typestr << lrdVol.lrds[19].name	<< "_ph1_volume, "	<< iso1		<< " pink 0.02 "	<< iso2	<< " red  0.05 \n"
+						<< "volume_color " << typestr << lrdVol.lrds[19].name	<< "_ph2_volume, "	<< iso3		<< " aquamarine 0.02 "	<< iso4	<< " blue  0.05 \n"
+						<< "volume_color " << typestr << lrdVol.lrds[20].name	<< "_volume, "		<< iso3		<< " pink 0.02 "	<< iso4	<< " red  0.05 \n"
+						<< "volume_color " << typestr << lrdVol.lrds[21].name	<< "_volume, "		<< iso7		<< " brightorange 0.02 " << iso8 << " purple 0.05 \n";
+		}
+
 	}
+	
+	
 }
 /**************************************************************************/
 void scripts::write_pymol_pdb(){

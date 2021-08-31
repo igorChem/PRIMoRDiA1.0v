@@ -178,7 +178,7 @@ void primordia::init_FOA(const char* file_neutro,
 			if ( pymol_script ) {
 				mol_info.write_pdb();
 				scripts pymol_s( name,"pymols" );
-				pymol_s.write_pymol_cube(lrdVol, true);
+				pymol_s.write_pymol_cube(lrdVol);
 			}
 		}
 	}
@@ -275,7 +275,7 @@ void primordia::init_FD(const char* file_neutro	,
 			if ( pymol_script ) {
 				mol_info.write_pdb();
 				scripts pymol_s( name,"pymols" );
-				pymol_s.write_pymol_cube(lrdVol, true);
+				pymol_s.write_pymol_cube(lrdVol);
 			}			
 		}
 	}
@@ -404,7 +404,7 @@ void primordia::init_protein_RD(const char* file_name	,
 			}			
 			if ( pymol_script ){
 				scripts pymol_s (name, "pymols");
-				pymol_s.write_pymol_cube(lrdVol, true);
+				pymol_s.write_pymol_cube(lrdVol);
 			}
 		}
 	}
