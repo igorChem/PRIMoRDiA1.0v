@@ -298,7 +298,7 @@ void mopac_files::parse_aux(){
 	this->get_mo_energies(false);
 	if ( !RHF ) {
 		this->get_mo(true);
-		this->get_mo_energies(true);		
+		this->get_mo_energies(true);
 	}	
 	
 	counter = 0;

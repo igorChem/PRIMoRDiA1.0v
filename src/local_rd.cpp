@@ -373,24 +373,16 @@ void local_rd::calculate_hardness(const global_rd& grd){
 	//----------------------------------------------------------------------------
 	
 	if ( TFD ){
-		Icube density_rc	= lrds[2].scale_cube(0.3333333);
-		double Ck	= (3.0/10.0)*pow((3.0*M_PI*M_PI),2.0/3.0);
-		double Cx	= (3.0/4.0*M_PI)*pow((3*M_PI*M_PI),1.0/3.0);
-		double con	= 2.0/(9.0*numofelec);
-		lrds[21]	= density_rc*con;
-		Icube temp1	= density_rc;
-		Icube temp2	= density_rc;
-		Icube temp3	= density_rc;
-		temp1 = temp1*5.0*Ck - 2.0*Cx;
-		temp2 = density_rc*0.458;
-		temp3 = temp2 + 1.0; 
-		temp3 = temp3.scale_cube(3.0);
-		
-		temp2 = temp2+2.0;
-		temp2 = temp2/temp3;
-		temp2 = temp2*-0.0466;
-		lrds[21] = lrds[21]*(temp1-temp2);
+		Icube density_rc1	= lrds[2].scale_cube(0.6666667);
+		Icube density_rc2	= lrds[2].scale_cube(0.3333333);
+		double Ck	= 2.8172;
+		double Cx	= 0.7386;
+		double con1	= 10.0/(9.0*numofelec);
+		double con2	= 4/(9.0*numofelec);
+		lrds[21] = density_rc1*(Ck*con1);
 		lrds[21] = lrds[21]+lrds[10];
+		density_rc2 = density_rc2*(Cx*con2);
+		lrds[21] = lrds[21] - density_rc2;
 	}
 }
 /***********************************************************************************/
@@ -467,44 +459,43 @@ void local_rd::write_LRD(){
 	
 	if ( FD )  {
 		typestr = "Descriptor calculated with Finite Differences approximation \n";
-		typestr2 = "FD";
+		typestr2 = "FD_";
 	}else{
 		typestr = "Descriptor calculated with Frozen Orbital Approximation \n";
-		typestr2 = "FOA";
+		typestr2 = "FOA_";
 	}
 	
 	string name_type = name + typestr2;
 	std::vector<string>	cube_names;
 
-	cube_names.push_back(name_type+"_HOMO_ph1");			// 0
-	cube_names.push_back(name_type+"_HOMO_ph2");			// 1
-	cube_names.push_back(name_type+"_LUMO_ph1");			// 2
-	cube_names.push_back(name_type+"_LUMO_ph2");			// 3
-	cube_names.push_back(name_type+"_Elec_Dens");			// 4
-	cube_names.push_back(name_type+"_Elec_Dens_Cation");	// 5
-	cube_names.push_back(name_type+"_Elec_Dens_Anion");		// 6
-	cube_names.push_back(name_type+"_left_Fukui");			// 7
-	cube_names.push_back(name_type+"_right_Fukui");			// 8
-	cube_names.push_back(name_type+"_zero_Fukui");			// 9
-	cube_names.push_back(name_type+"_net_Fukui_ph1");		// 10
-	cube_names.push_back(name_type+"_net_Fukui_ph2");		// 11
-	cube_names.push_back(name_type+"_l_hardness_lcp");		// 12
-	cube_names.push_back(name_type+"_l_hardness_Vee");		// 13
-	cube_names.push_back(name_type+"_Fukui_pot_left");		// 14
-	cube_names.push_back(name_type+"_Fukui_pot_right");		// 15
-	cube_names.push_back(name_type+"_Fukui_pot_avg");		// 16
-	cube_names.push_back(name_type+"_l_hardness_int_ph1");	// 17
-	cube_names.push_back(name_type+"_l_hardness_int_ph2");	// 18
-	cube_names.push_back(name_type+"_softness_dual_ph1");	// 19
-	cube_names.push_back(name_type+"_softness_dual_ph2");	// 20
-	cube_names.push_back(name_type+"_softness_avg");		// 21
-	cube_names.push_back(name_type+"_hyper_softness");		// 22
-	cube_names.push_back(name_type+"_mep_ph1");				// 23
-	cube_names.push_back(name_type+"_mep_ph2");				// 24
-	cube_names.push_back(name_type+"_mo_band");				// 25
-	cube_names.push_back(name_type+"_l_hardness_tfd");		// 26
-	cube_names.push_back(name_type+"_multifilicity_ph1");	// 27
-	cube_names.push_back(name_type+"_multifilicity_ph2");	// 28
+	cube_names.push_back(name_type+rd_names[0]+"_ph1");	// 0
+	cube_names.push_back(name_type+rd_names[0]+"_ph2");	// 1
+	cube_names.push_back(name_type+rd_names[1]+"_ph1");	// 2
+	cube_names.push_back(name_type+rd_names[1]+"_ph2");	// 3
+	cube_names.push_back(name_type+rd_names[2]);		// 4
+	cube_names.push_back(name_type+rd_names[3]);		// 5
+	cube_names.push_back(name_type+rd_names[4]);		// 6
+	cube_names.push_back(name_type+rd_names[5]);		// 7
+	cube_names.push_back(name_type+rd_names[6]);		// 8
+	cube_names.push_back(name_type+rd_names[7]);		// 9
+	cube_names.push_back(name_type+rd_names[8]+"_ph1");	// 10
+	cube_names.push_back(name_type+rd_names[8]+"_ph2");	// 11
+	cube_names.push_back(name_type+rd_names[9]);		// 12
+	cube_names.push_back(name_type+rd_names[10]);		// 13
+	cube_names.push_back(name_type+rd_names[11]);		// 14
+	cube_names.push_back(name_type+rd_names[12]);		// 15
+	cube_names.push_back(name_type+rd_names[13]);		// 16
+	cube_names.push_back(name_type+rd_names[14]);		// 17
+	cube_names.push_back(name_type+rd_names[15]+"_ph1");// 18
+	cube_names.push_back(name_type+rd_names[15]+"_ph2");// 19
+	cube_names.push_back(name_type+rd_names[16]);		// 20
+	cube_names.push_back(name_type+rd_names[17]);		// 21
+	cube_names.push_back(name_type+rd_names[18]+"_ph1");// 22
+	cube_names.push_back(name_type+rd_names[18]+"_ph2");// 23
+	cube_names.push_back(name_type+rd_names[19]+"_ph1");// 24
+	cube_names.push_back(name_type+rd_names[19]+"_ph2");// 25
+	cube_names.push_back(name_type+rd_names[20]);		// 26
+	cube_names.push_back(name_type+rd_names[21]);		// 27
 	
 	lrds[0].header	= "Highest energy Occupied Molecular Orbital\n" + typestr;
 	lrds[1].header	= "Lowest energy Unnocupied Molecular Orbital\n"+ typestr;
@@ -523,56 +514,59 @@ void local_rd::write_LRD(){
 	lrds[14].header	= "Local hardness, using the Fukui function to distribute the global hardness\n" + typestr;
 	lrds[15].header	= "Local softness, using the the net Fukui function to distribute the global sofntess\n"+ typestr;
 	lrds[16].header	= "Local softness, using the the average Fukui function to distribute the global sofntess\n"+ typestr;
-	lrds[17].header	= "Hiper local softness\n" + typestr;
+	lrds[17].header	= "Hyper local softness\n" + typestr;
 	lrds[18].header	= "Multifilicity\n" + typestr;	
 	lrds[19].header	= "Molecular Electrostatic Potential\n" + typestr;
 	lrds[20].header	= "Molecular Orbitals band localization\n" + typestr;
 	lrds[21].header	= "Local hardness based on the Thomas-Fermi-Dirac functionals definitions\n" + typestr;
 	
+	for(unsigned i=0;i<lrds.size();i++){
+		lrds[i].name = rd_names[i];
+	}
+		
 	if ( FD ){
-		lrds[2].write_cube(cube_names[4]+".cube");
-		lrds[3].write_cube(cube_names[5]+".cube");
-		lrds[4].write_cube(cube_names[6]+".cube");
+		lrds[2].write_cube(cube_names[4]+".cube"); //electron density
+		lrds[3].write_cube(cube_names[5]+".cube"); //electron density cation
+		lrds[4].write_cube(cube_names[6]+".cube"); //electron density anion
 	}else{
-		lrds[0].write_cube(cube_names[0]+".cube");
-		lrds[0].write_cube(cube_names[1]+".cube");
-		lrds[1].write_cube(cube_names[2]+".cube");
-		lrds[1].write_cube(cube_names[3]+".cube");
+		lrds[0].write_cube(cube_names[0]+".cube"); // HOMO ph1
+		lrds[0].write_cube(cube_names[1]+".cube"); // HOMO ph2
+		lrds[1].write_cube(cube_names[2]+".cube"); // LUMO ph1
+		lrds[1].write_cube(cube_names[3]+".cube"); // LUMO ph2
 	}
 	
 	//Default ouutput
-	lrds[5].write_cube(cube_names[7]+".cube");
-	lrds[6].write_cube(cube_names[8]+".cube");
-	lrds[7].write_cube(cube_names[9]+".cube");
-	lrds[8].write_cube(cube_names[10]+".cube");
-	lrds[8].write_cube(cube_names[11]+".cube");
-	lrds[11].write_cube(cube_names[14]+".cube");
-	lrds[14].write_cube(cube_names[17]+".cube");
-	lrds[14].write_cube(cube_names[18]+".cube");
-	lrds[15].write_cube(cube_names[19]+".cube");
-	lrds[15].write_cube(cube_names[20]+".cube");
+	lrds[5].write_cube(cube_names[7]+".cube"); // left Fukui
+	lrds[6].write_cube(cube_names[8]+".cube"); // right Fukui
+	lrds[7].write_cube(cube_names[9]+".cube"); // zero Fukui
+	lrds[8].write_cube(cube_names[10]+".cube"); // dual Fukui ph1
+	lrds[8].write_cube(cube_names[11]+".cube"); // dual Fukui ph2
+	lrds[11].write_cube(cube_names[14]+".cube"); // left Fukui potential 
+	lrds[14].write_cube(cube_names[17]+".cube"); // local hardnes int
+	lrds[15].write_cube(cube_names[19]+".cube"); // local softness dual ph1
+	lrds[15].write_cube(cube_names[20]+".cube"); // local softness dual ph2
 
-	
+
 	if ( LH ){
-		lrds[9].write_cube(cube_names[12]+".cube");
-		lrds[10].write_cube(cube_names[13]+".cube");
-		lrds[19].write_cube(cube_names[23]+".cube");
-		lrds[19].write_cube(cube_names[24]+".cube");
+		lrds[9].write_cube(cube_names[12]+".cube"); //local hardness lcp
+		lrds[10].write_cube(cube_names[13]+".cube"); // local hardness Vee
+		lrds[19].write_cube(cube_names[24]+".cube"); // MEP ph1
+		lrds[19].write_cube(cube_names[25]+".cube"); // MEP ph2
 		if ( TFD ){
-			lrds[21].write_cube(cube_names[26]+".cube");
+			lrds[21].write_cube(cube_names[27]+".cube"); // local hardness TFD complete functional
 		}
 	}
 	
 	if ( extra_RD ){
-		lrds[12].write_cube(cube_names[15]+".cube");
-		lrds[13].write_cube(cube_names[16]+".cube");
-		lrds[16].write_cube(cube_names[21]+".cube");
-		lrds[17].write_cube(cube_names[22]+".cube");
-		lrds[18].write_cube(cube_names[27]+".cube");
-		lrds[18].write_cube(cube_names[28]+".cube");
+		lrds[12].write_cube(cube_names[15]+".cube"); // right Fukui potential
+		lrds[13].write_cube(cube_names[16]+".cube"); // zero Fukui potential
+		lrds[16].write_cube(cube_names[21]+".cube"); // local sofntess average
+		lrds[17].write_cube(cube_names[22]+".cube"); // hyper local softness
+		lrds[18].write_cube(cube_names[22]+".cube"); // multiphilicity ph1
+		lrds[18].write_cube(cube_names[23]+".cube"); // multiphilicity ph2
 	}
 	if ( band ){
-		lrds[20].write_cube(cube_names[25]+".cube");
+		lrds[20].write_cube(cube_names[26]+".cube"); // MO band localization
 	}
 
 	m_log->input_message("Finishing writting the local reactivity descriptos grids.\n");

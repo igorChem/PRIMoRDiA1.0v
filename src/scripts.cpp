@@ -112,10 +112,10 @@ void scripts::write_pymol_cube(local_rd& lrdVol, bool fixed){
 		string pdb_name = file_name + ".pdb";
 		std::string typestr;
 		if ( lrdVol.FD ){ 
-			typestr = "_FD";
+			typestr = lrdVol.name+"FD_";
 		}
 		else{ 
-			typestr = "_FOA";
+			typestr = lrdVol.name+"FOA_";
 		}
 		
 		double mean,max,sd,min = 0.0;
@@ -136,23 +136,23 @@ void scripts::write_pymol_cube(local_rd& lrdVol, bool fixed){
 		double iso6 = iso5*10;
 		
 		script_file	<< "load "	<< pdb_name						<<  " \n"
-					<< "load "	<< lrdVol.lrds[5].name			<< ".cube\n"
-					<< "load "	<< lrdVol.lrds[6].name			<< ".cube\n"
-					<< "load "	<< lrdVol.lrds[7].name			<< ".cube\n"
-					<< "load "	<< lrdVol.lrds[8].name			<< ".cube\n"
-					<< "load "	<< lrdVol.lrds[10].name			<< ".cube\n"
-					<< "volume " << lrdVol.lrds[5].name			<< "_vol, "	<< lrdVol.lrds[5].name			<< " \n" 
-					<< "volume " << lrdVol.lrds[6].name			<< "_vol, " << lrdVol.lrds[6].name			<< " \n" 
-					<< "volume " << lrdVol.lrds[7].name			<< "_vol, " << lrdVol.lrds[7].name			<< " \n" 
-					<< "volume " << lrdVol.lrds[8].name			<< "_vol, " << lrdVol.lrds[8].name			<< " \n" 
-					<< "volume " << lrdVol.lrds[8].name			<< "2_vol, "<< lrdVol.lrds[8].name			<< " \n" 
-					<< "volume " << lrdVol.lrds[10].name		<< "_vol, " << lrdVol.lrds[10].name		<< " \n" 
-					<< "volume_color " << lrdVol.lrds[5].name	<< "_vol, " << iso1 << " cyan 0.02 "	<< iso2 	<< " blue 0.05 \n"
-					<< "volume_color " << lrdVol.lrds[6].name	<< "_vol, " << iso3 << " pink 0.02 "	<< iso4		<< " red  0.05 \n"
-					<< "volume_color " << lrdVol.lrds[7].name	<< "_vol, " << iso1 << " yellow 0.02 "	<< iso2		<< " green 0.05 \n"
-					<< "volume_color " << lrdVol.lrds[8].name	<< "_vol, " << iso1 << " pink 0.03 "	<< iso2		<< " red 0.05 \n"
-					<< "volume_color " << lrdVol.lrds[8].name	<< "2_vol, "<< (-iso4) << " blue 0.05 "	<< (-iso3)	<< " cyan 0.02 \n"
-					<< "volume_color " << lrdVol.lrds[10].name	<< "_vol, " << iso5 << " orange 0.003 "	<< iso6		<< " purple 0.05 \n";
+					<< "load "	<< typestr << lrdVol.lrds[5].name			<< ".cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[6].name			<< ".cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[7].name			<< ".cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[8].name			<< ".cube\n"
+					<< "load "	<< typestr << lrdVol.lrds[10].name			<< ".cube\n"
+					<< "volume " << typestr << lrdVol.lrds[5].name			<< "_volume, "		<< typestr << lrdVol.lrds[5].name			<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[6].name			<< "_volume, "		<< typestr << lrdVol.lrds[6].name			<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[7].name			<< "_volume, "		<< typestr << lrdVol.lrds[7].name			<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[8].name			<< "_ph1_volume, "	<< typestr << lrdVol.lrds[8].name			<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[8].name			<< "_ph2_volume, "	<< typestr << lrdVol.lrds[8].name			<< " \n" 
+					<< "volume " << typestr << lrdVol.lrds[10].name			<< "_volume, "		<< typestr << lrdVol.lrds[10].name		<< " \n" 
+					<< "volume_color " << typestr << lrdVol.lrds[5].name	<< "_volume, "		<< iso1 << " cyan 0.02 "	<< iso2 	<< " blue 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[6].name	<< "_volume, "		<< iso3 << " pink 0.02 "	<< iso4		<< " red  0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[7].name	<< "_volume, "		<< iso1 << " yellow 0.02 "	<< iso2		<< " green 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[8].name	<< "_ph1_volume, "	<< iso1 << " pink 0.03 "	<< iso2		<< " red 0.05 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[8].name	<< "_ph2_volume, "	<< (-iso4) << " blue 0.05 "	<< (-iso3)	<< " cyan 0.02 \n"
+					<< "volume_color " << typestr << lrdVol.lrds[10].name	<< "_volume, "		<< iso5 << " orange 0.003 "	<< iso6		<< " purple 0.05 \n";
 	}
 }
 /**************************************************************************/

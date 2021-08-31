@@ -373,7 +373,7 @@ void primordia::init_protein_RD(const char* file_name	,
 					EAS = grid.calc_EBLC_EAS();
 					NAS = grid.calc_EBLC_NAS();
 				}
-				if (  locHardness == "true" ){
+				if (  locHardness == "true" || locHardness == "TFD" ){
 					grid.calculate_density();
 					lrdVol = local_rd(grid.density,HOMO,LUMO);
 					lrdVol.calculate_hardness(grd);
@@ -389,7 +389,7 @@ void primordia::init_protein_RD(const char* file_name	,
 			}else{
 				HOMO = grid.calc_HOMO() ;
 				LUMO = grid.calc_LUMO() ;
-				if ( locHardness == "true" ){ 
+				if ( locHardness == "true" || locHardness == "TFD" ){ 
 					grid.calculate_density();
 					lrdVol = local_rd(grid.density,HOMO,LUMO);
 					lrdVol.calculate_hardness(grd);

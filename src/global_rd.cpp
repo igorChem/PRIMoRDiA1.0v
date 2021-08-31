@@ -35,32 +35,48 @@
 
 using std::move;
 
+
+std::vector<std::string> desc_names = {	"HOMO_ENERGY",				// 0
+										"LUMO_ENERGY",				// 1
+										"TOTAL_ENERGY",				// 2
+										"ENERGY_CATION",			// 3
+										"ENERGY_ANION",				// 4
+										"IONIZATION_POTENTIAL",		// 5
+										"ELECTRONIC_AFFINITY",		// 6
+										"CHEMICAL_POTENTIAL",		// 7
+										"Hardness",					// 8
+										"Softness",					// 9
+										"TOTAL_ELECTROPHILICITY",	// 10
+										"GAP",						// 11
+										"N_MAX",					// 12
+										"HEAT_OF_FORMATION"			// 13
+};
+
+//------------------------------------------------------------------------
+std::vector<std::string> desc_abrevs = {"HOMO_E", 
+										"LUMO_E",
+										"T_Energy",
+										"Energy_CAT",
+										"Energy_AN",
+										"IP",
+										"EA",
+										"ECP", 
+										"Hardness",
+										"Softness",
+										"Electrophilicity",
+										"GAP",
+										"N_MAX",
+										"HOF"
+};
 //================================================================================================
 //Class member functions definitions
 /*****************************************************************************************/
 global_rd::global_rd()		:
 	name("nonamed")			,
 	KA(false)				,
-	DF(false)				{
-		
-	rd_names = {"HOMO_ENERGY",				// 0
-				"LUMO_ENERGY",				// 1
-				"TOTAL_ENERGY",				// 2
-				"ENERGY_CATION",			// 3
-				"ENERGY_ANION",				// 4
-				"IONIZATION_POTENTIAL",		// 5
-				"ELECTRONIC_AFFINITY",		// 6
-				"CHEMICAL_POTENTIAL",		// 7
-				"HARDNESS",					// 8
-				"SOFTNESS",					// 9
-				"TOTAL_ELECTROPHILICITY",	// 10
-				"GAP",						// 11
-				"N_MAX",					// 12
-				"HEAT_OF_FORMATION"			// 13
-	};
-	
-	rd_abrev = {"HOMO_E", "LUMO_E", "T_ENERGY", "ENERGY_CAT","ENERGY_AN", "IP", "EA", "ECP", 
-				"HARDNESS","SOFTNESS","Electrophilicity","GAP", "N_MAX", "HOF"};
+	DF(false)				,
+	rd_names(desc_names)	,
+	rd_abrev(desc_abrevs)	{
 		
 	grds.resize( rd_names.size() );
 }
@@ -68,26 +84,9 @@ global_rd::global_rd()		:
 global_rd::global_rd(const Imolecule& mol)		:
 	name(mol.name)								,
 	KA(true)									,
-	DF(false)									{
-	
-	rd_names = {"HOMO_ENERGY",				// 0
-				"LUMO_ENERGY",				// 1
-				"TOTAL_ENERGY",				// 2
-				"ENERGY_CATION",			// 3
-				"ENERGY_ANION",				// 4
-				"IONIZATION_POTENTIAL",		// 5
-				"ELECTRONIC_AFFINITY",		// 6
-				"CHEMICAL_POTENTIAL",		// 7
-				"HARDNESS",					// 8
-				"SOFTNESS",					// 9
-				"TOTAL_ELECTROPHILICITY",	// 10
-				"GAP",						// 11
-				"N_MAX",					// 12
-				"HEAT_OF_FORMATION"			// 13
-	};
-	
-	rd_abrev = {"HOMO_E", "LUMO_E", "T_ENERGY", "ENERGY_CAT","ENERGY_AN", "IP", "EA", "ECP", 
-				"HARDNESS","SOFTNESS","Electrophilicity","GAP", "N_MAX", "HOF"};
+	DF(false)									,
+	rd_names(desc_names)						,
+	rd_abrev(desc_abrevs)						{
 	
 	grds.resize( rd_names.size() );
 	
@@ -105,26 +104,10 @@ global_rd::global_rd(const Imolecule& mol_neutro			,
 					 const Imolecule& mol_anion)			:
 	name(mol_neutro.name)									,
 	KA(false)												,
-	DF(true)												{
-		
-	rd_names = {"HOMO_ENERGY",				// 0
-				"LUMO_ENERGY",				// 1
-				"TOTAL_ENERGY",				// 2
-				"ENERGY_CATION",			// 3
-				"ENERGY_ANION",				// 4
-				"IONIZATION_POTENTIAL",		// 5
-				"ELECTRONIC_AFFINITY",		// 6
-				"CHEMICAL_POTENTIAL",		// 7
-				"HARDNESS",					// 8
-				"SOFTNESS",					// 9
-				"TOTAL_ELECTROPHILICITY",	// 10
-				"GAP",						// 11
-				"N_MAX",					// 12
-				"HEAT_OF_FORMATION"			// 13
-	};
+	DF(true)												,
+	rd_names(desc_names)									,
+	rd_abrev(desc_abrevs)									{
 	
-	rd_abrev = {"HOMO_E", "LUMO_E", "T_ENERGY", "ENERGY_CAT","ENERGY_AN", "IP", "EA", "ECP", 
-				"HARDNESS","SOFTNESS","Electrophilicity","GAP", "N_MAX", "HOF"};
 	
 	grds.resize( rd_names.size() );
 	
@@ -183,7 +166,7 @@ global_rd& global_rd::operator=(global_rd&& rd_rhs) noexcept {
 /*****************************************************************************************/
 void global_rd::calculate_rd(){
 		grds[7] = -( grds[5] + grds[6] )/2; // electronic chemical potential
-		grds[8] = ( grds[6] - grds[5] )/2; //hardness
+		grds[8] = -( grds[6] - grds[5] )/2; //hardness
 		grds[9] = 1/grds[8]; // softness
 		
 		grds[10] = grds[7]*grds[7]*grds[9]/2; // total electrophilicity
@@ -244,17 +227,17 @@ void global_rd::write_rd(){
 	file_grd.precision(5);
 
 	file_grd  << "Calculus method: "	<< typestr
-			  << "name: "				<<  name << "\n";
+			  << "name: "				<<  name;
 			  
 	file_grd <<  std::endl;
 	
 	for( unsigned int i=0; i<rd_abrev.size(); i++){
-		file_grd << rd_abrev[i] << " " << std::setw(10) << std::left;
+		file_grd << rd_abrev[i] << " ";
 	}	
 	file_grd <<	std::endl;
 	
 	for( unsigned int i=0; i<grds.size(); i++){
-		file_grd << grds[i] << " " << std::setw(10) << std::left;
+		file_grd << grds[i] << " ";
 	}	
 	file_grd.close();
 }

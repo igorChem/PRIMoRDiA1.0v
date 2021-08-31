@@ -533,24 +533,19 @@ void local_rd_cnd::calculate_hardness(const global_rd& grd, const Imolecule& mol
 	//----------------------------------------------------
 	//calculating local hardness with method (tomas-fermi-dirac statistical treatment)
 	if ( TFD ){
-		double Ck	= (3.0/10.0)*pow((3*M_PI*M_PI),2.0/3.0);
-		double Cx	= (3.0/4.0*M_PI)*pow((3.0*M_PI*M_PI),1.0/3.0);
+		double Ck	= 2.8172;
+		double Cx	= 0.7386;
 		std::vector<double> temp1 = lrds[14];
 		std::vector<double> temp2 = lrds[14];
-		std::vector<double> temp3 = lrds[14];
-		std::vector<double> temp4 = lrds[14];
+		
 		
 		for ( unsigned i=0; i<nof; i++ ){
-			temp1[i]	= pow(temp1[i],0.33333333);
-			lrds[16][i]	= (2.0/(9.0*molecule.num_of_electrons))*temp1[i];
-			temp2[i]	= temp2[i]*5.0*Ck - 2.0*Cx;
-			temp3[i]	= 0.458*temp1[i];
-			temp4[i]	= pow((temp3[i]+1.0),3.0);
-			temp4[i]	= -00466*( (temp3[i]+2.0) / temp4[i] );
-			lrds[16][i]	= lrds[16][i]*(temp2[i] - temp4[i]);
+			temp1[i]	= pow(temp1[i],0.6666667);
+			lrds[16][i]	= (10.0/(9.0*molecule.num_of_electrons))*temp1[i];
 			lrds[16][i] += lrds[4][i];
+			temp2[i]	= pow(temp2[i],0.3333333);
+			lrds[16][i] -= (4.0/(9.0*molecule.num_of_electrons))*temp2[i];
 		}
-		int i =0;
 	}
 }
 /*************************************************************************************/
