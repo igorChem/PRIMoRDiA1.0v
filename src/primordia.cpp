@@ -378,7 +378,6 @@ void primordia::init_protein_RD(const char* file_name	,
 					lrdVol = local_rd(grid.density,HOMO,LUMO);
 					lrdVol.calculate_hardness(grd);
 					lrdVol.calculate_MEP(molecule);
-
 				}else{ 
 					lrdVol = local_rd(HOMO,LUMO);
 				}

@@ -299,7 +299,8 @@ void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
 		// defining the atomic orbitals indices
 		init_orb	= 0;
 		n_aorbs		= 0;
-		if ( atom == 0 ) {
+		mo_count	= 0;
+		if ( atom == 0 ){
 			init_orb = 0;
 			n_aorbs  = molecule.atoms[0].orbitals.size();
 		}else{
@@ -330,18 +331,19 @@ void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
 		
 		if ( atom == 0 ){
 			m_log->input_message("Number of occupied MO used to calculate condensed to atom descriptors: ");
-			m_log->input_message(mo_count);m_log->input_message("\n");	
+			m_log->input_message(mo_count);
+			m_log->input_message("\n");	
 		}
 		
 		//------------------------------------------------
-			
+		mo_count = 0;
 		//calculating the virtual molecular orbitals
 		for( unsigned i=lumon;i<molecule.orb_energies.size();i++){
 			coefficient = exp(-abs( molecule.orb_energies[i]-molecule.lumo_energy ) );
 			if ( coefficient > pre_coef ){ 
 				mo_count++;
 				for(unsigned mu=init_orb;mu<n_aorbs;mu++){
-					for (unsigned nu=init_orb;nu<n_aorbs;nu++) {
+					for (unsigned nu=init_orb;nu<n_aorbs;nu++){
 						value_l +=coefficient*
 								molecule.coeff_MO[ao*i + mu]*
 								molecule.coeff_MO[ao*i + nu]*
@@ -383,6 +385,7 @@ void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
 				m_log->input_message("\n");			
 			}
 			
+			mo_count = 0;
 			for( int i=lumon;i<molecule.orb_energies.size();i++){
 				coefficient = exp(-abs(molecule.orb_energies_beta[i]-molecule.lumo_energy ) );
 				if ( coefficient >  pre_coef  ){ 
@@ -409,6 +412,8 @@ void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
 		lrds[1][atom] = value_l;
 		lrds[12][atom]= value_h + value_l;
 		lrds[13][atom]	= molecule.atoms[atom].charge;
+		value_h = 0;
+		value_l = 0;
 	}
 	lrds[0] = norm_dvec(lrds[0],5);
 	lrds[1] = norm_dvec(lrds[1],5);
