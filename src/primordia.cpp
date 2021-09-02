@@ -169,7 +169,7 @@ void primordia::init_FOA(const char* file_neutro,
 			if ( loc_hard == "true" || loc_hard == "TFD"  ){
 				if ( loc_hard == "TFD" ){ lrdVol_1.TFD = true; }
 				lrdVol_1.calculate_hardness(grd);
-				lrdVol_1.calculate_MEP(molecule);
+				lrdVol_1.calculate_MEP(grid1.molecule);
 			}
 			lrdVol_1.calculate_Fukui_potential();
 			lrdVol_1.calculate_RD(grd);

@@ -543,8 +543,8 @@ void local_rd::write_LRD(){
 	lrds[8].write_cube(cube_names[11]+".cube"); // dual Fukui ph2
 	lrds[11].write_cube(cube_names[14]+".cube"); // left Fukui potential 
 	lrds[14].write_cube(cube_names[17]+".cube"); // local hardnes int
-	lrds[15].write_cube(cube_names[19]+".cube"); // local softness dual ph1
-	lrds[15].write_cube(cube_names[20]+".cube"); // local softness dual ph2
+	lrds[15].write_cube(cube_names[18]+".cube"); // local softness dual ph1
+	lrds[15].write_cube(cube_names[19]+".cube"); // local softness dual ph2
 
 
 	if ( LH ){
@@ -560,8 +560,8 @@ void local_rd::write_LRD(){
 	if ( extra_RD ){
 		lrds[12].write_cube(cube_names[15]+".cube"); // right Fukui potential
 		lrds[13].write_cube(cube_names[16]+".cube"); // zero Fukui potential
-		lrds[16].write_cube(cube_names[21]+".cube"); // local sofntess average
-		lrds[17].write_cube(cube_names[22]+".cube"); // hyper local softness
+		lrds[16].write_cube(cube_names[20]+".cube"); // local sofntess average
+		lrds[17].write_cube(cube_names[21]+".cube"); // hyper local softness
 		lrds[18].write_cube(cube_names[22]+".cube"); // multiphilicity ph1
 		lrds[18].write_cube(cube_names[23]+".cube"); // multiphilicity ph2
 	}
