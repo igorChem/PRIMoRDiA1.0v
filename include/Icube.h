@@ -83,7 +83,7 @@ class Icube {
 		double get_scalar(double x, double y, double z);	 
 		void add_data(std::vector < std::vector < std::vector<double> > >& data);
 		void write_cube(std::string cubeName);
-		void get_cube_stats(double& mean, double& sum, double& min, double& max);
+		void get_cube_stats(double& mean, double& min, double& max);
 		void print();
 };
 

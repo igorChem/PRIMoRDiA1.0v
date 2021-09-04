@@ -363,45 +363,28 @@ void primordia::init_protein_RD(const char* file_name	,
 			Icube LUMO;
 			Icube EAS;
 			Icube NAS;
-			if ( band  > 0 ) {
-				HOMO = grid.calc_HOMO();
-				LUMO = grid.calc_LUMO();
-				if ( bt == "BD" ){
-					EAS  = grid.calc_band_EAS(bandgap);
-					NAS  = grid.calc_band_NAS(bandgap);
-				}else if ( bt == "EW" ){
-					EAS = grid.calc_EBLC_EAS();
-					NAS = grid.calc_EBLC_NAS();
-				}
-				if (  locHardness == "true" || locHardness == "TFD" ){
-					grid.calculate_density();
-					lrdVol = local_rd(grid.density,HOMO,LUMO);
-					lrdVol.calculate_hardness(grd);
-					lrdVol.calculate_MEP(molecule);
-				}else{ 
-					lrdVol = local_rd(HOMO,LUMO);
-				}
-				lrdVol.calculate_fukui_Band(EAS,NAS);
-				lrdVol.name = name;
-				lrdVol.calculate_Fukui_potential();
-				lrdVol.calculate_RD(grd);
-				lrdVol.write_LRD();
-			}else{
-				HOMO = grid.calc_HOMO() ;
-				LUMO = grid.calc_LUMO() ;
-				if ( locHardness == "true" || locHardness == "TFD" ){ 
-					grid.calculate_density();
-					lrdVol = local_rd(grid.density,HOMO,LUMO);
-					lrdVol.calculate_hardness(grd);
-					lrdVol.calculate_MEP(molecule);
-				}else{ 
-					lrdVol = local_rd(HOMO,LUMO);
-				}
-				lrdVol.name = name;
-				lrdVol.calculate_Fukui_potential();
-				lrdVol.calculate_RD(grd);
-				lrdVol.write_LRD();
-			}			
+			HOMO = grid.calc_HOMO();
+			LUMO = grid.calc_LUMO();
+			if ( bt == "BD" ){
+				EAS  = grid.calc_band_EAS(bandgap);
+				NAS  = grid.calc_band_NAS(bandgap);
+			}else if ( bt == "EW" ){
+				EAS = grid.calc_EBLC_EAS();
+				NAS = grid.calc_EBLC_NAS();
+			}
+			if (  locHardness == "true" || locHardness == "TFD" ){
+				grid.calculate_density();
+				lrdVol = local_rd(grid.density,HOMO,LUMO);
+				lrdVol.calculate_hardness(grd);
+				lrdVol.calculate_MEP(grid.molecule);
+			}else{ 
+				lrdVol = local_rd(HOMO,LUMO);
+			}
+			lrdVol.calculate_fukui_Band(EAS,NAS);
+			lrdVol.name = name;
+			lrdVol.calculate_Fukui_potential();
+			lrdVol.calculate_RD(grd);
+			lrdVol.write_LRD();
 			if ( pymol_script ){
 				scripts pymol_s (name, "pymols");
 				pymol_s.write_pymol_cube(lrdVol);

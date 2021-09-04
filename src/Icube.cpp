@@ -442,9 +442,8 @@ void Icube::write_cube(string cubeName){
 	cube_file.close();
 }
 /***************************************************************************/
-void Icube::get_cube_stats(double& mean, double& sum, double& min, double& max){
+void Icube::get_cube_stats(double& mean, double& min, double& max){
 	mean	= mean_dvec(scalar);
-	sum		= sum_dvec(scalar);
 	min		= min_dvec(scalar);
 	max		= max_dvec(scalar);
 }

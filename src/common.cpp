@@ -186,7 +186,7 @@ double mean_dvec(std::vector<double>& vec){
 	double result = 0.0;
 	for(unsigned int i=0;i<vec.size();i++){
 		result += vec[i];
-	}	
+	}
 	return result/vec.size();
 }
 /********************************************************************************/

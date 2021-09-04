@@ -130,6 +130,7 @@ void AutoPrimordia::calculate_rd(){
 				if		( list_f.lines[i].words[j]  == "mep") mep = true;
 				else if ( list_f.lines[i].words[j]  == "vm" ) dens_tmp = list_f.lines[i].get_double(j+1);
 				else if ( list_f.lines[i].words[j]	== "EW" ) btm = "EW";
+				else if ( list_f.lines[i].words[j]	== "BD" ) btm = "BD";
 			}
 			m_log->inp_delim(2);
 			m_log->input_message("Starting New Entry!\n");
