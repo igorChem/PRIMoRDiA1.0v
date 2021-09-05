@@ -182,7 +182,7 @@ void AutoPrimordia::calculate_rd_from_traj(){
 	string temp_name3	= "";
 	string prefix		= "";
 	string out_ext		= "";
-	string program		= "";	
+	string program		= "";
 	string locHard 		= ".";
 	string btm			= "BD";
 	int gridsize		= 0;

@@ -298,20 +298,20 @@ void scripts::write_pymol_pdb(){
 				<< load_pdb_basic  << "_radicality.pdb\n"		//2
 				<< load_pdb_basic  << "_netphilicity.pdb\n"		//3
 				<< load_pdb_basic  << "_hardness_Vee.pdb\n"		//4
-				<< load_pdb_basic  << "_Fukui_pot_left.pdb\n"	//5
-				<< load_pdb_basic  << "_Fukui_pot_right.pdb\n"	//6
-				<< load_pdb_basic  << "_Fukui_pot_zero.pdb\n"	//7
-				<< load_pdb_basic  << "_softness_dual.pdb\n"	//8
-				<< load_pdb_basic  << "_hyper_softness.pdb\n"	//9
-				<< load_pdb_basic  << "_fukushima.pdb\n"		//10
-				<< load_pdb_basic  << "_mep.pdb\n"				//11
-				<< load_pdb_basic  << "_hardness_TFD.pdb\n"		//12
-				<< load_pdb_basic  << "_softness_avg.pdb\n"		//13
-				<< load_pdb_basic  << "_hardness_int.pdb\n"		//14
-				<< load_pdb_basic  << "_multiphilicity.pdb\n"	//15
-				<< load_pdb_basic  << "_charge.pdb\n"			//16
-				<< load_pdb_basic  << "_mep.pdb\n"				//17
-				<< load_pdb_basic  << "_electron_density.pdb\n"	//17
+				<< load_pdb_basic  << "_hardness_lcp.pdb\n"		//5
+				<< load_pdb_basic  << "_fukui_pot_left.pdb\n"	//6
+				<< load_pdb_basic  << "_fukui_pot_right.pdb\n"	//7
+				<< load_pdb_basic  << "_fukui_pot_zero.pdb\n"	//8
+				<< load_pdb_basic  << "_softness_dual.pdb\n"	//9
+				<< load_pdb_basic  << "_hyper_softness.pdb\n"	//10
+				<< load_pdb_basic  << "_fukushima.pdb\n"		//11
+				<< load_pdb_basic  << "_mep.pdb\n"				//12
+				<< load_pdb_basic  << "_hardness_TFD.pdb\n"		//13
+				<< load_pdb_basic  << "_softness_avg.pdb\n"		//14
+				<< load_pdb_basic  << "_hardness_int.pdb\n"		//15
+				<< load_pdb_basic  << "_multiphilicity.pdb\n"	//16
+				<< load_pdb_basic  << "_charge.pdb\n"			//17
+				<< load_pdb_basic  << "_electron_density.pdb\n"	//18
 				<< "spectrum b, blue_white_red, minimum=-0.3, maximum=0.3\n"
 				<< "spectrum b, white_yellow_orange_red_black, minimum=0.1, maximum=0.5\n"
 				<< "spectrum b, white_cyan_blue, minimum=0, maximum=0.1\n"

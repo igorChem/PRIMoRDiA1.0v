@@ -601,83 +601,103 @@ void local_rd_cnd::write_rd_protein_pdb(const Iprotein& protein){
 	Iprotein prot = protein;
 	pdb rd_results;
 	rd_results.name = get_file_name( protein.name.c_str() );
+	//-------------------------
 	prot.load_b_column(lrds[0]);
 	prot.title	= rd_results.name + "_nucleophilicity";
 	prot.remark	= "Electrophilic Attack Suscptibility at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[1]);
 	prot.title	= rd_results.name +"_electrophilicity";
 	prot.remark	= "Nucleophilic Attack Susceptibility at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[2]);
 	prot.title	= rd_results.name +"_radicality";
 	prot.remark	= "Radical Attack Susceptibility at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[3]);
 	prot.title	= rd_results.name +"_netphilicity";
 	prot.remark	= "Local netphilicity Descriptor Attack Susceptibility at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[4]);
-	prot.title	= rd_results.name + "_hardness_lcp";
+	prot.title	= rd_results.name + "_hardness_Vee";
 	prot.remark	= "Local Hardness (local chemical potential based) at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[5]);
-	prot.title 	= rd_results.name +"_hardness_Vee";
+	prot.title 	= rd_results.name +"_hardness_lcp";
 	prot.remark	= "Local Hardness (Electron-electron potential based) at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[6]);
 	prot.title	= rd_results.name +"_fukui_pot_left";
 	prot.remark	= "Local Hardness (left-Fukui potential based) at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[7]);
 	prot.title	= rd_results.name +"_fukui_pot_right";
 	prot.remark	= "Local Hardness (right-Fukui potential based) at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[8]);
 	prot.title	= rd_results.name +"_fukui_pot_zero";
 	prot.remark	= "Local Hardness (zero-Fukui potential based) at b-factor column calculated by PRIMoRDiA";
-	rd_results.models.emplace_back(prot);	
+	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[9]);
 	prot.title	= rd_results.name +"_softness_dual";
 	prot.remark	= "Local Softness (dual descriptor distribution based) at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[10]);
 	prot.title	= rd_results.name +"_hyper_softness";
 	prot.remark	= "Local Hyper Softness at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[11]);
 	prot.title	= rd_results.name +"_multiphilicity";
 	prot.remark	= "Local Multiphilicity at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[12]);
 	prot.title	= rd_results.name +"_fukushima";
 	prot.remark	= "Localization of frontier band orbitals at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[13]);
 	prot.title	= rd_results.name +"_charge";
 	prot.remark	= "Local Multiphilic descriptor  at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[14]);
 	prot.title	= rd_results.name +"_electron_density";
 	prot.remark	= "Electron Density at b-factor column calculated by PRIMoRDiA";
-	rd_results.models.emplace_back(prot);	
+	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[15]);
 	prot.title	= rd_results.name +"_mep";
 	prot.remark	= "Molecular electrostatic potential per atom at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[16]);
 	prot.title	= rd_results.name +"_hardness_TFD";
 	prot.remark	= "Local hardness with complete DFT functional per atom at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[17]);
 	prot.title	= rd_results.name +"_softness_avg";
 	prot.remark	= "Local softness using zero Fukui function per atom at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
+	//-------------------------
 	prot.load_b_column(lrds[18]);
 	prot.title	= rd_results.name +"_hardness_int";
 	prot.remark	= "Local hardness distributed by the Fukui function per atom at b-factor column calculated by PRIMoRDiA";
 	rd_results.models.emplace_back(prot);
-	
+	//-------------------------
+	//--------------------------------------------------------
 	m_log->input_message("Finishing the writting of the condensed local reactivity descriptors in PDBs.\n");
 	m_log->inp_delim(1);
 	
