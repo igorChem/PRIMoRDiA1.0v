@@ -162,7 +162,6 @@ protein_lrd::~protein_lrd(){}
 /****************************************************/
 void protein_lrd::write_protein_lrd(const Iprotein& prot){
 	
-	
 	unsigned int i,j;
 	string name_f_file = get_file_name( prot.name.c_str() );
 	name_f_file += "_residues.rslrd";
@@ -171,10 +170,13 @@ void protein_lrd::write_protein_lrd(const Iprotein& prot){
 	lrd_file.precision(6);
 	lrd_file  << std::fixed;
 	
-	lrd_file << "#res Nucleophilicity Electrophilicity RAS Netphilicity Softness Hardness_A Hardness_B Hardness_C Hardness_D Multiphilic Electrophilic Fukushima Electron_Density Softness_dual MEP\n";
+	lrd_file 	<< "#res Nucleophilicity Electrophilicity Radicality "
+				<< "Netphilicity Hardness_Vee Hardness_LCP Fukui_pot_left Fukui_pot_right Fukui_pot_zero "
+				<< "softness_dual hyper_softness Multiphilic Fukushima charge Electron_Density MEP "
+				<< "hardness_TFD softness_avg hardness_int\n";
+				
 	for( i=0; i<prot.residues.size(); i++ ){
-		lrd_file << (i+1)						
-				 << prot.residues[i].type	<< " ";
+		lrd_file << (i+1) << prot.residues[i].type	<< " ";
 		for( j=0; j<residues_rd[i].rd_sum.size(); j++){
 			lrd_file << residues_rd[i].rd_sum[j]<< " ";
 		}
@@ -185,7 +187,7 @@ void protein_lrd::write_protein_lrd(const Iprotein& prot){
 	if ( residues_rd.size() > 0 ){
 		for( j=0; j<residues_rd[0].rd_sum.size(); j++){
 			lrd_file <<  protein_sum_avg[j]	<< " ";
-		}	
+		}
 	}
 	lrd_file << endl;
 	lrd_file.close();

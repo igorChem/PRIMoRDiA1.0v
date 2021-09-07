@@ -104,6 +104,9 @@ void orca_files::parse_out(){
 		else if ( Buffer.lines[i].IF_line("Total",0,"Energy",1,7) ){
 			molecule.energy_tot = Buffer.lines[i].get_double(5);
 		}
+		else if ( Buffer.lines[i].IF_line("Electronic",0,"Energy",1,7) ){
+			molecule.elec_energy = Buffer.lines[i].get_double(5);
+		}		
 		else if ( Buffer.lines[i].IF_line("Basis",1,"set",2,7) ){
 			basis_in.push_back(i);
 		}

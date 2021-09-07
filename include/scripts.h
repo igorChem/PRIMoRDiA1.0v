@@ -50,7 +50,7 @@ class scripts{
 		void write_pymol_pdb();
 		void write_r_heatmap(std::vector< std::vector<double> > rd_numerical,std::vector<std::string> rds,std::vector<std::string> residues);
 		void write_r_residuos_barplot();
-		void write_r_reaction_analysis(traj_rd& path_rd, std::vector<std::string>& pair_labels,ReactionAnalysis& r_info,std::string& nameb );
+		void write_r_reaction_analysis(traj_rd& path_rd,ReactionAnalysis& r_info,std::string& nameb );
 };
 #endif
 //================================================================================

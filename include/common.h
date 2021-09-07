@@ -191,7 +191,7 @@ double min_dvec(std::vector<double>& vec);
  */
 double sum_dvec(std::vector<double>& vec);
 //---------------------------------------------------------------------------------------
-std::vector<double> norm_dvec(std::vector<double>& vec, double size);
+std::vector<double>& norm_dvec(std::vector<double>& vec, double size);
 //---------------------------------------------------------------------------------------
 /**
  * @brief Substring a line.

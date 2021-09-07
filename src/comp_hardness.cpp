@@ -49,10 +49,10 @@ comp_hard::comp_hard(const global_rd& grd		,
 	}
 	
 	for ( unsigned i=0; i<lrd.lrds[5].size(); i++ ){
-		l_comp_hard[0][i] = lrd.lrds[4][i]/molecule.atoms[i].wdw_volume; 	
-		l_comp_hard[1][i] = lrd.lrds[5][i]/molecule.atoms[i].wdw_volume;	
-		l_comp_hard[2][i] = lrd.lrds[6][i]/molecule.atoms[i].wdw_volume;	
-		l_comp_hard[3][i] = lrd.lrds[18][i]/molecule.atoms[i].wdw_volume;				
+		l_comp_hard[0][i] = lrd.lrds[4][i]/molecule.atoms[i].wdw_volume;
+		l_comp_hard[1][i] = lrd.lrds[5][i]/molecule.atoms[i].wdw_volume;
+		l_comp_hard[2][i] = lrd.lrds[6][i]/molecule.atoms[i].wdw_volume;
+		l_comp_hard[3][i] = lrd.lrds[18][i]/molecule.atoms[i].wdw_volume;
 	}	
 
 }

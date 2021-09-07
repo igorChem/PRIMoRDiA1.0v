@@ -62,6 +62,7 @@ string _hof		= "HEAT_OF_FORMATION:";			//6
 string _num_a_el= "NUM_ALPHA_ELECTRONS=";		//7
 string _num_b_el= "NUM_BETA_ELECTRONS=";		//8
 string _elec_en = "ENERGY_ELECTRONIC:EV=";		//9
+string _tot_en	= "TOTAL_ENERGY:EV=";			//9
 string _chg		= "CHARGE";						//10
 string _orbital = "ORBITAL";					//11
 string _inv_mat = "INVERSE_MATRIX[";			//12
@@ -140,7 +141,13 @@ mopac_files::mopac_files(const char* file_name):
 				}
 				else if ( Buffer.lines[i].IF_word(_elec_en,0,21) ){
 					string word1 ( Buffer.lines[i].words[0],21,14);
-					molecule.energy_tot = D_E_conv(word1);
+					molecule.elec_energy = D_E_conv(word1);
+					molecule.elec_energy *= 0.0367493;
+				}
+				else if ( Buffer.lines[i].IF_word(_tot_en,0,16) ){
+					string word2 ( Buffer.lines[i].words[0],16,14);
+					molecule.energy_tot = D_E_conv(word2);
+					molecule.energy_tot *= 0.0367493;
 				}
 			}
 		}else if ( check_file_ext(".out",file_name ) ) {
@@ -186,9 +193,9 @@ void mopac_files::parse_aux(){
 		if ( Buffer.lines[i].IF_word(_atom_el,0,8) ){
 			_in[0] = i+1;
 		}else if ( Buffer.lines[i].IF_word(_atom_cor,0,10) ){
-			_out[0] = i;			
+			_out[0] = i;
 		}else if ( Buffer.lines[i].IF_word(_atom_xa,0,17) ){
-			_in[1] = i+1;	
+			_in[1] = i+1;
 		}else if ( Buffer.lines[i].IF_word(_atom_ao,0,13) ){
 			_out[1] = i;
 			_in[2] = i+1;
@@ -233,8 +240,6 @@ void mopac_files::parse_aux(){
 		molecule.atoms[counter++].zcoord = Buffer.lines[i].get_double(2);
 	}
 	
-	//molecule.print_coordinates();
-	
 	for ( unsigned i=_in[2]; i<_out[2]; i++ ){
 		for ( unsigned j=0; j<Buffer.lines[i].words.size(); j++ ){ 
 			aoidx.push_back( Buffer.lines[i].get_int(j) );
@@ -256,7 +261,7 @@ void mopac_files::parse_aux(){
 
 	for (unsigned i=_in[4]; i<_out[4]; i++){
 		for ( unsigned j=0; j<Buffer.lines[i].words.size(); j++){
-			zetas.push_back( Buffer.lines[i].get_double(j) );		
+			zetas.push_back( Buffer.lines[i].get_double(j) );
 		}
 	}
 	

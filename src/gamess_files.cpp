@@ -136,8 +136,11 @@ void gamess_files::parse_log(){
 		else if ( Buffer.lines[i].IF_line("SOLVENT",4,"A.U.",7,8) ) {
 			molecule.energy_tot = stod(Buffer.lines[i].words[6]);
 		}
-		else if ( Buffer.lines[i].IF_line("TOTAL",0,"ENERGY",1,4) ) {
-			molecule.energy_tot = Buffer.lines[i].pop_double(3);
+		else if ( Buffer.lines[i].IF_line("ONE",0,"ENERGY",2,5) ) {
+			molecule.energy_tot = Buffer.lines[i].get_double(4);
+		}
+		else if ( Buffer.lines[i].IF_line("TWO",0,"ENERGY",2,5) ) {
+			molecule.energy_tot += Buffer.lines[i].get_double(4);
 		}
 	}
 

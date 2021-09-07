@@ -382,7 +382,7 @@ void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
 			if ( atom == 0 ){
 				m_log->input_message("Number of occupied beta MO used to calculate condensed to atom descriptors: ");
 				m_log->input_message(mo_count);
-				m_log->input_message("\n");			
+				m_log->input_message("\n");
 			}
 			
 			mo_count = 0;
@@ -572,17 +572,20 @@ protein_lrd local_rd_cnd::rd_protein(const Iprotein& prot){
 	vector<residue_lrd> res_rd( prot.residues.size() );
 	unsigned nof = lrds[0].size();
 	unsigned cnt = 0;
-	for( unsigned i=0; i<prot.residues.size(); i++ ){
-		for( unsigned j=0; j<prot.residues[i].atom_s; j++ ){
-			for( unsigned k=0; k<lrds.size(); k++ ){
-				res_rd[i].rd_sum[k]	+= lrds[k][cnt++];
+	unsigned atom_index = 0;
+
+	for( unsigned i=0; i<lrds.size(); i++){
+		atom_index = 0;
+		for( unsigned j=0; j<prot.residues.size(); j++){
+			for( unsigned k=0; k<prot.residues[j].atom_s;k++){
+				res_rd[j].rd_sum[i] += lrds[i][atom_index++];
 			}
 		}
 	}
 
-	for( unsigned i=0; i<res_rd.size(); i++ ){
-		for( unsigned j=0; j<res_rd[i].rd_sum.size(); j++ ){
-			res_rd[i].rd_avg[j]	+= res_rd[i].rd_sum[j]/nof;
+	for( unsigned i=0;i<res_rd.size();i++){
+		for( unsigned j=0;j<res_rd[i].rd_sum.size();j++){
+			res_rd[i].rd_avg[j] = res_rd[i].rd_avg[j]/nof;
 		}
 	}
 	

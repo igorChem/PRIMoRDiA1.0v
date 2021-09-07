@@ -70,21 +70,19 @@ AutoPrimordia::AutoPrimordia(const char* file_list):
 				if	( list_f.lines[i].words[j] == "eband" ){
 					energy_crit = list_f.lines[i].get_int(j+1);
 				}
-				else if ( list_f.lines[i].words[j] == "dos" )		dos			= true;
-				else if ( list_f.lines[i].words[j] == "extrard" )	extra_RD	= true;
+				else if	( list_f.lines[i].words[j] == "dos" )		dos			= true;
+				else if	( list_f.lines[i].words[j] == "extrard" )	extra_RD	= true;
 				else if	( list_f.lines[i].words[j] == "Rscript" )	M_R			= true;
 				else if	( list_f.lines[i].words[j] == "composite" )	comp_H		= true;
-				else if	( list_f.lines[i].words[j] == "pymols" )	
-					pymol_script = true;
+				else if	( list_f.lines[i].words[j] == "pymols" )	pymol_script= true;
 			}
 		}
 	}
 }
 /*************************************************************/
 void AutoPrimordia::init(){
-	if		( run_type == "normal" ) {
+	if		( run_type == "normal" )
 		this->calculate_rd();
-	}
 	else if	( run_type == "trajectory" ){
 		this->calculate_rd_from_traj();
 		this->md_trajectory_analysis();
@@ -123,7 +121,7 @@ void AutoPrimordia::calculate_rd(){
 			m_log->input_message("There are no contents in the line! Verify your input file!\n");
 			break;
 		}
-		else if ( list_f.lines[i].words[0][0] == '#' ){ continue; }	
+		else if ( list_f.lines[i].words[0][0] == '#' ){ continue; }
 		else{
 			mode = list_f.lines[i].get_int(0);
 			for ( unsigned j=0; j<list_f.lines[i].words.size(); j++ ){
@@ -299,6 +297,7 @@ void AutoPrimordia::calculate_rd_from_traj(){
 	temp_name = prefix;
 	temp_name2= prefix;
 	temp_name3= prefix;
+	
 	for( unsigned i=0; i<RDs.size(); i++ ){
 		temp_name += to_string( trj_info.rc1_indxs[i] );
 		if ( trj_info.ndim == 2 ){
@@ -414,14 +413,9 @@ void AutoPrimordia::reaction_analysis(){
 	
 	std::sort( trj_info.mnt_atoms.begin(), trj_info.mnt_atoms.end() );
 	trj_info.mnt_atoms.erase( std::unique(trj_info.mnt_atoms.begin(), trj_info.mnt_atoms.end() ), trj_info.mnt_atoms.end() );
-	
-	//--------------------------------------------------------
+	//------------------------------------------------------------------
 	traj_rd atoms_lrd( RDs, trj_info.mnt_atoms, trj_info.mnt_residues );
-	vector<pair_rd> pairs_lrds;
-	for( unsigned i=0; i<pr ; i++ ){
-		pairs_lrds.emplace_back( RDs, pr_ind[i][0], pr_ind[i][1] );
-	}
-	//------------------------------------------------------------------------
+	//------------------------------------------------------------------
 	string file_name = RDs[0].mol_info.name;
 	file_name += ".atom_lrd"; 
 	std::ofstream file_lrd( file_name.c_str() );
@@ -442,14 +436,8 @@ void AutoPrimordia::reaction_analysis(){
 		file_lrd << atoms_lrd.rds_labels[i] << " ";
 	}
 	
-	for( unsigned i=0; i<pr; i++ ){
-		for ( unsigned j=0; j<pairs_lrds[i].rd_labels.size(); j++){
-			file_lrd << pairs_lrds[i].rd_labels[j] << " ";
-		}
-	}
-		
-	file_lrd << "Energy HOF ECP Hardness Softness Electrophilicity";
 	
+	file_lrd << "Energy HOF ECP Hardness Softness Electrophilicity";
 	file_lrd << endl;
 	
 	for ( unsigned i=0; i<RDs.size(); i++){
@@ -468,33 +456,20 @@ void AutoPrimordia::reaction_analysis(){
 				file_lrd << atoms_lrd.atoms_rd[k][m][i] << " ";
 			}
 		}
-		for ( unsigned n=0; n<pr; n++ ){
-			file_lrd << pairs_lrds[n].CTP[i]	<< " ";
-			file_lrd << pairs_lrds[n].HPI_A[i]	<< " ";
-			file_lrd << pairs_lrds[n].HPI_B[i]	<< " ";
-			file_lrd << pairs_lrds[n].HPI_C[i]	<< " ";
-			file_lrd << pairs_lrds[n].SPI[i]	<< " ";
-			file_lrd << pairs_lrds[n].EEP[i]	<< " ";
-		}
+		
 		file_lrd	<< RDs[i].grd.grds[2]	- RDs[0].grd.grds[2]		<< " "
 					<< RDs[i].grd.grds[13]	- RDs[0].grd.grds[13]		<< " "
 					<< RDs[i].grd.grds[7]	- RDs[0].grd.grds[7]		<< " "
 					<< RDs[i].grd.grds[8]	- RDs[0].grd.grds[8]		<< " "
-					<< RDs[i].grd.grds[9]	- RDs[0].grd.grds[9]		<< " ";
+					<< RDs[i].grd.grds[9]	- RDs[0].grd.grds[9]		<< " "
+					<< RDs[i].grd.grds[10]	- RDs[0].grd.grds[10]		<< " ";
 		file_lrd << endl;
 	}
 	file_lrd.close();
 	
-	vector<string> pr_lbs;
-	for( unsigned i=0; i<pr; i++){
-		for( unsigned j=0; j<pairs_lrds[i].rd_labels.size(); j++){
-			pr_lbs.push_back(pairs_lrds[i].rd_labels[j]);
-		}
-	}
-		
 	if ( M_R ){
 		scripts r_analysis( RDs[0].mol_info.name.c_str(), "reaction_analsys" );
-		r_analysis.write_r_reaction_analysis(atoms_lrd,pr_lbs,trj_info,file_name);
+		r_analysis.write_r_reaction_analysis(atoms_lrd,trj_info,file_name);
 		if ( trj_info.mnt_residues.size() > 0 ){
 			scripts r_residues_analysis( RDs[0].mol_info.name.c_str(), "residues_analysis" );
 			r_residues_analysis.write_r_residuos_barplot();

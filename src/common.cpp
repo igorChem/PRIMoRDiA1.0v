@@ -210,14 +210,13 @@ double sum_dvec(std::vector<double>& vec){
 	return result;
 }
 /********************************************************************************/
-std::vector<double> norm_dvec(std::vector<double>& vec, double size){
-	std::vector<double> norma(vec);
+std::vector<double>& norm_dvec(std::vector<double>& vec, double size){
 	double max = sum_dvec(vec);
 	for(unsigned int i=0; i<vec.size(); i++ ){
 		vec[i] /= max;
 		vec[i] *= size;
 	}
-	return norma;
+	return vec;
 }
 /********************************************************************************/
 string str_array(std::string& line, int in, int fin){

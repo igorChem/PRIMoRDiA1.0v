@@ -371,7 +371,7 @@ void scripts::write_r_residuos_barplot(){
 				<< "geom_bar(stat='identity', color='black',fill='blue', position=position_dodge() ) +\n"
 				<< "theme_minimal()+\n"
 				<< "ylab('Nucleophilicity')+\n"
-				<< "xlab('Residues')+\n"				
+				<< "xlab('Residues')+\n"
 				<< "geom_errorbar(aes(ymin=NAS-sd$EAS,ymax=EAS+sd$EAS), width=.2, position=position_dodge(.9))\n"
 				<< "#-------------------------------------\n" 
 				<< "p2 <-ggplot(avg, aes(x=res, y=NAS)) +\n" 
@@ -391,21 +391,21 @@ void scripts::write_r_residuos_barplot(){
 				<< "p4 <-ggplot(avg, aes(x=res, y=Hardness_A)) +\n"
 				<< "geom_bar(stat='identity', color='black',fill='orange', position=position_dodge() ) +\n"
 				<< "theme_minimal()+\n"
-				<< "ylab('Hardness (LCP)')+\n"
+				<< "ylab('Hardness LCP')+\n"
 				<< "xlab('Residues')+\n"
 				<< "geom_errorbar(aes(ymin=Hardness_A-sd$Hardness_A,ymax=Hardness_A+sd$Hardness_A), width=.2, position=position_dodge(.9))\n"
 				<< "#-------------------------------------\n" 
 				<< "p5 <-ggplot(avg, aes(x=res, y=Hardness_B)) +\n"
 				<< "geom_bar(stat='identity', color='black',fill='orange', position=position_dodge() ) +\n"
 				<< "theme_minimal()+\n"
-				<< "ylab('Hardness (MEP EE)')+\n"
+				<< "ylab('Hardness Vee')+\n"
 				<< "xlab('Residues')+\n"
 				<< "geom_errorbar(aes(ymin=Hardness_B-sd$Hardness_B,ymax=Hardness_B+sd$Hardness_B), width=.2, position=position_dodge(.9))\n"
 				<< "#-------------------------------------\n" 
 				<< "p6 <-ggplot(avg, aes(x=res, y=Hardness_C)) +\n"
 				<< "geom_bar(stat='identity', color='black',fill='orange', position=position_dodge() ) +\n"
 				<< "theme_minimal()+\n"
-				<< "ylab('Hardness (Fukui Potential)')+\n"
+				<< "ylab('Fukui Potential Left')+\n"
 				<< "xlab('Residues')+\n"
 				<< "geom_errorbar(aes(ymin=Hardness_C-sd$Hardness_C,ymax=Hardness_C+sd$Hardness_C), width=.2, position=position_dodge(.9))\n"
 				<< "#-------------------------------------\n" 
@@ -418,10 +418,10 @@ void scripts::write_r_residuos_barplot(){
 				<< "#-------------------------------------\n" 
 				<< "png('EAS_res.png',units='in',res=1000,width=4.5,height=4)\n"
 				<< "p1\n"
-				<< "dev.off()\n"				
+				<< "dev.off()\n"
 				<< "png('NAS_res.png',units='in',res=1000,width=4.5,height=4)\n"
 				<< "p2\n"
-				<< "dev.off()\n"				
+				<< "dev.off()\n"
 				<< "png('NET_res.png',units='in',res=1000,width=4.5,height=4)\n"
 				<< "p3\n"
 				<< "dev.off()\n"
@@ -437,7 +437,7 @@ void scripts::write_r_residuos_barplot(){
 				<< "png('Electron_dens_res.png',units='in',res=1000,width=4.5,height=4)\n"
 				<< "p7\n"
 				<< "dev.off()\n"
-				<< "#=====================================================\n" 				
+				<< "#=====================================================\n"
 				<< "dat <-read.table('residues_data_frames',header=T)\n"
 				<< "#-------------------------------------\n"	
 				<< "pm1<-ggplot(dat, aes(x = frame, y =NAS ))+\n"
@@ -457,7 +457,7 @@ void scripts::write_r_residuos_barplot(){
 				<< "pm3<-ggplot(dat, aes(x = frame, y =Netphilicity ))+\n"
 				<< "theme_minimal()+\n"
 				<< "geom_point(aes(color=res))+\n"
-				<< "geom_smooth(aes(color=res),method='loess')+\n"				
+				<< "geom_smooth(aes(color=res),method='loess')+\n"
 				<< "ylab('Netphilicity')+\n"
 				<< "xlab('Frame')\n"
 				<< "#-------------------------------------\n"
@@ -532,18 +532,17 @@ void scripts::write_r_residuos_barplot(){
 }
 /*********************************************************************/
 void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
-										vector<string>& pair_labels	,
 										ReactionAnalysis& r_info	,
 										string& nameb				){
 											
 	
-	vector<string> gl_names		= {"HOF","ECP","Hardness","Softness","Electrophilicity","Energy"};									
+	vector<string> gl_names		= {"HOF","ECP","Hardness","Softness","Electrophilicity","Energy"};
 	vector<string> gl_legends	= {"HOF \\n(kCal/mol)",
 									"ECP (eV)",
 									"Hardness \\n(eV)",
 									"Softness \\n(eV)",
 									"Electrophilicity \\n(eV)",
-									"Energy \\n(eV)"};									
+									"Energy \\n(eV)"};
 	
 	string delim = "#====================================================\n";
 	string delim2 = "#---------------------------------------------------\n";
@@ -613,6 +612,7 @@ void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
 		}			
 	
 		c = 0;
+		/*
 		for( unsigned i=0; i<pair_labels.size(); i++){
 			pr_obj = "pr_";
 			pr_obj += to_string(c);
@@ -641,6 +641,7 @@ void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
 				script_file << delim;
 			}
 		}
+		*/
 
 		if ( r_info.nrcs == 2 ){
 			c = 0;
@@ -690,6 +691,7 @@ void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
 				}		
 			}	
 			c = 0;
+			/*
 			for( unsigned i=0; i<pair_labels.size(); i++){
 				pr_obj = "pr_";
 				pr_obj += to_string(c);
@@ -717,8 +719,10 @@ void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
 					script_file << "dev.off()\n";
 					script_file << delim;
 				}
-			}		
+			}
+			 */
 		}	
+			
 	}else if ( r_info.ndim == 2 ){
 		for( unsigned i=0; i<gl_names.size(); i++){
 			script_file << "grc1_" << to_string(i) << " <-ggplot(df1,aes(x=rc1,y=rc2,z="
@@ -769,6 +773,8 @@ void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
 					script_file<< delim;
 			}		
 		}
+		
+		/*
 		for( unsigned i=0; i<pair_labels.size(); i++){
 				pr_obj = "pr_";
 				pr_obj += to_string(c);
@@ -799,6 +805,7 @@ void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
 					script_file << delim;
 			}
 		}
+		*/
 	}
 }
 

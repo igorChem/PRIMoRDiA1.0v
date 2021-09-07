@@ -51,6 +51,7 @@ class Imolecule {
 		float mol_charge;
 		double mol_density;
 		double energy_tot; // total electronic energy. 
+		double elec_energy;
 		double homo_energy;
 		double lumo_energy;
 		double total_dipmoment;

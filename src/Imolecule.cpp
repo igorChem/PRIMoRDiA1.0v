@@ -49,6 +49,7 @@ Imolecule::Imolecule()		:
 	mol_charge(0.0)			,
 	mol_density(0.0)		,
 	energy_tot(0.0)			,
+	elec_energy(0.0)		,
 	homo_energy(0.0)		,
 	lumo_energy(1000.0)		,
 	total_dipmoment(0.0)	,
@@ -78,6 +79,7 @@ Imolecule::Imolecule(const Imolecule& rhs_molecule)		:
 	num_of_electrons(rhs_molecule.num_of_electrons)		,
 	molar_mass(rhs_molecule.molar_mass)					,
 	energy_tot(rhs_molecule.energy_tot)					,
+	elec_energy(rhs_molecule.elec_energy)				,
 	homo_energy(rhs_molecule.homo_energy)				,
 	lumo_energy(rhs_molecule.lumo_energy)				, 
 	heat_of_formation(rhs_molecule.heat_of_formation)	,
@@ -116,6 +118,7 @@ Imolecule& Imolecule::operator=(const Imolecule& rhs_molecule){
 		mol_charge		    = rhs_molecule.mol_charge;
 		molar_mass			= rhs_molecule.molar_mass;
 		energy_tot			= rhs_molecule.energy_tot;
+		elec_energy			= rhs_molecule.elec_energy;
 		homo_energy			= rhs_molecule.homo_energy;
 		lumo_energy			= rhs_molecule.lumo_energy;
 		heat_of_formation	= rhs_molecule.heat_of_formation;
@@ -158,6 +161,7 @@ Imolecule::Imolecule(Imolecule&& rhs_molecule) noexcept			:
 	mol_charge(rhs_molecule.mol_charge)							,
 	mol_density(rhs_molecule.mol_density)						,
 	energy_tot(rhs_molecule.energy_tot)							,
+	elec_energy(rhs_molecule.elec_energy)						,
 	homo_energy(rhs_molecule.homo_energy)						,
 	lumo_energy(rhs_molecule.lumo_energy)						, 
 	heat_of_formation(rhs_molecule.heat_of_formation)			,
@@ -197,6 +201,7 @@ Imolecule& Imolecule::operator=(Imolecule&& rhs_molecule) noexcept {
 		mol_density			= rhs_molecule.mol_density;
 		molar_mass			= rhs_molecule.molar_mass;
 		energy_tot			= rhs_molecule.energy_tot;
+		elec_energy			= rhs_molecule.elec_energy;
 		homo_energy			= rhs_molecule.homo_energy;
 		lumo_energy			= rhs_molecule.lumo_energy;
 		heat_of_formation	= rhs_molecule.heat_of_formation;
@@ -261,12 +266,12 @@ void Imolecule::write_xyz() {
 		xyz_file << std::fixed;
 		xyz_file << std::setw(3) << std::left << atoms[i].element
 		<< "  " 
-	    << std::setw(11) << std::right << atoms[i].xcoord 
-	    << "  "
-	    << std::setw(11) << std::right << atoms[i].ycoord
-	    << "  "
-	    << std::setw(11) << std::right << atoms[i].zcoord
-	    << "\n";
+		<< std::setw(11) << std::right << atoms[i].xcoord 
+		<< "  "
+		<< std::setw(11) << std::right << atoms[i].ycoord
+		<< "  "
+		<< std::setw(11) << std::right << atoms[i].zcoord
+		<< "\n";
 	}
 }
 /***************************************************************************************/
@@ -293,8 +298,8 @@ void Imolecule::mol_vert_up(){
 /***************************************************************************************/
 vector<double> Imolecule::extract_MO(int MO,bool beta){
 	int nMO 			= 0;
-	if ( !beta ) nMO 	= MOnmb; 
-	else         nMO 	= MOnmb_beta;
+	if ( !beta ) nMO	= MOnmb; 
+	else         nMO	= MOnmb_beta;
 	vector<double> res_mo(nMO);
 
 	for (int i=0;i<nMO;i++){
@@ -369,11 +374,12 @@ double Imolecule::get_homo(){
 		if ( occupied[i]>=1 )
 			homo_nalfa = i;
 	}
+	
 	for (unsigned int j=0;j<occupied_beta.size();j++) { 
 		if ( occupied_beta[j]>=1 )
 			homo_nbeta = j;
 	}
-		
+	
 	double homo_alfa  = orb_energies[homo_nalfa];
 	double homo_beta  = -1000.0;
 	
@@ -387,7 +393,7 @@ double Imolecule::get_homo(){
 	}
 	else if ( homo_beta >  homo_alfa ){
 		homoN 			= homo_nbeta;
-		homo_energy 	= orb_energies_beta[homo_nbeta];
+		homo_energy		= orb_energies_beta[homo_nbeta];
 	}
 	return homo_energy;
 }
