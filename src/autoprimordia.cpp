@@ -492,7 +492,6 @@ void AutoPrimordia::md_trajectory_analysis(){
 /*************************************************************/
 void AutoPrimordia::write_global(){
 
-	
 	string fn = change_extension( m_file_list, ".global");
 	std::ofstream file_grd(fn.c_str());
 	
@@ -505,7 +504,7 @@ void AutoPrimordia::write_global(){
 	file_grd << std::fixed;
 	file_grd.precision(8);
 	for(unsigned i = 0; i<RDs.size(); i++ ){
-		file_grd << RDs[i].grd.name				<< " ";
+		file_grd << RDs[i].grd.name	<< " ";
 			for(unsigned j = 0; j<RDs[i].grd.grds.size(); j++ ){
 				file_grd << RDs[i].grd.grds[j] << " ";
 			}

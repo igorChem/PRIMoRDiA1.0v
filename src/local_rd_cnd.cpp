@@ -258,8 +258,8 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 		value_l = 0;
 	}
 	if ( band >= 1 ){
-		lrds[0] = norm_dvec(lrds[0],5);
-		lrds[1] = norm_dvec(lrds[1],5);
+		lrds[0] = norm_dvec(lrds[0],3);
+		lrds[1] = norm_dvec(lrds[1],3);
 	}else{
 		lrds[0] = norm_dvec(lrds[0],1);
 		lrds[1] = norm_dvec(lrds[1],1);
@@ -415,8 +415,8 @@ void local_rd_cnd::energy_weighted_fukui_functions( const Imolecule& molecule ){
 		value_h = 0;
 		value_l = 0;
 	}
-	lrds[0] = norm_dvec(lrds[0],5);
-	lrds[1] = norm_dvec(lrds[1],5);
+	lrds[0] = norm_dvec(lrds[0],3);
+	lrds[1] = norm_dvec(lrds[1],3);
 	for( unsigned i=0; i<lrds[0].size(); i++ ){
 		lrds[3][i] = lrds[1][i] - lrds[0][i];
 		lrds[2][i] = (lrds[1][i] + lrds[0][i])/2;

@@ -84,7 +84,7 @@ traj_rd::traj_rd(	vector<primordia>& rds	,
 		tmp_name += to_string( ats[i] );
 		for ( int j=0; j<9; j++ ){
 			atoms_labels.push_back(tmp_name);
-		}		
+		}
 		
 		atoms_labels[0+i*9] +="\\nNucleophilicity";
 		atoms_labels[1+i*9] +="\\nElectrophilicity";
@@ -138,7 +138,7 @@ traj_rd::traj_rd(	vector<primordia>& rds	,
 			atoms_rd[i][0][j] = rds[j].lrdCnd.lrds[0][ ats[i]-1 ];
 			atoms_rd[i][1][j] = rds[j].lrdCnd.lrds[1][ ats[i]-1 ];
 			atoms_rd[i][2][j] = rds[j].lrdCnd.lrds[3][ ats[i]-1 ];
-			atoms_rd[i][3][j] = rds[j].lrdCnd.lrds[9][ ats[i]-1];
+			atoms_rd[i][3][j] = rds[j].lrdCnd.lrds[9][ ats[i]-1 ];
 			atoms_rd[i][4][j] = rds[j].lrdCnd.lrds[5][ ats[i]-1 ];
 			atoms_rd[i][5][j] = rds[j].lrdCnd.lrds[4][ ats[i]-1 ];
 			atoms_rd[i][6][j] = rds[j].lrdCnd.lrds[6][ ats[i]-1 ];
@@ -210,7 +210,7 @@ void traj_rd::calculate_res_stats(){
 		
 	unsigned int i,j,k;
 	
-	for( i=0; i<15; i++ ){
+	for( i=0; i<19; i++ ){
 		res_avg[i].resize( res_list.size() );
 		res_sd[i].resize( res_list.size() );
 		res_avg_all[i].resize( frames[0].residues_rd.size() );
@@ -219,7 +219,7 @@ void traj_rd::calculate_res_stats(){
 	int fsize = frames.size();
 	
 	for( k=0; k<res_list.size(); k++ ){
-		for( j=0; j<15; j++ ){
+		for( j=0; j<19; j++ ){
 			for( i=0; i<frames.size(); i++ ){
 				res_avg[j][k] += frames[i].residues_rd[ res_list[k] ].rd_sum[j];
 			}
@@ -243,7 +243,7 @@ void traj_rd::calculate_res_stats(){
 	
 	
 	for( k=0; k<res_list.size(); k++ ){
-		for( j=0; j<15; j++ ){
+		for( j=0; j<19; j++ ){
 			for( i=0; i<frames.size(); i++ ){
 				res_sd[j][k] +=((frames[i].residues_rd[res_list[k]].rd_sum[j] - res_avg[j][k])*
 								(frames[i].residues_rd[res_list[k]].rd_sum[j] - res_avg[j][k]) );
@@ -264,7 +264,7 @@ void traj_rd::write_residues_reports(){
 
 	for( unsigned i=0;i<res_list.size();i++ ){
 		for( unsigned j=0; j<frames.size(); j++ ){
-			for( int k=0; k<frames[j].residues_rd[ res_list[i] ].rd_sum.size()+2; k++){
+			for( int k=0; k<frames[j].residues_rd[ res_list[i] ].rd_sum.size(); k++){
 				if ( k == 0 ) { 
 					res_file_f << j << " ";
 				}
