@@ -18,6 +18,7 @@
 #include <string> 
 #include <fstream>
 #include "../include/comp_hardness.h"
+#include "../include/common.h"
 #include "../include/local_rd_cnd.h"
 #include "../include/global_rd.h"
 #include "../include/Imolecule.h"
@@ -49,12 +50,12 @@ comp_hard::comp_hard(const global_rd& grd		,
 	}
 	
 	for ( unsigned i=0; i<lrd.lrds[5].size(); i++ ){
-		l_comp_hard[0][i] = lrd.lrds[4][i]/molecule.atoms[i].wdw_volume;
-		l_comp_hard[1][i] = lrd.lrds[5][i]/molecule.atoms[i].wdw_volume;
-		l_comp_hard[2][i] = lrd.lrds[6][i]/molecule.atoms[i].wdw_volume;
-		l_comp_hard[3][i] = lrd.lrds[18][i]/molecule.atoms[i].wdw_volume;
+		double vdwVolume = get_wdw_volume( molecule.atoms[i].atomicN );	
+		l_comp_hard[0][i] = lrd.lrds[4][i]/vdwVolume;
+		l_comp_hard[1][i] = lrd.lrds[5][i]/vdwVolume;
+		l_comp_hard[2][i] = lrd.lrds[6][i]/vdwVolume;
+		l_comp_hard[3][i] = lrd.lrds[18][i]/vdwVolume;
 	}	
-
 }
 /********************************************************************/
 comp_hard::~comp_hard(){}
@@ -111,7 +112,7 @@ void comp_hard::calculate_protein(	const protein_lrd& lrd,
 	local_name_bio +=".local_bio_CH";
 	std::ofstream loc_nm_file( local_name_bio.c_str() );
 
-	loc_nm_file << "#res CH_Hardness_A CH_Hardness_B CH_Hardness_C CH_Hardness_D\n";
+	loc_nm_file << "#res CH_Hardness_ CH_Hardness_B CH_Hardness_C CH_Hardness_D\n";
 	for( int i=0; i<res_s ;i++ ){
 		loc_nm_file << (i+1)
 					<< prot.residues[i].type << " "
@@ -137,9 +138,9 @@ void comp_hard::write_comp_hardness(const char* name){
 
 	glob_file.close();
 
-	local_file << "#atom CH_Hardness_A CH_Hardness_B CH_Hardness_C CH_Hardness_D\n";
+	local_file << "#atom Hardness_Vee Hardness_LCP Fukui_potential Hardness\n";
 	for( int i=0; i<l_comp_hard[0].size() ;i++ ){
-		local_file << (i+1)
+		local_file << (i+1) << " "
 				<< l_comp_hard[0][i] << " "
 				<< l_comp_hard[1][i] << " "
 				<< l_comp_hard[2][i] << " "
