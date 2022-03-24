@@ -146,7 +146,11 @@ void gaussian_files::parse_fchk(){
 			if ( beta_c_i > 0 )	beta_c_f = i;
 			else alpha_c_f = i;
 		}
-		else if ( Buffer.lines[i].IF_line("QEq",0,"tensors",2,6) ) { dens_f = i; }
+		else if ( Buffer.lines[i].IF_line("QEq",0,"tensors",2,6) ) {
+			if ( dens_f == 0 ){
+				dens_f = i;			
+			}
+		}
 		else if ( Buffer.lines[i].IF_line("Mulliken",0,"Charges",1,5) ){ 
 			if ( dens_f == 0 ){
 				dens_f = i;
