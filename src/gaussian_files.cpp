@@ -101,6 +101,9 @@ void gaussian_files::parse_fchk(){
 	unsigned chgs_f		= 0;
 	unsigned dens_i		= 0;
 	unsigned dens_f		= 0;
+	unsigned dens_ib	= 0;
+	unsigned dens_fb	= 0;
+	
 	
 	vector<double>	coords;
 	vector<int>		shell_t;
@@ -146,11 +149,15 @@ void gaussian_files::parse_fchk(){
 			if ( beta_c_i > 0 )	beta_c_f = i;
 			else alpha_c_f = i;
 		}
+		else if ( Buffer.lines[i].IF_line("Spin",0,"Density",2,6) ){
+			dens_f = i;
+			//dens_ib = i;
+		}
 		else if ( Buffer.lines[i].IF_line("QEq",0,"tensors",2,6) ) {
 			if ( dens_f == 0 ){
 				dens_f = i;			
 			}
-		}
+		}		
 		else if ( Buffer.lines[i].IF_line("Mulliken",0,"Charges",1,5) ){ 
 			if ( dens_f == 0 ){
 				dens_f = i;
@@ -398,21 +405,39 @@ void gaussian_files::get_overlap_m(){
 		}
 		molecule.m_overlap.resize( ( molecule.MOnmb*(molecule.MOnmb+1) )/2 );
 		
-		unsigned int over_in, over_fin;
-		Ibuffer Buffer(log_name.c_str(),true);
-		for(int i=0;i<Buffer.nLines;i++){
-			if ( Buffer.lines[i].IF_line("***",0,"Overlap",1,3) ) 
-				over_in  = i;
-			if ( Buffer.lines[i].IF_line("***",0,"Kinetic",1,4) ) 
-				over_fin = i;
-		}
+		unsigned int over_in = 0;
+		unsigned int over_fin = 0;
+		
+		int in_indx  = 0;
+		int fin_indx = 0;
+		char tmp_line[500];
+		int i = 0;
+		std::ifstream buf(log_name.c_str() );
+		while( !buf.eof() ){
+			buf.getline(tmp_line,500);	
+			Iline Line(tmp_line);
+			if ( Line.IF_line("***",0,"Overlap",1,3) ) {
+				if ( over_in == 0 ){
+					over_in  = i;				
+				}				
+			}
+			if ( Line.IF_line("***",0,"Kinetic",1,4) ) {
+				if ( over_fin == 0 ){
+					over_fin = i;				
+				}	
+			}
+			i++;
+		}	
+		
+		Ibuffer Buffer(log_name.c_str(),over_in,over_fin);		
 	
 		int col_n = 0;
 		int row_n = 0;
 		int col_c = 0;
 	
-		for(int i=over_in+1;i<over_fin;i++){
-			if ( Buffer.lines[i].words.size() == 1 ) col_n = stoi(Buffer.lines[i].words[0]);
+		for(int i=0;i<Buffer.nLines;i++){
+			if ( Buffer.lines[i].words.size() == 1 )
+				col_n = stoi(Buffer.lines[i].words[0]);
 			else if( Buffer.lines[i].words.size() > 1 && Buffer.lines[i].words[1].size() < 6) col_n = stoi(Buffer.lines[i].words[0]);
 			else{
 				row_n = stoi(Buffer.lines[i].words[0]) -1;

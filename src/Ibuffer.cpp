@@ -68,7 +68,7 @@ Ibuffer::Ibuffer(const char* file_name	,
 			ifstream buf(file_name);
 			name = file_name;
 			while( !buf.eof() ){
-				buf.getline(tmp_line,500);
+				buf.getline(tmp_line,200);
 				nLines++;
 			}
 			buf.close();

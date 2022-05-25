@@ -106,7 +106,7 @@ local_rd::local_rd(Icube elec_dens	,
 					Icube LUmo		):
 	name(HOmo.name)							,
 	FD(false)								,
-	LH(true)								,
+	LH(false)								,
 	band(false)								,
 	charge(1)								,
 	TFD(false)								,

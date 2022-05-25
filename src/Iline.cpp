@@ -157,7 +157,7 @@ double Iline::get_double(int pos){
 	try{
 		res = stod(words[pos]);
 	}catch( const std::invalid_argument& ){
-		std::cout << "Impossible to convert to double!" << std::endl;
+		//std::cout << "Impossible to convert to double!" << std::endl;
 		m_log->write_error("In convert some string to int!\n verify you input file, error may be in the position of an argument!\n");
 		m_log->input_message("The problematic line is: \n\t");
 		m_log->input_message( this->get_line() );

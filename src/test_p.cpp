@@ -45,7 +45,9 @@ void test_p::init_general_test(){
 	//AutoPrimordia run_test("/home/igorchem/Documents/tutorials_1.2/Tutorial_3/primordia.input");
 	//AutoPrimordia run_test("/home/igorchem/Documents/tutorials_1.2/Tutorial_5/primordia.input");
 	//AutoPrimordia run_test("/home/igorchem/Documents/tutorials_1.2/Tutorial_1/primordia.input");
-	AutoPrimordia run_test("/home/igorchem/Documents/tutoriais_primordia/tutorials_1_2/Tutorial_1/primordia.input");
+	//AutoPrimordia run_test("/home/igorchem/Documents/tutoriais_primordia/tutorials_1_2/Tutorial_1/primordia.input");
+	//AutoPrimordia run_test("/home/igorchem/CCDIR/primordia_FeDFO/primordia.input");
+	AutoPrimordia run_test("/home/igorchem/CCDIR/FURG/4qsu_protein_results/primordia.input");
 	//AutoPrimordia run_test("/home/igorchem/CCDIR/calcs_turco/primordia.input");
 	run_test.init();
 }
@@ -55,7 +57,7 @@ void test_p::unit_test(){
 }
 /************************************************************************************/
 void test_p::test_reaction_analysis(){
-	AutoPrimordia run_test1d("/media/igorchem/CCDIR/ccdir/primordia_testes/enzyme_tuto/primordia.input");
+	AutoPrimordia run_test1d("/home/igorchem/CCDIR/primordia_FeDFO/primordia.input");
 	//AutoPrimordia run_test1d("/media/igorchem/CCDIR/ccdir/primordia_testes/deHalo_big335_PM7/primordia.input");
 	run_test1d.init();
 	//AutoPrimordia run_test2d("/home/igorchem/Documents/PM6_16x16/primordia.input");

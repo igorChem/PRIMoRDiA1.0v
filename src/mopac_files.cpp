@@ -74,6 +74,7 @@ string _sym_type= "ATOM_SYMTYPE";				//17
 string _ao_zeta = "AO_ZETA[";					//18
 string _ao_pqn  = "ATOM_PQN[";					//19
 string _atom_chg = "ATOM_CHARGES[";				//10
+string _gradients = "GRADIENTS:KCAL/MOL/ANGSTROM[";
 
 vector<string> _states = {"SINGLET", "DOUBLET", "TRIPLET", "QUARTET","QUINTET"};
 /**************************************/
@@ -186,9 +187,10 @@ void mopac_files::parse_aux(){
 	vector<int> shells;
 	
 	vector<unsigned> _in(7);
-	vector<unsigned> _out(6);
+	vector<unsigned> _out(7);
 	
 	Ibuffer Buffer(name_f,_keywords,_overlap);	
+	_out[6] = Buffer.nLines-1;
 	for( unsigned i=0; i<Buffer.nLines-1;i++){
 		if ( Buffer.lines[i].IF_word(_atom_el,0,8) ){
 			_in[0] = i+1;
@@ -212,6 +214,9 @@ void mopac_files::parse_aux(){
 			_out[5] = i;			
 		}else if ( Buffer.lines[i].IF_word(_atom_chg,0,13) ){
 			_in[6] = i+1;
+		}
+		else if ( Buffer.lines[i].IF_word(_gradients,0,28) ) {
+			_out[6]=i+1;
 		}
 	}
 	
@@ -273,7 +278,7 @@ void mopac_files::parse_aux(){
 	
 	counter = 0;
 	
-	for (unsigned i=_in[6]; i<Buffer.nLines-1; i++){
+	for (unsigned i=_in[6]; i<_out[6]; i++){
 		for (unsigned j=0;j<Buffer.lines[i].words.size();j++){
 			molecule.atoms[counter++].charge = Buffer.lines[i].get_double(j);
 		}
