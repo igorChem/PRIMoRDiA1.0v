@@ -453,7 +453,9 @@ void AutoPrimordia::reaction_analysis(){
 		
 		for ( unsigned k=0; k<trj_info.mnt_atoms.size(); k++ ){
 			for ( unsigned m=0; m<9; m++ ){
-				file_lrd << atoms_lrd.atoms_rd[k][m][i] << " ";
+				file_lrd << atoms_lrd.atoms_rd[k][m][i]-
+							atoms_lrd.atoms_rd[k][m][0];
+				file_lrd << " ";
 			}
 		}
 		

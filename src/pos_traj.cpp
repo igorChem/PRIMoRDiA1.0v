@@ -138,7 +138,7 @@ traj_rd::traj_rd(	vector<primordia>& rds	,
 			atoms_rd[i][0][j] = rds[j].lrdCnd.lrds[0][ ats[i]-1 ];
 			atoms_rd[i][1][j] = rds[j].lrdCnd.lrds[1][ ats[i]-1 ];
 			atoms_rd[i][2][j] = rds[j].lrdCnd.lrds[3][ ats[i]-1 ];
-			atoms_rd[i][3][j] = rds[j].lrdCnd.lrds[9][ ats[i]-1 ];
+			atoms_rd[i][3][j] = rds[j].lrdCnd.lrds[9][ ats[i]-1 ];			
 			atoms_rd[i][4][j] = rds[j].lrdCnd.lrds[5][ ats[i]-1 ];
 			atoms_rd[i][5][j] = rds[j].lrdCnd.lrds[4][ ats[i]-1 ];
 			atoms_rd[i][6][j] = rds[j].lrdCnd.lrds[6][ ats[i]-1 ];
