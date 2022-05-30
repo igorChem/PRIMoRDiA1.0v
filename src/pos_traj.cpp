@@ -98,7 +98,7 @@ traj_rd::traj_rd(	vector<primordia>& rds	,
 		atoms_labels[9+i*13] +="\\nFukui\\nPotential_Right";
 		atoms_labels[10+i*13] +="\\nFukui\\nPotential_Zero";
 		atoms_labels[11+i*13] +="\\nMEP";
-		atoms_labels[12+i*13] +="\\Hardness\\nTFD";
+		atoms_labels[12+i*13] +="\\nHardness\\nTFD";
 	
 		tmp_name2 = tmp_name;		
 		tmp_name2+= "_Nphilicity";
@@ -399,13 +399,10 @@ void traj_rd::gradient(){
 		res_file_tot << "\n";
 		res_file_phobic << "\n";
 		res_file_philic << "\n";
-	}
-	
+	}	
 	res_file_tot.close();
 	res_file_phobic.close();
 	res_file_philic.close();
-
 }
 /******************************************************/
-
 //////////////////////////////////////////////////////

@@ -410,7 +410,7 @@ void AutoPrimordia::reaction_analysis(){
 			}
 		}
 	}
-	
+	//------------------------------------------------------------------
 	std::sort( trj_info.mnt_atoms.begin(), trj_info.mnt_atoms.end() );
 	trj_info.mnt_atoms.erase( std::unique(trj_info.mnt_atoms.begin(), trj_info.mnt_atoms.end() ), trj_info.mnt_atoms.end() );
 	//------------------------------------------------------------------
@@ -421,7 +421,7 @@ void AutoPrimordia::reaction_analysis(){
 	std::ofstream file_lrd( file_name.c_str() );
 	file_lrd << std::fixed;
 	file_lrd.precision(6);
-	
+	//------------------------------------------------------------------
 	file_lrd << "RC1 "; 
 	if ( trj_info.RCs.size() == 2 ){
 		file_lrd << "RC2 ";
@@ -431,15 +431,13 @@ void AutoPrimordia::reaction_analysis(){
 	if ( trj_info.ndim == 2 ){
 		file_lrd << "rc2 ";
 	}
-	
+	//------------------------------------------------------------------
 	for( unsigned i=0; i<atoms_lrd.rds_labels.size() ; i++ ){
 		file_lrd << atoms_lrd.rds_labels[i] << " ";
-	}
-	
-	
+	}	
 	file_lrd << "Energy HOF ECP Hardness Softness Electrophilicity";
 	file_lrd << endl;
-	
+	//------------------------------------------------------------------
 	for ( unsigned i=0; i<RDs.size(); i++){
 		for( unsigned j=0; j<trj_info.RCs.size(); j++){
 			file_lrd << trj_info.RCs[j].crd[i]	<< " ";
@@ -458,7 +456,7 @@ void AutoPrimordia::reaction_analysis(){
 				file_lrd << " ";
 			}
 		}
-		
+		//------------------------------------------------------------------
 		file_lrd	<< RDs[i].grd.grds[2]	- RDs[0].grd.grds[2]		<< " "
 					<< RDs[i].grd.grds[13]	- RDs[0].grd.grds[13]		<< " "
 					<< RDs[i].grd.grds[7]	- RDs[0].grd.grds[7]		<< " "
@@ -468,7 +466,7 @@ void AutoPrimordia::reaction_analysis(){
 		file_lrd << endl;
 	}
 	file_lrd.close();
-	
+	//------------------------------------------------------------------
 	if ( M_R ){
 		scripts r_analysis( RDs[0].mol_info.name.c_str(), "reaction_analsys" );
 		r_analysis.write_r_reaction_analysis(atoms_lrd,trj_info,file_name);
@@ -476,8 +474,7 @@ void AutoPrimordia::reaction_analysis(){
 			scripts r_residues_analysis( RDs[0].mol_info.name.c_str(), "residues_analysis" );
 			r_residues_analysis.write_r_residuos_barplot();
 		}
-	}
-	
+	}	
 	atoms_lrd.calculate_res_stats();
 	atoms_lrd.write_residues_reports();
 }

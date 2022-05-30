@@ -42,10 +42,8 @@ using std::move;
 using std::abs;
 using std::unique_ptr;
 namespace fs = std::experimental::filesystem;
-
 const double precision = 1e-08;
-
-
+//------------------------------------------
 std::vector<std::string> rd_names = {
 	"nucleophilicity"				, //0
 	"electrophilicity"				, //1
@@ -67,15 +65,13 @@ std::vector<std::string> rd_names = {
 	"softness_avg"					, //17
 	"hardness_int"					  //18
 };
-
 /***********************************************************************************/
 local_rd_cnd::local_rd_cnd()	:
 	name("nonamed")				,
 	FD(false)					,
 	names(rd_names)				,
 	TFD(false)					,
-	charge(0)					{
-	
+	charge(0)					{	
 	lrds.resize( rd_names.size() );
 }
 /***********************************************************************************/

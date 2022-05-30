@@ -594,56 +594,24 @@ void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
 						<< "\txlab(rc1_name)  \n"
 						<< delim2;
 			c++;
-			if( c % 9 == 0 ){
+			if( c % 13 == 0 ){
 				script_file << "png('" <<pr_obj << to_string(a++) << ".png',width=8,height=7,units='in',res=1000)\n";
 				script_file << "ggarrange(" 
+							<< pr_obj << to_string(c-13) << ","
+							<< pr_obj << to_string(c-12) << ","
+							<< pr_obj << to_string(c-11) << ","
+							<< pr_obj << to_string(c-10) << ","
 							<< pr_obj << to_string(c-9) << ","
 							<< pr_obj << to_string(c-8) << ","
 							<< pr_obj << to_string(c-7) << ","
 							<< pr_obj << to_string(c-6) << ","
 							<< pr_obj << to_string(c-5) << ","
-							<< pr_obj << to_string(c-4) << ","
-							<< pr_obj << to_string(c-3) << ","
-							<< pr_obj << to_string(c-2) << ","
-							<< pr_obj << to_string(c-1) << ","
 							<< "ncol=3,nrow=3)\n";
 				script_file << "dev.off()\n";
 				script_file << delim;
 			}		
-		}			
-	
+		}	
 		c = 0;
-		/*
-		for( unsigned i=0; i<pair_labels.size(); i++){
-			pr_obj = "pr_";
-			pr_obj += to_string(c);
-			pr_obj += "_c1_";
-			int j = i+1;
-			script_file<< pr_obj
-						<< to_string(j) << "<-ggplot(df1,aes(x=RC1,y="
-						<< pair_labels[i] << ") )+\n "
-						<< "\tgeom_point()+ \n"
-						<< "\tgeom_line()+ \n"
-						<< "\ttheme_minimal()+ \n"
-						<< "\tylab('" << pair_labels[i] << "') + \n"
-						<< "\txlab(rc1_name)\n"
-						<< delim2;
-			if ( j % 6 == 0 ) { 
-				c++;		
-				script_file << "png('" << pr_obj << to_string(j) << ".png',width=7,height=6,units='in',res=1000)\n";
-				script_file << "ggarrange(" << pr_obj << to_string(j-5) << ","
-							<< pr_obj << to_string(j-4) << ","
-							<< pr_obj << to_string(j-3) << ","
-							<< pr_obj << to_string(j-2) << ","
-							<< pr_obj << to_string(j-1) << ","
-							<< pr_obj << to_string(j)   << ","
-							<< "ncol=3,nrow=2)\n";					 
-				script_file << "dev.off()\n";		
-				script_file << delim;
-			}
-		}
-		*/
-
 		if ( r_info.nrcs == 2 ){
 			c = 0;
 			a = 0;
@@ -674,56 +642,25 @@ void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
 							<< "\txlab(rc2_name)  \n"
 							<< delim2;
 				c++;
-				if( c % 9 == 0 ){
+				if( c % 13 == 0 ){
 					script_file	<< "png('" <<pr_obj << "rc2_" << to_string(a++) <<".png',width=8,height=7,units='in',res=1000)\n";
 					script_file	<< "ggarrange(" 
+								<< pr_obj << to_string(c-13) << ","
+								<< pr_obj << to_string(c-12) << ","
+								<< pr_obj << to_string(c-11) << ","
+								<< pr_obj << to_string(c-10) << ","
 								<< pr_obj << to_string(c-9) << ","
 								<< pr_obj << to_string(c-8) << ","
 								<< pr_obj << to_string(c-7) << ","
 								<< pr_obj << to_string(c-6) << ","
-								<< pr_obj << to_string(c-5) << ","
-								<< pr_obj << to_string(c-4) << ","
-								<< pr_obj << to_string(c-3) << ","
-								<< pr_obj << to_string(c-2) << ","
-								<< pr_obj << to_string(c-1) << ","					 
+								<< pr_obj << to_string(c-5) << ","					 
 								<< "ncol=3,nrow=3)\n";					 
 					script_file<< "dev.off()\n";		
 					script_file<< delim;
 				}		
 			}	
 			c = 0;
-			/*
-			for( unsigned i=0; i<pair_labels.size(); i++){
-				pr_obj = "pr_";
-				pr_obj += to_string(c);
-				pr_obj += "_c2_";
-				int j = i+1;
-				script_file<< pr_obj
-							<< to_string(j) << "<-ggplot(df1,aes(x=RC2,y="
-							<< pair_labels[i] << ") )+\n "
-							<< "\tgeom_point()+ \n"
-							<< "\tgeom_line()+ \n"
-							<< "\ttheme_minimal()+ \n"
-							<< "\tylab('" << pair_labels[i] << "') + \n"
-							<< "\txlab(rc2_name)\n"
-							<< delim2;
-				if ( j % 6 == 0 ) { 
-					c++;		
-					script_file<< "png('" << pr_obj << "rc2_" << to_string(j) << ".png',width=7,height=6,units='in',res=1000)\n";
-					script_file<< "ggarrange(" << pr_obj << to_string(j-5) << ","
-								<< pr_obj << to_string(j-4) << ","
-								<< pr_obj << to_string(j-3) << ","
-								<< pr_obj << to_string(j-2) << ","
-								<< pr_obj << to_string(j-1) << ","
-								<< pr_obj << to_string(j)
-								<< ",ncol=3,nrow=2)\n";
-					script_file << "dev.off()\n";
-					script_file << delim;
-				}
-			}
-			 */
-		}	
-			
+		}			
 	}else if ( r_info.ndim == 2 ){
 		for( unsigned i=0; i<gl_names.size(); i++){
 			script_file << "grc1_" << to_string(i) << " <-ggplot(df1,aes(x=rc1,y=rc2,z="
@@ -757,56 +694,23 @@ void scripts::write_r_reaction_analysis(traj_rd& path_rd			,
 							<< "\tguides(fill = guide_colorbar(title ='" << path_rd.atoms_labels[i] << "'))\n"
 							<< delim2;
 				c++;
-			if( c % 9 == 0 ){
+			if( c % 13 == 0 ){
 				script_file	<< "png('" <<pr_obj << "rc2_" << to_string(a++) <<".png',width=11,height=7,units='in',res=1000)\n";
 				script_file	<< "ggarrange(" 
+							<< pr_obj << to_string(c-13) << ","
+							<< pr_obj << to_string(c-12) << ","
+							<< pr_obj << to_string(c-11) << ","
+							<< pr_obj << to_string(c-10) << ","
 							<< pr_obj << to_string(c-9) << ","
 							<< pr_obj << to_string(c-8) << ","
 							<< pr_obj << to_string(c-7) << ","
 							<< pr_obj << to_string(c-6) << ","
 							<< pr_obj << to_string(c-5) << ","
-							<< pr_obj << to_string(c-4) << ","
-							<< pr_obj << to_string(c-3) << ","
-							<< pr_obj << to_string(c-2) << ","
-							<< pr_obj << to_string(c-1) << ","
 							<< "ncol=3,nrow=3)\n";
 					script_file<< "dev.off()\n";
 					script_file<< delim;
 			}		
 		}
-		
-		/*
-		for( unsigned i=0; i<pair_labels.size(); i++){
-				pr_obj = "pr_";
-				pr_obj += to_string(c);
-				pr_obj += "_c2_";
-				int j = i+1;
-				script_file<< pr_obj
-							<< to_string(j) << "<-ggplot(df1,aes(x=rc1,y=rc2,z="
-							<< pair_labels[i] << ") )+\n "
-							<< "\tstat_contour(geom='polygon', aes(fill = ..level..))+ \n" 
-							<< "\tstat_contour(bins = 6,color='black')+ \n"
-							<< "\tscale_fill_gradientn(colours=jet.colors(7))+\n"
-							<< "\tgeom_tile(aes(fill =" << pair_labels[i] << "))+\n"
-							<< "\tylab(rc1_name) + \n"
-							<< "\txlab(rc2_name) + \n"
-							<< "\tguides(fill = guide_colorbar(title ='" << path_rd.atoms_labels[i] << "'))\n"
-							<< delim2;
-				if ( j % 6 == 0 ) { 
-					c++;		
-					script_file<< "png('" << pr_obj << "rc2_" << to_string(j) << ".png',width=11,height=7,units='in',res=1000)\n";
-					script_file<< "ggarrange(" << pr_obj << to_string(j-5) << ","
-								<< pr_obj << to_string(j-4) << ","
-								<< pr_obj << to_string(j-3) << ","
-								<< pr_obj << to_string(j-2) << ","
-								<< pr_obj << to_string(j-1) << ","
-								<< pr_obj << to_string(j)
-								<< ",ncol=3,nrow=2)\n";
-					script_file << "dev.off()\n";
-					script_file << delim;
-			}
-		}
-		*/
 	}
 }
 
