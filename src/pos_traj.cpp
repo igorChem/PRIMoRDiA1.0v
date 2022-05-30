@@ -82,19 +82,23 @@ traj_rd::traj_rd(	vector<primordia>& rds	,
 		
 		tmp_name  = rds[0].mol_info.atoms[ ats[i]-1 ].element;
 		tmp_name += to_string( ats[i] );
-		for ( int j=0; j<9; j++ ){
+		for ( int j=0; j<13; j++ ){
 			atoms_labels.push_back(tmp_name);
 		}
 		
-		atoms_labels[0+i*9] +="\\nNucleophilicity";
-		atoms_labels[1+i*9] +="\\nElectrophilicity";
-		atoms_labels[2+i*9] +="\\nNetphilicity";
-		atoms_labels[3+i*9] +="\\nSoftness";
-		atoms_labels[4+i*9] +="\\nHardness\\n(LCP)";
-		atoms_labels[5+i*9] +="\\nHardness\\n(Vee)";
-		atoms_labels[6+i*9] +="\\nFukui\\nPotential";
-		atoms_labels[7+i*9] +="\\nElectron\\nDensity";
-		atoms_labels[8+i*9] +="\\nPartial\\nCharge";
+		atoms_labels[0+i*13] +="\\nNucleophilicity";
+		atoms_labels[1+i*13] +="\\nElectrophilicity";
+		atoms_labels[2+i*13] +="\\nNetphilicity";
+		atoms_labels[3+i*13] +="\\nSoftness";
+		atoms_labels[4+i*13] +="\\nHardness\\n(LCP)";
+		atoms_labels[5+i*13] +="\\nHardness\\n(Vee)";
+		atoms_labels[6+i*13] +="\\nFukui\\nPotential";
+		atoms_labels[7+i*13] +="\\nElectron\\nDensity";
+		atoms_labels[8+i*13] +="\\nPartial\\nCharge";
+		atoms_labels[9+i*13] +="\\nFukui\\nPotential_Right";
+		atoms_labels[10+i*13] +="\\nFukui\\nPotential_Zero";
+		atoms_labels[11+i*13] +="\\nMEP";
+		atoms_labels[12+i*13] +="\\Hardness\\nTFD";
 	
 		tmp_name2 = tmp_name;		
 		tmp_name2+= "_Nphilicity";
@@ -123,12 +127,24 @@ traj_rd::traj_rd(	vector<primordia>& rds	,
 		tmp_name2 = tmp_name;
 		tmp_name2+="_chg";
 		rds_labels.push_back(tmp_name2);
+		tmp_name2 = tmp_name;
+		tmp_name2+="_Fukui_pot_right";
+		rds_labels.push_back(tmp_name2);
+		tmp_name2 = tmp_name;
+		tmp_name2+="_Fukui_pot_zero";
+		rds_labels.push_back(tmp_name2);
+		tmp_name2 = tmp_name;
+		tmp_name2+="_MEP";
+		rds_labels.push_back(tmp_name2);
+		tmp_name2 = tmp_name;
+		tmp_name2+="_Hardness_TFD";
+		rds_labels.push_back(tmp_name2);
 	}
 	
 	atoms_rd.resize( ats.size() );
 	for( i=0; i<ats.size(); i++ ){
-		atoms_rd[i].resize(9);
-		for( j=0; j<9; j++ ){
+		atoms_rd[i].resize(13);
+		for( j=0; j<13; j++ ){
 			atoms_rd[i][j].resize( rds.size() );
 		}
 	}
@@ -144,6 +160,10 @@ traj_rd::traj_rd(	vector<primordia>& rds	,
 			atoms_rd[i][6][j] = rds[j].lrdCnd.lrds[6][ ats[i]-1 ];
 			atoms_rd[i][7][j] = rds[j].lrdCnd.lrds[14][ ats[i]-1 ];
 			atoms_rd[i][8][j] = rds[j].lrdCnd.lrds[13][ ats[i]-1 ];
+			atoms_rd[i][9][j] = rds[j].lrdCnd.lrds[7][ ats[i]-1 ];
+			atoms_rd[i][10][j] = rds[j].lrdCnd.lrds[8][ ats[i]-1 ];
+			atoms_rd[i][11][j] = rds[j].lrdCnd.lrds[15][ ats[i]-1 ];
+			atoms_rd[i][12][j] = rds[j].lrdCnd.lrds[16][ ats[i]-1 ];
 		}
 	}
 
@@ -240,7 +260,6 @@ void traj_rd::calculate_res_stats(){
 			res_avg_all[i][j] /= fsize;
 		}
 	}
-	
 	
 	for( k=0; k<res_list.size(); k++ ){
 		for( j=0; j<19; j++ ){
