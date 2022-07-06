@@ -103,7 +103,8 @@ void gaussian_files::parse_fchk(){
 	unsigned dens_f		= 0;
 	unsigned dens_ib	= 0;
 	unsigned dens_fb	= 0;
-	
+	unsigned occA       = 0; 
+	unsigned occB       = 0;
 	
 	vector<double>	coords;
 	vector<int>		shell_t;
@@ -119,10 +120,12 @@ void gaussian_files::parse_fchk(){
 	for( unsigned i=0; i<Buffer.lines.size(); i++ ){
 		if ( Buffer.lines[i].IF_line("Multiplicity",0,"I",1,3) ) { mult = Buffer.lines[i].pop_int(2); }
 		if ( Buffer.lines[i].IF_line("Number",0,"electrons",2,5) ) { molecule.num_of_electrons = Buffer.lines[i].pop_int(4); } 
-		else if ( Buffer.lines[i].IF_line("Number",0,"beta",2,6) ) {
-			if ( mult%2 == 0 ) {
+		else if ( Buffer.lines[i].IF_line("Number",0,"alpha",2,6) ) {			
+				occA = Buffer.lines[i].get_int(5);				
+		}
+		else if ( Buffer.lines[i].IF_line("Number",0,"beta",2,6) ) {			
 				molecule.betad = true;
-			}
+				occB = Buffer.lines[i].get_int(5);				
 		}
 		else if ( Buffer.lines[i].IF_line("Number",0,"beta",2,5) ) { molecule.num_of_electrons = Buffer.lines[i].pop_int(4); } 
 		else if ( Buffer.lines[i].IF_line("Atomic",0,"numbers",1,5) ){ atomic_n_i = i;	}
@@ -223,7 +226,7 @@ void gaussian_files::parse_fchk(){
 			for(j=0;j<Buffer.lines[i].line_len;j++){
 				molecule.orb_energies_beta.push_back(Buffer.lines[i].pop_double(0));
 				molecule.MOnmb_beta++;
-			}
+			}			
 		}
 		else if( i>alpha_c_i && i<alpha_c_f ){
 			for(j=0;j<Buffer.lines[i].line_len;j++){
@@ -377,18 +380,31 @@ void gaussian_files::parse_fchk(){
 			molecule.atoms[shell_map[i]-1].add_orbital(fxyz);
 		}
 	}
-	//----------------------------------------------------
+	//----------------------------------------------------	
+	molecule.occupied.resize( molecule.MOnmb );
+	molecule.occupied_beta.resize( molecule.MOnmb_beta );	
+	if ( molecule.betad ){
+		for(int h=0;h<occA;h++){ molecule.occupied[h]      = 1; }
+		for(int h=0;h<occB;h++){ molecule.occupied_beta[h] = 1; }
+	}else{
+		for(int h=0;h<molecule.num_of_electrons/2;h++){ molecule.occupied[h] = 2; }
+	}				
 	this->get_overlap_m();
 	for ( unsigned i=0; i<molecule.orb_energies.size(); i++){ molecule.orb_energies[i] *= 27.2114; }
 	for ( unsigned i=0; i<molecule.orb_energies_beta.size(); i++){ molecule.orb_energies_beta[i] *= 27.2114; }
 	molecule.update();
+	m_log->input_message("HOMO number: \n\t");
+	m_log->input_message(molecule.homoN);
 	m_log->input_message("HOMO energy: \n\t");
 	m_log->input_message(molecule.homo_energy);
+	m_log->input_message("\nLUMO number: \n\t");
+	m_log->input_message(molecule.lumoN);
 	m_log->input_message("\nLUMO energy: \n\t");
 	m_log->input_message(molecule.lumo_energy);
 	m_log->input_message("\nAtomic orbitals: \n\t");
 	m_log->input_message( int(molecule.num_of_ao) );
 	m_log->input_message("\n");
+	
 	//molecule.print();
 	molecule.bohr_to_ang();
 	//molecule.check_ed();

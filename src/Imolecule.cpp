@@ -421,7 +421,7 @@ double Imolecule::get_lumo(){
 	
 	lumo_energy = min_dvec(energy_unn);
 	
-	if ( betad ) { lumo_energy_b	= min_dvec(energy_unn_beta); }
+	if ( betad ) { lumo_energy_b = min_dvec(energy_unn_beta); }
 	
 	if ( lumo_energy_b < lumo_energy ){
 		lumo_energy = lumo_energy_b;
