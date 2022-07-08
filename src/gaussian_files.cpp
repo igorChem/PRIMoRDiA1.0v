@@ -124,8 +124,8 @@ void gaussian_files::parse_fchk(){
 				occA = Buffer.lines[i].get_int(5);				
 		}
 		else if ( Buffer.lines[i].IF_line("Number",0,"beta",2,6) ) {			
-				molecule.betad = true;
-				occB = Buffer.lines[i].get_int(5);				
+				occB = Buffer.lines[i].get_int(5);	
+				if ( occA != occB ) molecule.betad = true;
 		}
 		else if ( Buffer.lines[i].IF_line("Number",0,"beta",2,5) ) { molecule.num_of_electrons = Buffer.lines[i].pop_int(4); } 
 		else if ( Buffer.lines[i].IF_line("Atomic",0,"numbers",1,5) ){ atomic_n_i = i;	}
