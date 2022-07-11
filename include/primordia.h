@@ -29,10 +29,11 @@
 #include "../include/local_rd.h"
 #include "../include/comp_hardness.h"
 #include "../include/residue_lrd.h"
+#include "../include/Iprotein.h"
 //foward declarations
 
 class protein_lrd;
-
+class pdb;
 //============================================================================================================
 /**
  * These class wraps all the functionalities of this libraries and make available in different ways of initializations
@@ -55,6 +56,7 @@ class primordia {
 		local_rd_cnd lrdCnd;
 		comp_hard ch_rd;
 		protein_lrd bio_rd;
+		pdb atom_rd;
 		//constructors/destructor
 		primordia();
 		primordia(const primordia& pr_rhs);

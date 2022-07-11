@@ -53,7 +53,8 @@ primordia::primordia(const primordia& pr_rhs)	:
 	lrdVol( pr_rhs.lrdVol )						,
 	lrdCnd( pr_rhs.lrdCnd )						,
 	ch_rd( pr_rhs.ch_rd )		 				,
-	bio_rd( pr_rhs.bio_rd )						{
+	bio_rd( pr_rhs.bio_rd )						,
+	atom_rd( pr_rhs.atom_rd )                    {
 }
 /***************************************************************************************/
 primordia& primordia::operator=(const primordia& pr_rhs){
@@ -65,6 +66,7 @@ primordia& primordia::operator=(const primordia& pr_rhs){
 		lrdCnd	= pr_rhs.lrdCnd;
 		ch_rd	= pr_rhs.ch_rd;
 		bio_rd	= pr_rhs.bio_rd;
+		atom_rd = pr_rhs.atom_rd;
 	}
 	return *this;
 }
@@ -76,7 +78,8 @@ primordia::primordia(primordia&& pr_rhs) noexcept:
 	lrdVol( move(pr_rhs.lrdVol) )				,
 	lrdCnd( move(pr_rhs.lrdCnd) )				,
 	ch_rd( move(pr_rhs.ch_rd) ) 				,
-	bio_rd( move(pr_rhs.bio_rd) )				{
+	bio_rd( move(pr_rhs.bio_rd) )				,
+	atom_rd( move(pr_rhs.atom_rd) )             {
 }
 /***************************************************************************************/
 primordia& primordia::operator=(primordia&& pr_rhs) noexcept{
@@ -88,6 +91,7 @@ primordia& primordia::operator=(primordia&& pr_rhs) noexcept{
 		lrdCnd	= move(pr_rhs.lrdCnd);
 		ch_rd	= move(pr_rhs.ch_rd);
 		bio_rd	= move(pr_rhs.bio_rd);
+		atom_rd = move(pr_rhs.atom_rd);
 	}
 	return *this;
 }
@@ -340,8 +344,8 @@ void primordia::init_protein_RD(const char* file_name	,
 		lrdCnd.calculate_RD(grd);
 		lrdCnd.calculate_hardness(grd,molecule);
 		lrdCnd.calculate_mep(molecule);
-		bio_rd = lrdCnd.rd_protein(pdbfile);
-		lrdCnd.write_rd_protein_pdb(pdbfile);
+		bio_rd  = lrdCnd.rd_protein(pdbfile);
+		atom_rd = lrdCnd.write_rd_protein_pdb(pdbfile);
 		lrdCnd.write_LRD(molecule);
 		
 		if ( pymol_script ) { 

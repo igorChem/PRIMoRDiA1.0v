@@ -89,7 +89,7 @@ class pdb{
 		pdb();
 		pdb(const pdb& rhs_pdb);
 		pdb(pdb&& rhs_pdb) noexcept;
-		pdb& operator=(pdb& rhs_pdb);
+		pdb& operator=(const pdb& rhs_pdb);
 		pdb& operator=(pdb&& rhs_pdb) noexcept;
 		pdb(const char* file_name); // to read multi pdbs
 		pdb(Iprotein& prot);

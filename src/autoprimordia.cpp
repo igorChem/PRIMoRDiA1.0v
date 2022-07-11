@@ -24,6 +24,7 @@
 #include <memory>
 #include <algorithm>
 #include <omp.h>
+#include <experimental/filesystem>
 //=================================
 //PRIMoRDiA headers
 #include "../include/common.h"
@@ -51,6 +52,7 @@ using std::cout;
 using std::endl;
 using std::vector;
 using std::to_string;
+namespace fs = std::experimental::filesystem;
 /*************************************************************/
 AutoPrimordia::AutoPrimordia(){}
 /*************************************************************/
@@ -487,6 +489,31 @@ void AutoPrimordia::md_trajectory_analysis(){
 		scripts r_residues_analysis( RDs[0].mol_info.name.c_str(), "residues_analysis" );
 		r_residues_analysis.write_r_residuos_barplot();
 	}
+	pdb average_rd;
+	vector< vector<double> > rd_avg;
+	rd_avg.resize( RDs[0].atom_rd.models.size() );
+	
+	for(unsigned i=0;i<RDs.size();i++){
+		for(unsigned j=0;j<RDs[i].atom_rd.models.size();j++){
+			vector<double> tmp_rd( RDs[i].atom_rd.models[j].b_factor.size() );
+			for(unsigned k=0;k<RDs[i].atom_rd.models[j].b_factor.size();k++){
+				tmp_rd[k] += RDs[i].atom_rd.models[j].b_factor[k];
+			}
+			rd_avg[j] = tmp_rd;
+		}
+	}
+	for(unsigned i=0;i<rd_avg.size();i++){
+		for(unsigned j=0;j<rd_avg[i].size();j++){
+			rd_avg[i][j] /= RDs.size();
+		}
+		Iprotein model(RDs[0].atom_rd.models[0]);
+		model.load_b_column(rd_avg[i]);
+		model.title = RDs[0].lrdCnd.names[i];
+		average_rd.models.emplace_back(model); 
+	}
+	fs::create_directory("average_trj");
+	average_rd.name = "avg_rd";
+	average_rd.write_models("average_trj");
 }
 /*************************************************************/
 void AutoPrimordia::write_global(){

@@ -33,6 +33,7 @@ class QMdriver;
 class global_rd;
 class Iprotein;
 class protein_lrd;
+class pdb;
 
 //===============================================================
 class local_rd_cnd{
@@ -62,7 +63,7 @@ class local_rd_cnd{
 		void calculate_RD(const global_rd& grd);
 		void calculate_mep(const Imolecule& molecule);
 		protein_lrd rd_protein(const Iprotein& prot);
-		void write_rd_protein_pdb(const Iprotein& protein);
+		pdb write_rd_protein_pdb(const Iprotein& protein);
 		void write_rd_protein_reaction(const Iprotein& prot);
 		void write_LRD(const Imolecule& mol);
 };

@@ -595,7 +595,7 @@ protein_lrd local_rd_cnd::rd_protein(const Iprotein& prot){
 	return protein_react_descriptors;
 }
 /*******************************************************************************************/
-void local_rd_cnd::write_rd_protein_pdb(const Iprotein& protein){
+pdb local_rd_cnd::write_rd_protein_pdb(const Iprotein& protein){
 	
 	Iprotein prot = protein;
 	pdb rd_results;
@@ -702,6 +702,7 @@ void local_rd_cnd::write_rd_protein_pdb(const Iprotein& protein){
 	
 	fs::create_directory(name+"_PDB_RD");
 	rd_results.write_models(name+"_PDB_RD");
+	return rd_results;
 }
 /*************************************************************************************/
 void local_rd_cnd::write_LRD(const Imolecule& mol){

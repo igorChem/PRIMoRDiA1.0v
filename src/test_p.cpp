@@ -58,7 +58,7 @@ void test_p::test_reaction_analysis(){
 }
 /************************************************************************************/
 void test_p::test_traj_analysis(){
-	AutoPrimordia Run("/home/igorchem/CCDIR/cmp2-2/primordia.input");
+	AutoPrimordia Run("/home/igorchem/CCDIR/Tutorials_Files/Tutorial_5/primordia.input");
 	Run.init();
 }
 //================================================================================

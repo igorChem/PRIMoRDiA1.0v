@@ -278,7 +278,7 @@ pdb::pdb(pdb&& rhs_pdb) noexcept	:
 	models( move(rhs_pdb.models) )	{
 }
 /*****************************************************/
-pdb& pdb::operator=(pdb& rhs_pdb){
+pdb& pdb::operator=(const pdb& rhs_pdb){
 	if ( this!=&rhs_pdb ){
 		nModels	= rhs_pdb.nModels;
 		name	= rhs_pdb.name;
