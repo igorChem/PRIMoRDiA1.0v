@@ -442,7 +442,7 @@ void Imolecule::update(){
 	for(unsigned int i=0;i<atoms.size();i++) {
 		mol_charge	+= atoms[i].charge;
 		molar_mass	+= atoms[i].atomic_mass;
-	}	
+	}
 	//--------------------------------------------
 	if ( num_of_electrons == 0 ){
 		m_log->write_warning("None electrons found in for the molecule!");
@@ -455,24 +455,35 @@ void Imolecule::update(){
 	f_chg			= std::round(mol_charge);
 	num_of_atoms	= atoms.size();
 	this->get_ao_number();
-	unsigned int noe= num_of_electrons;
+	unsigned int noe = num_of_electrons;
 	int i;
+	
 	if ( !betad ){
-		noe					+=-1*f_chg;
-		occupied.resize(num_of_ao);
-		for(i=0;i<noe/2;i++){ occupied[i] = 2; }
+		noe	+= -1*f_chg;
+		if ( occupied.size() == 0 ){
+			occupied.resize(num_of_ao);
+			for(i=0;i<noe/2;i++){ occupied[i] = 2; }
+		}
 	}else{
 		if ( noe % 2 == 0 ) {
 			noe +=-1*f_chg;
 		}
-		occupied.resize(num_of_ao);
-		occupied_beta.resize(num_of_ao);
-		for(i=0;i<(noe+1)/2;i++) occupied[i] = 1;
-		for(i=0;i<(noe-1)/2;i++) occupied_beta[i] = 1;
+		if ( occupied_beta.size() == 0 ){
+			occupied.resize(num_of_ao);
+			occupied_beta.resize(num_of_ao);
+			for(i=0;i<(noe+1)/2;i++) occupied[i]      = 1;
+			for(i=0;i<(noe-1)/2;i++) occupied_beta[i] = 1;
+		}
 	}
-		
+	
 	if ( betad ){
 		if ( orb_energies_beta.size() > 0 ) {
+			if ( occupied_beta.size() == 0 ){
+				occupied.resize(num_of_ao);
+				occupied_beta.resize(num_of_ao);
+				for(i=0;i<(noe+1)/2;i++) occupied[i]      = 1;
+				for(i=0;i<(noe-1)/2;i++) occupied_beta[i] = 1;
+			}
 			this->get_homo();
 			this->get_lumo();
 		}else{
@@ -484,7 +495,7 @@ void Imolecule::update(){
 			this->get_lumo();
 		}else{
 			m_log->write_error("Error in storing orbital energies! Returning non-valid HOMO energy!" );
-		}			
+		}
 	}
 	
 	this->norm_orbs();

@@ -52,29 +52,29 @@ using std::stod;
 /**************************************/
 // Keywords	
 
-string _keywords= "KEYWORDS";					//0
-string _mozyme	= "mozyme";						//1
-string _MOZYME	= "MOZYME";						//2
-string _n_elec  = "NUM_ELECTRONS";				//3
-string _overlap = "OVERLAP_MATRIX[";			//4
-string _atom_xa	= "ATOM_X:ANGSTROMS[";			//5
-string _hof		= "HEAT_OF_FORMATION:";			//6
-string _num_a_el= "NUM_ALPHA_ELECTRONS=";		//7
-string _num_b_el= "NUM_BETA_ELECTRONS=";		//8
-string _elec_en = "ENERGY_ELECTRONIC:EV=";		//9
-string _tot_en	= "TOTAL_ENERGY:EV=";			//9
-string _chg		= "CHARGE";						//10
-string _orbital = "ORBITAL";					//11
-string _inv_mat = "INVERSE_MATRIX[";			//12
-string _keywords2= "Keywords:";					//13
-string _atom_el	= "ATOM_EL[";					//14
-string _atom_cor= "ATOM_CORE[";					//15
-string _atom_ao = "AO_ATOMINDEX[";				//16
-string _sym_type= "ATOM_SYMTYPE";				//17
-string _ao_zeta = "AO_ZETA[";					//18
-string _ao_pqn  = "ATOM_PQN[";					//19
-string _atom_chg = "ATOM_CHARGES[";				//10
-string _gradients = "GRADIENTS:KCAL/MOL/ANGSTROM[";
+string _keywords	= "KEYWORDS";					//0
+string _mozyme		= "mozyme";						//1
+string _MOZYME		= "MOZYME";						//2
+string _n_elec 		= "NUM_ELECTRONS";				//3
+string _overlap 	= "OVERLAP_MATRIX[";			//4
+string _atom_xa		= "ATOM_X:ANGSTROMS[";			//5
+string _hof			= "HEAT_OF_FORMATION:";			//6
+string _num_a_el	= "NUM_ALPHA_ELECTRONS=";		//7
+string _num_b_el	= "NUM_BETA_ELECTRONS=";		//8
+string _elec_en 	= "ENERGY_ELECTRONIC:EV=";		//9
+string _tot_en		= "TOTAL_ENERGY:EV=";			//9
+string _chg			= "CHARGE";						//10
+string _orbital 	= "ORBITAL";					//11
+string _inv_mat 	= "INVERSE_MATRIX[";			//12
+string _keywords2	= "Keywords:";					//13
+string _atom_el		= "ATOM_EL[";					//14
+string _atom_cor	= "ATOM_CORE[";					//15
+string _atom_ao 	= "AO_ATOMINDEX[";				//16
+string _sym_type	= "ATOM_SYMTYPE";				//17
+string _ao_zeta 	= "AO_ZETA[";					//18
+string _ao_pqn  	= "ATOM_PQN[";					//19
+string _atom_chg 	= "ATOM_CHARGES[";				//20
+string _gradients 	= "GRADIENTS:KCAL/MOL/ANGSTROM[";//21 
 
 vector<string> _states = {"SINGLET", "DOUBLET", "TRIPLET", "QUARTET","QUINTET"};
 /**************************************/
@@ -220,7 +220,6 @@ void mopac_files::parse_aux(){
 		}
 	}
 	
-	
 	for( unsigned int i=_in[0]; i<_out[0]; i++ ){
 		for ( unsigned j=0; j<Buffer.lines[i].words.size(); j++ ){
 				Iatom atom;
@@ -306,10 +305,26 @@ void mopac_files::parse_aux(){
 	this->get_overlap_m();
 	this->get_mo(false);
 	this->get_mo_energies(false);
+	this->get_mo_occupancies(false);
 	if ( !RHF ) {
 		this->get_mo(true);
 		this->get_mo_energies(true);
+		this->get_mo_occupancies(true);
 	}	
+	
+	/*
+	unsigned occ = 0;
+	for(unsigned i=0;i<molecule.occupied.size();i++){
+		if ( molecule.occupied[i] == 0 ){
+			m_log->input_message("number of occupied molecular orbitals.");
+			m_log->input_message(int(occ));
+			break;
+		}
+		else{
+			occ++;
+		}
+	}
+	*/
 	
 	counter = 0;
 	
@@ -714,16 +729,13 @@ void mopac_files::get_overlap_m(){
 	int nLines 			= 0;
 	double temp			= 0.0;
 	
-	char tmp_line[500];
+	char tmp_line[150];
 	
 	if ( IF_file(name_f) ){
 		std::ifstream buf(name_f);
 		while( !buf.eof() ){
-			buf.getline(tmp_line,500);
+			buf.getline(tmp_line,150);
 			Iline Line(tmp_line);
-			if ( nLines == 205 ){
-				int o = 0;
-			}
 			if ( in_indx == -1) {
 				if ( Line.IF_word( _overlap,0,_overlap.size() ) ) {
 					in_indx		= nLines;
@@ -763,13 +775,13 @@ void mopac_files::get_mo(bool beta){
 	int fin_indx		= nAO*nAO/10;
 	std::vector<double> mo_c;
 
-	char tmp_line[500];
+	char tmp_line[150];
 	string tmpt;
 	
 	if ( IF_file(name_f) ){
 		std::ifstream buf(name_f);
 		while( !buf.eof() ){
-			buf.getline(tmp_line,500);
+			buf.getline(tmp_line,150);
 			Iline Line(tmp_line);
 			if ( in_indx == -1 ){
 				if ( Line.IF_word( keyword,0,keyword.size() ) ){
@@ -821,13 +833,13 @@ void mopac_files::get_mo_energies(bool beta){
 	int fin_indx			= nAO/10;
 	std::vector<double> mo_c;
 	
-	char tmp_line[500];
+	char tmp_line[150];
 	string tmpt;
 	
 	if ( IF_file(name_f) ){
 		std::ifstream buf(name_f);
 		while( !buf.eof() ){
-			buf.getline(tmp_line,500);
+			buf.getline(tmp_line,150);
 			Iline Line(tmp_line);
 			if ( in_indx == -1 ){
 				if ( Line.IF_word( keyword,0,keyword.size() ) ) {
@@ -880,6 +892,66 @@ void mopac_files::get_mo_energies(bool beta){
 		m_log->input_message(message);
 	}
 
+}
+/***************************************************************************************/
+void mopac_files::get_mo_occupancies(bool beta){
+	string keyword			= "MOLECULAR_ORBITAL_OCCUPANCIES[";
+	if ( !RHF )	keyword		= "ALPHA_MOLECULAR_ORBITAL_OCCUPANCIES[";
+	if ( beta ) { keyword 	= "BETA_MOLECULAR_ORBITAL_OCCUPANCIES[";}
+	
+	unsigned int nLines		= 0;
+	double temp 			= 0.0;
+	unsigned int nMO		= 0;
+	unsigned int nAO		= molecule.num_of_ao;
+	int in_indx				= -1;
+	int fin_indx			= nAO/10;
+	std::vector<double> mo_c;
+	
+	char tmp_line[150];
+	string tmpt;
+	
+	if ( IF_file(name_f) ){
+		std::ifstream buf(name_f);
+		while( !buf.eof() ){
+			buf.getline(tmp_line,150);
+			Iline Line(tmp_line);
+			if ( in_indx == -1 ){
+				if ( Line.IF_word( keyword,0,keyword.size() ) ) {
+					in_indx = nLines;
+					fin_indx +=  nLines +1;
+					tmpt = Line.words[0].substr(keyword.size(),Line.words[0].size());
+					tmpt = tmpt.substr(0,tmpt.size()-2);
+					if ( nAO != stoi(tmpt)  ){
+						m_log->write_warning("The molecular orbitals set are imcomplete!");
+					}
+				}
+			}else if ( in_indx > 0 && mo_c.size() < nAO ){
+				std::stringstream ssline(tmp_line);
+				while ( ssline >> temp ){
+					mo_c.push_back(temp);
+				}
+				nMO++;
+			}
+			nLines++;
+		}
+		buf.close();
+		if ( !beta ) {
+			copy( mo_c.begin(),mo_c.end(),back_inserter(molecule.occupied) );
+			m_log->input_message("Number of MO occupancies read: \n\t");
+			m_log->input_message( int( molecule.occupied.size() ) );
+		}
+		else {
+			copy( mo_c.begin(),mo_c.end(),back_inserter(molecule.occupied_beta) );
+			m_log->input_message("Number of beta MO occupancies read: \n\t");
+			m_log->input_message( int( molecule.occupied_beta.size() ) );
+		}
+	}else{
+		string message = "Not possible to open the file: ";
+		message += name_f;
+		message +="\n";
+		cout << message << endl;
+		m_log->input_message(message);
+	}
 }
 /***************************************************************************************/
 mopac_files::~mopac_files(){}

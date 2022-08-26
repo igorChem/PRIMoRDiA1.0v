@@ -493,15 +493,16 @@ void AutoPrimordia::md_trajectory_analysis(){
 	vector< vector<double> > rd_avg;
 	rd_avg.resize( RDs[0].atom_rd.models.size() );
 	
-	for(unsigned i=0;i<RDs.size();i++){
-		for(unsigned j=0;j<RDs[i].atom_rd.models.size();j++){
-			vector<double> tmp_rd( RDs[i].atom_rd.models[j].b_factor.size() );
-			for(unsigned k=0;k<RDs[i].atom_rd.models[j].b_factor.size();k++){
-				tmp_rd[k] += RDs[i].atom_rd.models[j].b_factor[k];
+	for(unsigned i=0;i<rd_avg.size();i++){
+		vector<double> tmp_rd( RDs[0].atom_rd.models[i].b_factor.size() );
+		for(unsigned j=0;j<RDs.size();j++){
+			for(unsigned k=0;k<RDs[j].atom_rd.models[i].b_factor.size();k++){
+				tmp_rd[k] += RDs[j].atom_rd.models[i].b_factor[k];
 			}
-			rd_avg[j] = tmp_rd;
 		}
+		rd_avg[i] = tmp_rd;
 	}
+
 	for(unsigned i=0;i<rd_avg.size();i++){
 		for(unsigned j=0;j<rd_avg[i].size();j++){
 			rd_avg[i][j] /= RDs.size();

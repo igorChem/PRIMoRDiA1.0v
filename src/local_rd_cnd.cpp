@@ -176,6 +176,8 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 	unsigned cnt 			= 0;
 	unsigned init			= homon-band;
 	unsigned fin 			= lumon+band;
+	unsigned real_band_occ  = 0;
+	unsigned real_band_vir  = 0;
 	
 	for( unsigned atom=0; atom<molecule.atoms.size(); atom++ ){
 		//defining the indices of the atomic orbitals
@@ -195,23 +197,29 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 		//-------------------------------------------------
 		//calculating the occupied molecular orbitals
 		for( unsigned i=init; i<=homon; i++ ){
-			for( unsigned mu=init_orb; mu<n_aorbs; mu++ ){
-				for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
-					value_h+=molecule.coeff_MO[ao*i + mu]*
-							molecule.coeff_MO[ao*i + nu]*
-							molecule.m_overlap[ nu+( mu*(mu+1) )/2];
+			if ( molecule.orb_energies[i] >= molecule.homo_energy-energy_crit ){
+				for( unsigned mu=init_orb; mu<n_aorbs; mu++ ){
+					for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
+						value_h+=molecule.coeff_MO[ao*i + mu]*
+								molecule.coeff_MO[ao*i + nu]*
+								molecule.m_overlap[ nu+( mu*(mu+1) )/2];
+					}
 				}
+				real_band_occ++;
 			}
 		}
 		//-------------------------------------------------
 		//calculating the virtual molecular orbitals
 		for( unsigned i=lumon; i<=fin; i++ ){
-			for( unsigned mu=init_orb; mu<n_aorbs; mu++ ){
-				for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
-					value_l +=molecule.coeff_MO[ao*i + mu]*
-							molecule.coeff_MO[ao*i + nu]*
-							molecule.m_overlap[nu+(mu*(mu+1))/2];
+			if ( molecule.orb_energies[i] <= molecule.lumo_energy+energy_crit ){
+				for( unsigned mu=init_orb; mu<n_aorbs; mu++ ){
+					for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
+						value_l +=molecule.coeff_MO[ao*i + mu]*
+								molecule.coeff_MO[ao*i + nu]*
+								molecule.m_overlap[nu+(mu*(mu+1))/2];
+					}
 				}
+				real_band_vir++;
 			}
 		}
 		
@@ -220,12 +228,15 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 		if ( molecule.betad ){
 			//calculating the occupied molecular orbitals
 			for( unsigned i=init; i<=homon; i++ ){
-				for( unsigned mu=init_orb; mu<n_aorbs; mu++){
-					for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
-						value_h+=molecule.coeff_MO_beta[ao*i + mu]*
-								molecule.coeff_MO_beta[ao*i + nu]*
-								molecule.m_overlap[nu+(mu*(mu+1) )/2];
+				if ( molecule.orb_energies[i] >= molecule.homo_energy-energy_crit ){
+					for( unsigned mu=init_orb; mu<n_aorbs; mu++){
+						for ( unsigned nu=init_orb; nu<n_aorbs; nu++ ) {
+							value_h+=molecule.coeff_MO_beta[ao*i + mu]*
+									molecule.coeff_MO_beta[ao*i + nu]*
+									molecule.m_overlap[nu+(mu*(mu+1) )/2];
+						}
 					}
+					real_band_occ++;
 				}
 			}
 			value_h /= 2;
@@ -241,6 +252,7 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 									molecule.m_overlap[nu+(mu*(mu+1))/2];
 						}
 					}
+					real_band_vir++;
 				}
 			}
 			value_l /= 2;
@@ -254,11 +266,13 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 		value_l = 0;
 	}
 	if ( band >= 1 ){
-		lrds[0] = norm_dvec(lrds[0],3);
-		lrds[1] = norm_dvec(lrds[1],3);
+		double norm_factor = 1.0; 
+		norm_factor = norm_factor*(molecule.num_of_atoms/200);
+		lrds[0] = norm_dvec(lrds[0],norm_factor);
+		lrds[1] = norm_dvec(lrds[1],norm_factor);
 	}else{
-		lrds[0] = norm_dvec(lrds[0],1);
-		lrds[1] = norm_dvec(lrds[1],1);
+		lrds[0] = norm_dvec(lrds[0],1.0);
+		lrds[1] = norm_dvec(lrds[1],1.0);
 	}
 	for( unsigned i=0; i<lrds[0].size(); i++ ){
 		lrds[3][i] = lrds[1][i] - lrds[0][i];
@@ -267,11 +281,10 @@ void local_rd_cnd::calculate_frontier_orbitals( Imolecule& molecule, unsigned ba
 	
 	if ( band > 0 ){
 		m_log->input_message("Number of  occupp ied MO used to calculate condensed to atom descriptors: ");
-		m_log->input_message( int(band) ) ;
+		m_log->input_message( int(real_band_occ/molecule.num_of_atoms) ) ;
 		m_log->input_message("Number of  virtual MO used to calculate condensed to atom descriptors: ");
-		m_log->input_message( int(band) ) ;
-		m_log->input_message("\n");
-		
+		m_log->input_message( int(real_band_vir/molecule.num_of_atoms) ) ;
+		m_log->input_message("\n");		
 	}
 
 }

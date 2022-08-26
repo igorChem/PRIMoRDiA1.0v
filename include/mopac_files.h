@@ -52,6 +52,7 @@ class mopac_files{
 		void get_overlap_m();
 		void get_mo(bool beta);
 		void get_mo_energies(bool beta);
+		void get_mo_occupancies(bool beta);
 };
 
 #endif
