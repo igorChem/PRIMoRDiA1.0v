@@ -127,8 +127,12 @@ void gaussian_files::parse_fchk(){
 				occB = Buffer.lines[i].get_int(5);	
 				if ( occA != occB ) molecule.betad = true;
 		}
-		else if ( Buffer.lines[i].IF_line("Number",0,"beta",2,5) ) { molecule.num_of_electrons = Buffer.lines[i].pop_int(4); } 
-		else if ( Buffer.lines[i].IF_line("Atomic",0,"numbers",1,5) ){ atomic_n_i = i;	}
+		else if ( Buffer.lines[i].IF_line("Number",0,"beta",2,5) ) { 
+			molecule.num_of_electrons = Buffer.lines[i].pop_int(4);
+			m_log->input_message("Number of electrons read from file:");
+			m_log->input_message(int(molecule.num_of_electrons));
+		} 
+		else if ( Buffer.lines[i].IF_line("Atomic",0,"numbers",1,5) ){ atomic_n_i = i;}
 		else if ( Buffer.lines[i].IF_line("Nuclear",0,"charges",1,5) ){ atomic_n_f = i; }
 		else if ( Buffer.lines[i].IF_line("cartesian",1,"coordinates",2,6) ){ coord_n_i = i; }
 		else if ( Buffer.lines[i].IF_line("Force",0,"Field",1,4) ){ if ( coord_n_f == 0 ) coord_n_f =i; }
@@ -173,6 +177,18 @@ void gaussian_files::parse_fchk(){
 	k=0;
 	unsigned noe = molecule.num_of_electrons;
 	
+	m_log->input_message(int(atomic_n_i));
+	m_log->input_message(int(atomic_n_f));
+	m_log->input_message(int(coord_n_i));
+	m_log->input_message(int(coord_n_f));
+	m_log->input_message(int(shell_t_i));
+	m_log->input_message(int(shell_t_f));
+	m_log->input_message(int(prim_b_i));
+	m_log->input_message(int(prim_b_f));
+	m_log->input_message(int(shell_m_i));
+	m_log->input_message(int(shell_m_f));
+	
+	
 	for( unsigned i=0; i<Buffer.lines.size(); i++){
 		if ( i>atomic_n_i && i<atomic_n_f){
 			for( j=0; j<Buffer.lines[i].line_len; j++ ){
@@ -183,7 +199,7 @@ void gaussian_files::parse_fchk(){
 		}
 		else if ( i>coord_n_i && i<coord_n_f ){
 			for(j=0;j<Buffer.lines[i].line_len;j++ ){
-				coords.push_back(Buffer.lines[i].pop_double(0));
+				coords.push_back(Buffer.lines[i].get_double(j));
 			}
 		}
 		else if( i>shell_t_i && i< shell_t_f){
@@ -213,7 +229,7 @@ void gaussian_files::parse_fchk(){
 		}
 		else if( i>conspt_c_i && i<conspt_c_f ){
 			for(j=0;j<Buffer.lines[i].line_len;j++){
-				cont_c_p.push_back(Buffer.lines[i].pop_double(0));
+				cont_c_p.push_back(Buffer.lines[i].get_double(j));
 			}
 		}
 		else if( i>alpha_e_i && i<alpha_e_f ){
@@ -230,7 +246,7 @@ void gaussian_files::parse_fchk(){
 		}
 		else if( i>alpha_c_i && i<alpha_c_f ){
 			for(j=0;j<Buffer.lines[i].line_len;j++){
-				molecule.coeff_MO.push_back(Buffer.lines[i].pop_double(0));
+				molecule.coeff_MO.push_back(Buffer.lines[i].get_double(j));
 			}
 		}
 		else if( i>beta_c_i && i<beta_c_f ){
@@ -238,11 +254,11 @@ void gaussian_files::parse_fchk(){
 				molecule.coeff_MO_beta.push_back(Buffer.lines[i].pop_double(0));
 			}
 		}
-		else if( i>dens_i && i<dens_f){
-			for(j=0;j<Buffer.lines[i].line_len;j++){
-				molecule.m_dens.push_back( Buffer.lines[i].pop_double(0) );
-			}
-		}
+		//else if( i>dens_i && i<dens_f){
+		//	for(j=0;j<Buffer.lines[i].line_len;j++){
+		//		molecule.m_dens.push_back( Buffer.lines[i].pop_double(0) );
+		//	}
+		//}
 		else if( i>chgs_i && i<chgs_f ){
 			for(j=0;j<Buffer.lines[i].line_len;j++){
 				molecule.atoms[k++].charge = Buffer.lines[i].pop_double(0);

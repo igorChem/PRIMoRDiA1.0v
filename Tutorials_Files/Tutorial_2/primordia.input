@@ -1,0 +1,4 @@
+#RT normal
+#PR pymols extrard
+2 benzene.out benzene_cat.out  benzene_an.out true 40 1 mopac
+ 

@@ -1,0 +1,9 @@
+#RT reaction 
+#PR eband 2 Rscript pymols
+#Reaction RC1 98 107 51
+#Reaction Pair 98 107
+#Reaction Pair 107 51
+#Reaction Pair 98 51
+#Reaction dimX 15
+#TRJ residues 2 4 7
+3 sys.aux none 0 10 sys.pdb mopac  0 0 0 0 EW
