@@ -67,10 +67,11 @@ All the theory basis, references and how to prepare the quantum chemistry calcul
 # Tutorials
 
 We provide full tutorials in a PDF file of all calculations modes of the software, as pratical applications for acid force and enzymatic catalysis reaction. 
-[Portuguese]()
+[Portuguese PDF]()
 
 We also provide an specific tutorial to run PRIMoRDiA without needing to configure your local machine. 
-This tutoral uses the [Google Colab cloud computing plataform](https://colab.research.google.com) and thus you can run from any operational system machine.
+This tutoral uses the [Google Colab cloud computing plataform](https://colab.research.google.com) and thus you can run from any operational system machine:
+
 [Tutorial Google Colabs](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/Tutorial_PRIMoRDiA_Colab.ipynb)
 
 # Cite our Work
