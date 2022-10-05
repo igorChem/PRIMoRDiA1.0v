@@ -14,7 +14,7 @@ Installation instructions and tutorials are in our [wiki](https://github.com/igo
 All theoretical background and working instructions of our program are in our userguide pdf file that can be found in this repository. 
 
 
-![cover](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/cover.png)
+![cover](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/Repo_images/cover.png)
 
 ## PRIMoRDiA 1.0v - List of Features 
 
