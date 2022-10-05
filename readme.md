@@ -59,10 +59,19 @@ The detailed instructions of these two intallation options are described in our 
 
 # Userguide 
 
+We provide a complete description of the descriptors and how to use the program in a user guide pdf file. 
+All the theory basis, references and how to prepare the quantum chemistry calculations are detailed in these files. 
+[English](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/user_guide_EN.pdf)
+[Portuguese](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/user_guide_EN.pd)
 
 # Tutorials for 1.25v
 
+We provide full tutorials in a PDF file of all calculations modes of the software, as pratical applications for acid force and enzymatic catalysis reaction. 
+[Portuguese]()
 
+We also provide an specific tutorial to run PRIMoRDiA without needing to configure your local machine. 
+This tutoral uses the [Google Colab cloud computing plataform](https://colab.research.google.com) and thus you can run from any operational system machine.
+[Google Colabs](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/Tutorial_PRIMoRDiA_Colab.ipynb)
 
 # Cite our Work
 
