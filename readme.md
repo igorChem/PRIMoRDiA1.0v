@@ -75,7 +75,9 @@ The detailed instructions of these two intallation options are described in our 
 
 We provide a complete description of the descriptors and how to use the program in a user guide pdf file. 
 All the theory basis, references and how to prepare the quantum chemistry calculations are detailed in these files. 
+
 [English](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/user_guide_EN.pdf)
+
 [Portuguese](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/user_guide_EN.pd)
 
 # Tutorials
