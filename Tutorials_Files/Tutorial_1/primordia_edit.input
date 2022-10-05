@@ -1,0 +1,6 @@
+#RT normal 
+#PR eband 1
+1 acrolein.aux true 40 mopac 
+1 acrolein_orca.out true 40 orca 
+1 acrolein_gam.log true 40 gamess
+1 acrolein_gauss.fchk true 40 gaussian
