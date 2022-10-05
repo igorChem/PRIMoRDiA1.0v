@@ -58,13 +58,14 @@ We strongly recommend the latter to maximize the performance of the software in 
 It is very simple to compile with cmake. 
 First install Eigen3 library and the g++-8.
 Just follow the commands below:
-'''
+
+```
 sudo apt install g++-8
 sudo apt install libeigen3-dev
 cd ~/PRIMoRDiA1.0v 
 cmake .  
 make  
-'''
+```
 
 
 The detailed instructions of these two intallation options are described in our [wiki](https://github.com/igorChem/PRIMoRDiA1.0v/wiki) home. 
