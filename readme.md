@@ -54,15 +54,42 @@ Currently, this version is under tests and will be released soon and will includ
 
 You can download the executable file or just compule the software usinf CMAKE. 
 We strongly recommend the latter to maximize the performance of the software in your machine. 
+
+It is very simple to compile with cmake. 
+First install Eigen3 library and the g++-8.
+Just follow the commands below:
+
+```
+sudo apt install g++-8
+sudo apt install libeigen3-dev
+cd ~/PRIMoRDiA1.0v 
+cmake .  
+make  
+```
+
+
 The detailed instructions of these two intallation options are described in our [wiki](https://github.com/igorChem/PRIMoRDiA1.0v/wiki) home. 
 
 
 # Userguide 
 
+We provide a complete description of the descriptors and how to use the program in a user guide pdf file. 
+All the theory basis, references and how to prepare the quantum chemistry calculations are detailed in these files. 
 
-# Tutorials for 1.25v
+[English](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/user_guide_EN.pdf)
 
+[Portuguese](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/user_guide_EN.pd)
 
+# Tutorials
+
+We provide full tutorials in a PDF file of all calculations modes of the software, as pratical applications for acid force and enzymatic catalysis reaction.
+
+[Portuguese PDF]()
+
+We also provide an specific tutorial to run PRIMoRDiA without needing to configure your local machine. 
+This tutoral uses the [Google Colab cloud computing plataform](https://colab.research.google.com) and thus you can run from any operational system machine:
+
+[Tutorial Google Colabs](https://github.com/igorChem/PRIMoRDiA1.0v/blob/master/Tutorial_PRIMoRDiA_Colab.ipynb)
 
 # Cite our Work
 
