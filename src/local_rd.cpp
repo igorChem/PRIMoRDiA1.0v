@@ -245,7 +245,7 @@ void local_rd::calculate_Fukui_potential(){
 
 	#pragma omp parallel default(shared) private(i,j,k,x,y,z,r,xx,yy,zz,ii,jj,kk)
 	{
-	#pragma omp parallel for collapse(3) reduction(vec_d_plus:elec_H,nuc_H,rad_H)
+	#pragma omp parallel for collapse(6) reduction(vec_d_plus:elec_H,nuc_H,rad_H)
 	for(i=0;i<g1;i++){
 		for(j=0;j<g2;j++){
 			for(k=0;k<g3;k++){
@@ -340,7 +340,7 @@ void local_rd::calculate_hardness(const global_rd& grd){
 
 	#pragma omp parallel default(shared) private(i,j,k,x,y,z,r,xx,yy,zz,ii,jj,kk)
 	{
-	#pragma omp parallel for collapse(3) reduction(vec_d_plus:elec_H)
+	#pragma omp parallel for collapse(6) reduction(vec_d_plus:elec_H)
 	for(i=0;i<g1;i++){
 		for(j=0;j<g2;j++){
 			for(k=0;k<g3;k++){
