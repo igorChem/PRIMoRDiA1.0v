@@ -66,6 +66,18 @@ class Itimer{
 		
 		//----------------------------------------------------------------
 		/**
+		 * @brief Write the elapsed time on log.
+		 */
+		void write_in_log();
+		
+		//----------------------------------------------------------------
+		/**
+		 * @brief Controls when to throw the final message to the screen.
+		 */
+		void finish();
+		
+		//----------------------------------------------------------------
+		/**
 		 * @brief Destructor.
 		 */
 		~Itimer();

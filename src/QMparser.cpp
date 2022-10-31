@@ -56,6 +56,7 @@ QMparser::QMparser(const char* file_name,
 Imolecule QMparser::get_molecule(){
 	Imolecule empty_molecule;
 	empty_molecule.name = "empty";
+	double initi_time = omp_get_wtime();
 	if ( program == "mopac" ){
 		mopac_files file_obj(name_f);
 		if ( file_obj.is_open ){
@@ -68,6 +69,9 @@ Imolecule QMparser::get_molecule(){
 			else if ( file_obj.type == "MGF" ){
 				file_obj.parse_mgf();
 			}
+			double fin_time = omp_get_wtime() - initi_time;
+			m_log->input_message("Time to read QM file: ");
+			m_log->input_message(fin_time);
 			return file_obj.molecule;
 		}else{
 			m_log->write_error("File file not open! Ending without succes the parsing process!");
@@ -106,6 +110,7 @@ Imolecule QMparser::get_molecule(){
 		m_log->write_warning("Parsing process end without valid molecular information stored!");
 		return empty_molecule;
 	}
+	
 }
 /**********************************************************************************/
 QMparser::~QMparser(){}

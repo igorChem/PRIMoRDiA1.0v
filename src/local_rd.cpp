@@ -32,6 +32,7 @@
 #include "../include/Icube.h"
 #include "../include/global_rd.h"
 #include "../include/local_rd.h"
+#include "../include/Itimer.h"
 
 using std::cout;
 using std::endl;
@@ -234,7 +235,10 @@ void local_rd::calculate_Fukui_potential(){
 	unsigned int g1 = lrds[5].grid[0];
 	unsigned int g2 = lrds[5].grid[1];
 	unsigned int g3 = lrds[5].grid[2];
-		
+	//--------------------------------
+	double initi_time = omp_get_wtime();
+	m_log->input_message("Time for Calculate Fukui Potential: ");
+	//--------------------------------
 	#pragma omp declare reduction(vec_d_plus : std::vector<double> : \
 				std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>())) \
 				initializer(omp_priv = omp_orig)
@@ -277,7 +281,9 @@ void local_rd::calculate_Fukui_potential(){
 		}
 	}
 	}
-	
+	double fin_time = omp_get_wtime() - initi_time;
+	m_log->input_message(fin_time);
+	//---------------------------------------------
 	double volume = std::abs(s1*s2*s3);
 	lrds[11] = lrds[5];
 	lrds[12] = lrds[5];
@@ -325,7 +331,9 @@ void local_rd::calculate_hardness(const global_rd& grd){
 	unsigned int g1 = lrds[5].grid[0];
 	unsigned int g2 = lrds[5].grid[1];
 	unsigned int g3 = lrds[5].grid[2];
-	
+	//--------------------------------
+	double initi_time = omp_get_wtime();
+	m_log->input_message("Time for Calculate Local Hardness: ");
 	#pragma omp declare reduction(vec_d_plus : std::vector<double> : \
 				std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>())) \
                 initializer(omp_priv = omp_orig)
@@ -364,7 +372,8 @@ void local_rd::calculate_hardness(const global_rd& grd){
 		}
 	}
 	}
-	
+	double fin_time = omp_get_wtime() - initi_time;
+	m_log->input_message(fin_time);
 	double volume = std::abs(s1*s2*s3);
 	lrds[10] = lrds[2];
 	for(i=0;i<elec_H.size();i++) { lrds[10].scalar[i] = elec_H[i]; }
@@ -525,7 +534,7 @@ void local_rd::write_LRD(){
 	}
 		
 	if ( FD ){
-		lrds[2].write_cube(cube_names[4]+".cube"); //electron density
+		lrds[2].write_cube(cube_names[2]+".cube"); //electron density
 		lrds[3].write_cube(cube_names[5]+".cube"); //electron density cation
 		lrds[4].write_cube(cube_names[6]+".cube"); //electron density anion
 	}else{
@@ -555,6 +564,7 @@ void local_rd::write_LRD(){
 		if ( TFD ){
 			lrds[21].write_cube(cube_names[27]+".cube"); // local hardness TFD complete functional
 		}
+		if ( !FD )  lrds[2].write_cube(cube_names[5]+".cube"); // total electron density
 	}
 	
 	if ( extra_RD ){

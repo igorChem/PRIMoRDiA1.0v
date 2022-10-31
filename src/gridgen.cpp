@@ -425,7 +425,8 @@ double gridgen::electron_density(int x,int y, int z){
 void gridgen::calculate_density(){
 	unsigned int x,y,z;
 	omp_set_num_threads(NP);
-	//chronometer.reset();
+	double initi_time = omp_get_wtime();
+	m_log->input_message("Time to calculate electron density: ");
 	#pragma omp parallel for collapse (3) default(shared) private(x,y,z) 
 	for (unsigned int x=0;x<grid_len[0];x++){
 		for (unsigned int y=0;y<grid_len[1];y++){
@@ -434,7 +435,7 @@ void gridgen::calculate_density(){
 			}
 		}
 	} 
-	//cout << "Execution time: " << chronometer.return_wall_time() << " seconds" << endl;
+	m_log->input_message( omp_get_wtime() - initi_time );
 	density.add_data(psi);
 	density.name = name;
 }
@@ -442,7 +443,8 @@ void gridgen::calculate_density(){
 void gridgen::calculate_density_orca(){
 	unsigned int x,y,z;
 	omp_set_num_threads(NP);
-	//chronometer.reset();
+	double initi_time = omp_get_wtime();
+	m_log->input_message("Time to calculate Electron Density: ");
 	#pragma omp parallel for collapse (3) default(shared) private(x,y,z) 
 	for (unsigned int x=0;x<grid_len[0];x++){
 		for (unsigned int y=0;y<grid_len[1];y++){
@@ -451,7 +453,7 @@ void gridgen::calculate_density_orca(){
 			}
 		}
 	} 
-	//cout << "Execution time: " << chronometer.return_wall_time() << " seconds" << endl;
+	m_log->input_message( omp_get_wtime() - initi_time );
 	density.add_data(psi);
 	density.name = name;
 }

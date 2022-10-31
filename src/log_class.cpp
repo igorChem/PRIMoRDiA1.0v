@@ -101,5 +101,6 @@ Ilog::~Ilog(){
 	log_file << "Exiting PRIMoRDiA after " << chronometer.return_wall_time() << " seconds" << endl;
 	log_file << "===========================================================================" << endl;
 	log_file.close();
+	chronometer.finish();
 }
 /************************************************************/

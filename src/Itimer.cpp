@@ -14,8 +14,12 @@ void Itimer::reset(){ wall_init = omp_get_wtime(); }
 /************************************************************************************/
 void Itimer::print(){ std::cout << ( omp_get_wtime() - wall_init ) <<  std::endl; }
 /************************************************************************************/
-Itimer::~Itimer(){
+void Itimer::write_in_log(){ m_log->input_message( omp_get_wtime() - wall_init); }
+/************************************************************************************/
+void Itimer::finish(){
 	tot_time = omp_get_wtime() - tot_time;
-	std::cout << "Total execution time of PRIMoRDiA program: " << tot_time << " seconds" << std::endl; 
+	std::cout << "Total execution time of PRIMoRDiA program: " << tot_time << " seconds" << std::endl;
 }
+/************************************************************************************/
+Itimer::~Itimer(){}
 /************************************************************************************/

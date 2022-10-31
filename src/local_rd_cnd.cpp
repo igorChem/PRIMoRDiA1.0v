@@ -23,6 +23,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <cstdlib>
+#include <omp.h>
 #include <experimental/filesystem>
 // include statements from PRIMORDiA-libs
 #include "../include/common.h"
