@@ -38,7 +38,7 @@ class test_p {
 		test_p();
 		~test_p();
 		void test_systems_support();
-		void init_general_test(std::string autopath);
+		void init_general_test();
 		void unit_test();
 		void test_reaction_analysis();
 		void test_traj_analysis();

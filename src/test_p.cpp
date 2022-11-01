@@ -43,8 +43,8 @@ void test_p::test_systems_support(){
 	run_test.init();
 }
 /************************************************************************************/
-void test_p::init_general_test(std::string autopath){	
-	AutoPrimordia run_test(autopath.c_str());
+void test_p::init_general_test(){
+	AutoPrimordia run_test("/home/igorchem/Documents/PRIMoRDiA_data_test/comp/primordia.input");
 	run_test.init();
 }
 /************************************************************************************/

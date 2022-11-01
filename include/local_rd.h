@@ -54,6 +54,7 @@ class local_rd {
 		bool band;
 		bool TFD;
 		int charge;
+		std::vector< std::vector<double> > coords;
 		std::vector<Icube> lrds;
 		std::vector<std::string> rd_names;
 		//constructors/destructor
@@ -67,6 +68,7 @@ class local_rd {
 		local_rd& operator=(local_rd&& lrd_rhs) noexcept;
 		~local_rd();
 		//member functions
+		std::vector<double> calculate_r_grid();
 		friend local_rd operator-(const local_rd& lrd_lhs,const local_rd& lrd_rhs);	
 		void calculate_fukui_Band(const Icube& homo_b, const Icube& lumo_b);
 		void calculate_RD(const global_rd& grd);
