@@ -123,42 +123,6 @@ local_rd::local_rd(Icube elec_dens	,
 	lrds[7] = (lrds[5]+lrds[6])/2.0;
 	lrds[8] = lrds[6]-lrds[5];
 	
-	coords.resize(3);
-	for(int i=0;i<3;i++){ coords[i].resize(lrds[0].voxelN); }
-	
-	double 	 s1	= lrds[0].gridsides[0];
-	double 	 s2	= lrds[0].gridsides[1];
-	double 	 s3	= lrds[0].gridsides[2];
-	double 	 o1	= lrds[0].origin[0];
-	double 	 o2	= lrds[0].origin[1];
-	double 	 o3	= lrds[0].origin[2];
-	unsigned g1 = lrds[0].grid[0];
-	unsigned g2 = lrds[0].grid[1];
-	unsigned g3 = lrds[0].grid[2];
-		
-	unsigned j=0;
-	unsigned k=0;
-	unsigned l=0;
-	double initi_time = omp_get_wtime();
-	m_log->input_message("Time for Calculate cube coordinates: ");
-	if ( g1 <= 100 ){
-		for(unsigned i=0;i<lrds[0].voxelN;i++){
-			coords[0][i] = o1 + j*s1;
-			coords[1][i] = o2 + k*s2;
-			coords[2][i] = o3 + l*s3;
-			j++;
-			if (j%g1 == 0){
-				j=0;
-				k++;
-				if (k%g2 == 0){
-					l++;
-					if ( l%g3 == 0 ) l = 0;
-				}
-			}
-		}	
-	}
-	double tot_time = omp_get_wtime() - initi_time;
-	m_log->input_message(tot_time);
 }
 /***********************************************************************************/
 local_rd::local_rd(Icube elecDens			,
@@ -196,29 +160,6 @@ local_rd::local_rd(Icube elecDens			,
 	unsigned g2 = lrds[0].grid[1];
 	unsigned g3 = lrds[0].grid[2];
 		
-	unsigned j=0;
-	unsigned k=0;
-	unsigned l=0;
-	double initi_time = omp_get_wtime();
-	m_log->input_message("Time for Calculate cube coordinates: ");
-	if ( g1 <= 100 ){
-		for(unsigned i=0;i<lrds[0].voxelN;i++){
-			coords[0][i] = o1 + j*s1;
-			coords[1][i] = o2 + k*s2;
-			coords[2][i] = o3 + l*s3;
-			j++;
-			if (j%g1 == 0){
-				j=0;
-				k++;
-				if (k%g2 == 0){
-					l++;
-					if ( l%g3 == 0 ) l = 0;
-				}
-			}
-		}
-	}
-	double tot_time = omp_get_wtime() - initi_time;
-	m_log->input_message(tot_time);
 }
 /***********************************************************************************/
 local_rd::local_rd(const local_rd& lrd_rhs)	:
@@ -314,7 +255,7 @@ void local_rd::calculate_Fukui_potential(){
 	vector<double> elec_H(lrds[5].voxelN);
 	vector<double> nuc_H(lrds[5].voxelN);
 	vector<double> rad_H(lrds[5].voxelN);
-	unsigned int i,j;
+	unsigned int i,j,k,x,y,z;
 	double ii	= 0;
 	double jj	= 0;
 	double kk	= 0;
@@ -322,7 +263,15 @@ void local_rd::calculate_Fukui_potential(){
 	double yy	= 0;
 	double zz	= 0;
 	double r	= 0;
-	unsigned vx	= lrds[0].voxelN; 
+	double s1	= lrds[5].gridsides[0];
+	double s2	= lrds[5].gridsides[1];
+	double s3	= lrds[5].gridsides[2];
+	double o1	= lrds[5].origin[0];
+	double o2	= lrds[5].origin[1];
+	double o3	= lrds[5].origin[2];
+	unsigned int g1 = lrds[5].grid[0];
+	unsigned int g2 = lrds[5].grid[1];
+	unsigned int g3 = lrds[5].grid[2];
 	
 	//--------------------------------
 	double initi_time = omp_get_wtime();
@@ -331,29 +280,47 @@ void local_rd::calculate_Fukui_potential(){
 	#pragma omp declare reduction(vec_d_plus : std::vector<double> : \
 				std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>())) \
 				initializer(omp_priv = omp_orig)
-	#pragma omp parallel default(shared) private(i,j,r,xx,yy,zz,ii,jj,kk)
+
+	#pragma omp parallel default(shared) private(i,j,k,x,y,z,r,xx,yy,zz,ii,jj,kk)
 	{
 	#pragma omp parallel for reduction(vec_d_plus:elec_H,nuc_H,rad_H)
-	for(i=0;i<vx;i++){
-		xx	= coords[0][i];
-		yy	= coords[1][i];
-		zz	= coords[2][i];
-		for(j=0;j<vx;j++){
-			if ( i!=j ){
-				xx	-= coords[0][j];
-				xx 	*= xx;
-				yy 	-= coords[1][j];
-				yy 	*= yy;
-				zz 	-= coords[2][j];
-				zz 	*= kk;
-				r  	= sqrt(xx + yy + zz);
-				elec_H[i] += lrds[5].scalar[j]/r;
-				nuc_H[i]  += lrds[6].scalar[j]/r;
-				rad_H[i]  += lrds[7].scalar[j]/r;
+	for(i=0;i<g1;i++){
+		for(j=0;j<g2;j++){
+			for(k=0;k<g3;k++){
+				for (x=0;x<g1;x++){
+					for (y=0;y<g2;y++){
+						for (z=0;z<g3;z++){
+							xx	= x*s1 + o1;
+							yy	= y*s2 + o2;
+							zz	= z*s3 + o3;
+							ii	= i*s1 + o1;
+							jj	= j*s2 + o2;
+							kk	= k*s3 + o3;
+							xx 	-= ii;
+							xx 	*= xx;
+							yy 	-= jj;
+							yy 	*= yy;
+							zz 	-= kk;
+							zz 	*= zz;
+							r  	= sqrt(xx + yy + zz);
+							if ( r == 0.000 ){
+								elec_H[i*g1*g1+j*g2+k]	+= 0;
+								nuc_H[i*g1*g1+j*g2+k] 	+= 0;
+								rad_H[i*g1*g1+j*g2+k] 	+= 0;
+							}else{
+								elec_H[i*g1*g1+j*g2+k]	+= lrds[5].scalar[x*g1*g1+y*g2+z]/r;
+								nuc_H[i*g1*g1+j*g2+k]	+= lrds[6].scalar[x*g1*g1+y*g2+z]/r;
+								rad_H[i*g1*g1+j*g2+k]	+= lrds[7].scalar[x*g1*g1+y*g2+z]/r;
+							}
+						}
+					}
+				}
 			}
 		}
 	}
 	}
+
+
 	double fin_time = omp_get_wtime() - initi_time;
 	m_log->input_message(fin_time);
 	//---------------------------------------------
@@ -368,6 +335,60 @@ void local_rd::calculate_Fukui_potential(){
 	lrds[11] = lrds[11]*volume;
 	lrds[12] = lrds[12]*volume;
 	lrds[13] = lrds[13]*volume;
+}
+/***********************************************************************************/
+std::vector<double> local_rd::calculate_Fukui_potential_point(unsigned x, unsigned y, unsigned z){
+	std::vector<double> result(3);
+	
+	unsigned int x,y,z;
+	double ii	= 0;
+	double jj	= 0;
+	double kk	= 0;
+	double xx	= 0;
+	double yy	= 0;
+	double zz	= 0;
+	double r	= 0;
+	double s1	= lrds[5].gridsides[0];
+	double s2	= lrds[5].gridsides[1];
+	double s3	= lrds[5].gridsides[2];
+	double o1	= lrds[5].origin[0];
+	double o2	= lrds[5].origin[1];
+	double o3	= lrds[5].origin[2];
+	unsigned int g1 = lrds[5].grid[0];
+	unsigned int g2 = lrds[5].grid[1];
+	unsigned int g3 = lrds[5].grid[2];
+	
+	#pragma omp parallel default(shared) private(i,j,k,x,y,z,r,xx,yy,zz,ii,jj,kk)
+	{
+	#pragma omp parallel for reduction(vec_d_plus:elec_H,nuc_H,rad_H)
+	for (x=0;x<g1;x++){
+		for (y=0;y<g2;y++){
+			for (z=0;z<g3;z++){
+				xx	= x*s1 + o1;
+				yy	= y*s2 + o2;
+				zz	= z*s3 + o3;
+				ii	= i*s1 + o1;
+				jj	= j*s2 + o2;
+				kk	= k*s3 + o3;
+				xx 	-= ii;
+				xx 	*= xx;
+				yy 	-= jj;
+				yy 	*= yy;
+				zz 	-= kk;
+				zz 	*= zz;
+				r  	= sqrt(xx + yy + zz);
+				if ( r == 0.000 ){
+					elec_H[i*g1*g1+j*g2+k]	+= 0;
+					nuc_H[i*g1*g1+j*g2+k] 	+= 0;
+					rad_H[i*g1*g1+j*g2+k] 	+= 0;
+				}else{
+					elec_H[i*g1*g1+j*g2+k]	+= lrds[5].scalar[x*g1*g1+y*g2+z]/r;
+					nuc_H[i*g1*g1+j*g2+k]	+= lrds[6].scalar[x*g1*g1+y*g2+z]/r;
+					rad_H[i*g1*g1+j*g2+k]	+= lrds[7].scalar[x*g1*g1+y*g2+z]/r;
+				}
+			}
+		}
+	}
 }
 /***********************************************************************************/
 void local_rd::calculate_hardness(const global_rd& grd){
@@ -386,7 +407,7 @@ void local_rd::calculate_hardness(const global_rd& grd){
 
 	//local hardness com aproximação de potencial elétron-elétron
 	vector<double> elec_H(lrds[5].voxelN);
-	unsigned int i,j;
+	unsigned int i,j,k,x,y,z;
 	double ii	= 0;
 	double jj	= 0;
 	double kk	= 0;
@@ -394,7 +415,15 @@ void local_rd::calculate_hardness(const global_rd& grd){
 	double yy	= 0;
 	double zz	= 0;
 	double r	= 0;
-	unsigned vx	= lrds[0].voxelN;
+	double s1	= lrds[5].gridsides[0];
+	double s2	= lrds[5].gridsides[1];
+	double s3	= lrds[5].gridsides[2];
+	double o1	= lrds[5].origin[0];
+	double o2	= lrds[5].origin[1];
+	double o3	= lrds[5].origin[2];
+	unsigned int g1 = lrds[5].grid[0];
+	unsigned int g2 = lrds[5].grid[1];
+	unsigned int g3 = lrds[5].grid[2];
 	//--------------------------------
 	double initi_time = omp_get_wtime();
 	m_log->input_message("Time for Calculate Local Hardness: ");
@@ -402,28 +431,42 @@ void local_rd::calculate_hardness(const global_rd& grd){
 	#pragma omp declare reduction(vec_d_plus : std::vector<double> : \
 				std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>())) \
                 initializer(omp_priv = omp_orig)
-				
-	#pragma omp parallel default(shared) private(i,j,r,xx,yy,zz,ii,jj,kk)
+
+	#pragma omp parallel default(shared) private(i,j,k,x,y,z,r,xx,yy,zz,ii,jj,kk)
 	{
 	#pragma omp parallel for reduction(vec_d_plus:elec_H)
-	for(i=0;i<vx;i++){
-		xx	= coords[0][i];
-		yy	= coords[1][i];
-		zz	= coords[2][i];
-		for(j=0;j<vx;j++){
-			if ( i!=j ){
-				xx	-= coords[0][j];
-				xx 	*= xx;
-				yy 	-= coords[1][j];
-				yy 	*= yy;
-				zz 	-= coords[2][j];
-				zz 	*= kk;
-				r  	= sqrt(xx + yy + zz);
-				elec_H[i] += lrds[2].scalar[j]/r;
+	for(i=0;i<g1;i++){
+		for(j=0;j<g2;j++){
+			for(k=0;k<g3;k++){
+				for (x=0;x<g1;x++){
+					for (y=0;y<g2;y++){
+						for (z=0;z<g3;z++){
+							xx	= x*s1 + o1;
+							yy	= y*s2 + o2;
+							zz	= z*s3 + o3;
+							ii	= i*s1 + o1;
+							jj	= j*s2 + o2;
+							kk	= k*s3 + o3;
+							xx	-= ii;
+							xx 	*= xx;
+							yy 	-= jj;
+							yy 	*= yy;
+							zz 	-= kk;
+							zz 	*= zz;
+							r  	= sqrt(xx + yy + zz);
+							if ( r == 0.000 ){
+								elec_H[i*g1*g1+j*g2+k] += 0;
+							}else{
+								elec_H[i*g1*g1+j*g2+k] += lrds[2].scalar[x*g1*g1+y*g2+z]/r;
+							}
+						}
+					}
+				}
 			}
 		}
 	}
 	}
+	
 	double fin_time = omp_get_wtime() - initi_time;
 	m_log->input_message(fin_time);
 	double volume = std::abs(lrds[0].gridsides[0]*lrds[0].gridsides[1]*lrds[0].gridsides[2]);
