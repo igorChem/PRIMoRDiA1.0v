@@ -172,10 +172,12 @@ void primordia::init_FOA(const char* file_neutro,
 			local_rd lrdVol_1( e_density,homo_cub, lumo_cub );
 			if ( loc_hard == "true" || loc_hard == "TFD"  ){
 				if ( loc_hard == "TFD" ){ lrdVol_1.TFD = true; }
-				lrdVol_1.calculate_hardness(grd);
+				if ( grdN <= 100 ){
+					lrdVol_1.calculate_hardness(grd);
+					lrdVol_1.calculate_Fukui_potential();
+				}
 				lrdVol_1.calculate_MEP(grid1.molecule);
 			}
-			lrdVol_1.calculate_Fukui_potential();
 			lrdVol_1.calculate_RD(grd);
 			lrdVol_1.write_LRD();
 			lrdVol = lrdVol_1;
@@ -270,17 +272,21 @@ void primordia::init_FD(const char* file_neutro	,
 			grid3.molecule.clear();
 			local_rd lrdVol_1(grid1.density,grid2.density,grid3.density,charge);
 			if ( loc_hard == "TFD" ){ lrdVol.TFD = true;};
-			lrdVol_1.calculate_Fukui_potential();
 			lrdVol_1.calculate_RD(grd);
-			lrdVol_1.calculate_hardness(grd);
-			lrdVol_1.calculate_MEP(grid1.molecule);
+			if ( loc_hard == "true" || loc_hard =="TFD" ){
+				if ( grdN <=100 ){
+					lrdVol_1.calculate_Fukui_potential();
+					lrdVol_1.calculate_hardness(grd);
+				}
+				lrdVol_1.calculate_MEP(grid1.molecule);
+			}
 			lrdVol_1.write_LRD();
 			lrdVol = move(lrdVol_1);
 			if ( pymol_script ) {
 				mol_info.write_pdb();
 				scripts pymol_s( name,"pymols" );
 				pymol_s.write_pymol_cube(lrdVol);
-			}			
+			}
 		}
 	}
 }
@@ -379,14 +385,16 @@ void primordia::init_protein_RD(const char* file_name	,
 			if (  locHardness == "true" || locHardness == "TFD" ){
 				grid.calculate_density();
 				lrdVol = local_rd(grid.density,HOMO,LUMO);
-				lrdVol.calculate_hardness(grd);
+				if ( gridN <= 100 ){
+					lrdVol.calculate_hardness(grd);
+					lrdVol.calculate_Fukui_potential();
+				}
 				lrdVol.calculate_MEP(grid.molecule);
 			}else{ 
 				lrdVol = local_rd(HOMO,LUMO);
 			}
 			lrdVol.calculate_fukui_Band(EAS,NAS);
 			lrdVol.name = name;
-			lrdVol.calculate_Fukui_potential();
 			lrdVol.calculate_RD(grd);
 			lrdVol.write_LRD();
 			if ( pymol_script ){

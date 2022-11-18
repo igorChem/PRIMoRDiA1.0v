@@ -141,19 +141,21 @@ local_rd::local_rd(Icube elec_dens	,
 	unsigned l=0;
 	double initi_time = omp_get_wtime();
 	m_log->input_message("Time for Calculate cube coordinates: ");
-	for(unsigned i=0;i<lrds[0].voxelN;i++){
-		coords[0][i] = o1 + j*s1;
-		coords[1][i] = o2 + k*s2;
-		coords[2][i] = o3 + l*s3;
-		j++;
-		if (j%g1 == 0){
-			j=0;
-			k++;
-			if (k%g2 == 0){
-				l++;
-				if ( l%g3 == 0 ) l = 0;
+	if ( g1 <= 100 ){
+		for(unsigned i=0;i<lrds[0].voxelN;i++){
+			coords[0][i] = o1 + j*s1;
+			coords[1][i] = o2 + k*s2;
+			coords[2][i] = o3 + l*s3;
+			j++;
+			if (j%g1 == 0){
+				j=0;
+				k++;
+				if (k%g2 == 0){
+					l++;
+					if ( l%g3 == 0 ) l = 0;
+				}
 			}
-		}
+		}	
 	}
 	double tot_time = omp_get_wtime() - initi_time;
 	m_log->input_message(tot_time);
@@ -199,17 +201,19 @@ local_rd::local_rd(Icube elecDens			,
 	unsigned l=0;
 	double initi_time = omp_get_wtime();
 	m_log->input_message("Time for Calculate cube coordinates: ");
-	for(unsigned i=0;i<lrds[0].voxelN;i++){
-		coords[0][i] = o1 + j*s1;
-		coords[1][i] = o2 + k*s2;
-		coords[2][i] = o3 + l*s3;
-		j++;
-		if (j%g1 == 0){
-			j=0;
-			k++;
-			if (k%g2 == 0){
-				l++;
-				if ( l%g3 == 0 ) l = 0;
+	if ( g1 <= 100 ){
+		for(unsigned i=0;i<lrds[0].voxelN;i++){
+			coords[0][i] = o1 + j*s1;
+			coords[1][i] = o2 + k*s2;
+			coords[2][i] = o3 + l*s3;
+			j++;
+			if (j%g1 == 0){
+				j=0;
+				k++;
+				if (k%g2 == 0){
+					l++;
+					if ( l%g3 == 0 ) l = 0;
+				}
 			}
 		}
 	}
@@ -428,7 +432,6 @@ void local_rd::calculate_hardness(const global_rd& grd){
 	lrds[10] = lrds[10]*volume;
 	lrds[10] = lrds[10]*(1/numofelec);
 	//----------------------------------------------------------------------------
-	
 	if ( TFD ){
 		Icube density_rc1	= lrds[2].scale_cube(0.6666667);
 		Icube density_rc2	= lrds[2].scale_cube(0.3333333);
@@ -597,7 +600,6 @@ void local_rd::write_LRD(){
 	lrds[7].write_cube(cube_names[9]+".cube"); // zero Fukui
 	lrds[8].write_cube(cube_names[10]+".cube"); // dual Fukui ph1
 	lrds[8].write_cube(cube_names[11]+".cube"); // dual Fukui ph2
-	lrds[11].write_cube(cube_names[14]+".cube"); // left Fukui potential 
 	lrds[14].write_cube(cube_names[17]+".cube"); // local hardnes int
 	lrds[15].write_cube(cube_names[18]+".cube"); // local softness dual ph1
 	lrds[15].write_cube(cube_names[19]+".cube"); // local softness dual ph2
@@ -607,6 +609,9 @@ void local_rd::write_LRD(){
 		lrds[10].write_cube(cube_names[13]+".cube"); // local hardness Vee
 		lrds[19].write_cube(cube_names[24]+".cube"); // MEP ph1
 		lrds[19].write_cube(cube_names[25]+".cube"); // MEP ph2
+		lrds[11].write_cube(cube_names[14]+".cube"); // left Fukui potential 
+		lrds[12].write_cube(cube_names[15]+".cube"); // right Fukui potential
+		lrds[13].write_cube(cube_names[16]+".cube"); // zero Fukui potential
 		if ( TFD ){
 			lrds[21].write_cube(cube_names[27]+".cube"); // local hardness TFD complete functional
 		}
@@ -614,8 +619,6 @@ void local_rd::write_LRD(){
 	}
 	
 	if ( extra_RD ){
-		lrds[12].write_cube(cube_names[15]+".cube"); // right Fukui potential
-		lrds[13].write_cube(cube_names[16]+".cube"); // zero Fukui potential
 		lrds[16].write_cube(cube_names[20]+".cube"); // local sofntess average
 		lrds[17].write_cube(cube_names[21]+".cube"); // hyper local softness
 		lrds[18].write_cube(cube_names[22]+".cube"); // multiphilicity ph1
