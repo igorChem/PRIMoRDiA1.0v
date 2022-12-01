@@ -324,7 +324,7 @@ void local_rd::calculate_Fukui_potential(){
 	double fin_time = omp_get_wtime() - initi_time;
 	m_log->input_message(fin_time);
 	//---------------------------------------------
-	double volume = std::abs(lrds[0].gridsides[0]*lrds[0].gridsides[1]*lrds[0].gridsides[2]);
+	double volume = std::abs(lrds[2].gridsides[0]*lrds[2].gridsides[1]*lrds[2].gridsides[2]);
 	lrds[11] = lrds[5];
 	lrds[12] = lrds[5];
 	lrds[13] = lrds[5];
@@ -438,7 +438,7 @@ void local_rd::calculate_hardness(const global_rd& grd){
 	
 	double fin_time = omp_get_wtime() - initi_time;
 	m_log->input_message(fin_time);
-	double volume = std::abs(lrds[0].gridsides[0]*lrds[0].gridsides[1]*lrds[0].gridsides[2]);
+	double volume = std::abs(lrds[5].gridsides[0]*lrds[5].gridsides[1]*lrds[5].gridsides[2]);
 	lrds[10] = lrds[2];
 	for(i=0;i<elec_H.size();i++) { lrds[10].scalar[i] = elec_H[i]; }
 	lrds[10] = lrds[10]*volume;
