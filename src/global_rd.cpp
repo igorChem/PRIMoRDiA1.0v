@@ -114,6 +114,8 @@ global_rd::global_rd(const Imolecule& mol_neutro			,
 	grds[0] = mol_neutro.homo_energy;
 	grds[1] = mol_neutro.lumo_energy;
 	grds[2] = mol_neutro.energy_tot;
+	grds[3] = mol_cation.energy_tot;
+	grds[4] = mol_anion.energy_tot;	
 	grds[5] = mol_neutro.elec_energy - mol_cation.elec_energy;
 	grds[6] = mol_anion.elec_energy - mol_neutro.elec_energy;
 	grds[11]= grds[0]-grds[1];
@@ -145,12 +147,13 @@ global_rd& global_rd::operator=(const global_rd& rd_rhs){
 /*****************************************************************************************/
 global_rd::global_rd(global_rd&& rd_rhs)  noexcept :
 		name( std::move(rd_rhs.name) )				,
-		rd_names( std::move(rd_rhs.rd_names) )		,
-		rd_abrev( std::move(rd_rhs.rd_abrev) )		,
-		grds( std::move(rd_rhs.grds) )				,
-		DF(rd_rhs.DF)								,
-		KA(rd_rhs.KA)								{
-}
+		rd_names( std::move(rd_rhs.rd_names))		,
+		rd_abrev(std::move(rd_rhs.rd_abrev))		,
+		grds(std::move(rd_rhs.grds))				,
+		KA(rd_rhs.KA)								,
+		DF(rd_rhs.DF)								{
+			
+}	
 /*****************************************************************************************/
 global_rd& global_rd::operator=(global_rd&& rd_rhs) noexcept {
 	if (this!=&rd_rhs){

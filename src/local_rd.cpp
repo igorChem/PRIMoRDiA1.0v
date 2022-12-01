@@ -338,9 +338,8 @@ void local_rd::calculate_Fukui_potential(){
 }
 /***********************************************************************************/
 std::vector<double> local_rd::calculate_Fukui_potential_point(unsigned x, unsigned y, unsigned z){
-	std::vector<double> result(3);
 	
-	unsigned int x,y,z;
+	std::vector<double> result(3);
 	double ii	= 0;
 	double jj	= 0;
 	double kk	= 0;
@@ -358,45 +357,15 @@ std::vector<double> local_rd::calculate_Fukui_potential_point(unsigned x, unsign
 	unsigned int g2 = lrds[5].grid[1];
 	unsigned int g3 = lrds[5].grid[2];
 	
-	#pragma omp parallel default(shared) private(i,j,k,x,y,z,r,xx,yy,zz,ii,jj,kk)
-	{
-	#pragma omp parallel for reduction(vec_d_plus:elec_H,nuc_H,rad_H)
-	for (x=0;x<g1;x++){
-		for (y=0;y<g2;y++){
-			for (z=0;z<g3;z++){
-				xx	= x*s1 + o1;
-				yy	= y*s2 + o2;
-				zz	= z*s3 + o3;
-				ii	= i*s1 + o1;
-				jj	= j*s2 + o2;
-				kk	= k*s3 + o3;
-				xx 	-= ii;
-				xx 	*= xx;
-				yy 	-= jj;
-				yy 	*= yy;
-				zz 	-= kk;
-				zz 	*= zz;
-				r  	= sqrt(xx + yy + zz);
-				if ( r == 0.000 ){
-					elec_H[i*g1*g1+j*g2+k]	+= 0;
-					nuc_H[i*g1*g1+j*g2+k] 	+= 0;
-					rad_H[i*g1*g1+j*g2+k] 	+= 0;
-				}else{
-					elec_H[i*g1*g1+j*g2+k]	+= lrds[5].scalar[x*g1*g1+y*g2+z]/r;
-					nuc_H[i*g1*g1+j*g2+k]	+= lrds[6].scalar[x*g1*g1+y*g2+z]/r;
-					rad_H[i*g1*g1+j*g2+k]	+= lrds[7].scalar[x*g1*g1+y*g2+z]/r;
-				}
-			}
-		}
-	}
+	return result; 
 }
 /***********************************************************************************/
 void local_rd::calculate_hardness(const global_rd& grd){
 	LH = true;
 	//Local Chemical Potential method
 	double numofelec	= lrds[2].calc_cube_integral();
-	double val1			= grd.grds[7]/numofelec;
-	double val2			= grd.grds[8]*2;
+	double val1			= -std::abs(grd.grds[7])/numofelec;
+	double val2			= std::abs(grd.grds[8])*2;
 		
 	Icube elec_dens_norm= lrds[2]/ numofelec ;
 	Icube elec_dens_hard= elec_dens_norm*val2;

@@ -31,8 +31,7 @@ using std::vector;
 using std::string;
 using std::move;
 /************************************************************************************/
-test_p::test_p(){
-}
+test_p::test_p(){}
 /************************************************************************************/
 test_p::~test_p(){}
 /************************************************************************************/
@@ -44,7 +43,7 @@ void test_p::test_systems_support(){
 }
 /************************************************************************************/
 void test_p::init_general_test(){
-	AutoPrimordia run_test("/home/igorchem/Documents/PRIMoRDiA_data_test/comp/primordia.input");
+	AutoPrimordia run_test("/home/igorchem/primordia-code/PRIMoRDiA_data_test/autoprimordia/input");
 	run_test.init();
 }
 /************************************************************************************/

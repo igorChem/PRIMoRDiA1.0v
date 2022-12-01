@@ -147,8 +147,9 @@ mopac_files::mopac_files(const char* file_name):
 				}
 				else if ( Buffer.lines[i].IF_word(_tot_en,0,16) ){
 					string word2 ( Buffer.lines[i].words[0],16,14);
-					molecule.energy_tot = D_E_conv(word2);
+					molecule.energy_tot  = D_E_conv(word2);
 					molecule.energy_tot *= 0.0367493;
+					molecule.elec_energy = molecule.energy_tot;
 				}
 			}
 		}else if ( check_file_ext(".out",file_name ) ) {
@@ -359,6 +360,7 @@ void mopac_files::parse_out(){
 		}
 		else if ( Buffer.lines[i].IF_line("ELECTRONIC",0,"ENERGY",1,5) || Buffer.lines[i].IF_line("ELECTRONIC",0,"ENERGY",1,8) ){
 			molecule.energy_tot = Buffer.lines[i].pop_double(3);
+			molecule.elec_energy = molecule.energy_tot;
 			//cout << molecule.energy_tot << endl;
 		}
 		else if ( Buffer.lines[i].IF_line("HOMO",0,"LUMO",1,7) ){
