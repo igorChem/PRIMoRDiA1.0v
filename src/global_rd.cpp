@@ -116,8 +116,8 @@ global_rd::global_rd(const Imolecule& mol_neutro			,
 	grds[2] = mol_neutro.energy_tot;
 	grds[3] = mol_cation.energy_tot;
 	grds[4] = mol_anion.energy_tot;	
-	grds[5] = mol_neutro.elec_energy - mol_cation.elec_energy;
-	grds[6] = mol_anion.elec_energy - mol_neutro.elec_energy;
+	grds[5] = mol_cation.elec_energy - mol_neutro.elec_energy;
+	grds[6] = mol_neutro.elec_energy - mol_anion.elec_energy;
 	grds[11]= grds[0]-grds[1];
 	grds[13]= mol_neutro.heat_of_formation;
 	
