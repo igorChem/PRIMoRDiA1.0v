@@ -47,8 +47,13 @@ Currently, this version is under tests and will be released soon and will includ
 5. Implementation of the global and local composite hardness.
 6. Important adjustments in scripts for Pymol grpahical visualization 
 
-## PRIMoRDiA 1.25v - Stable Update (upcoming soon)
+## PRIMoRDiA 1.25v - Stable Update
 
+1. All features of the 1.2v.
+2. New calculations methods for local hardness
+3. Volumetric and Condensed representation for all local descriptors
+4. Adjustments in visualization scripts and statistical analysis
+5. Nomenclature standardization.
 
 # Dowload and Installation
 
