@@ -75,6 +75,7 @@ string _ao_zeta 	= "AO_ZETA[";					//18
 string _ao_pqn  	= "ATOM_PQN[";					//19
 string _atom_chg 	= "ATOM_CHARGES[";				//20
 string _gradients 	= "GRADIENTS:KCAL/MOL/ANGSTROM[";//21 
+string _ao_chg	 	= "AO_CHARGES[";				 //22 
 
 vector<string> _states = {"SINGLET", "DOUBLET", "TRIPLET", "QUARTET","QUINTET"};
 /**************************************/
@@ -215,6 +216,9 @@ void mopac_files::parse_aux(){
 			_out[5] = i;			
 		}else if ( Buffer.lines[i].IF_word(_atom_chg,0,13) ){
 			_in[6] = i+1;
+		}
+		else if ( Buffer.lines[i].IF_word(_ao_chg,0,11) ) {
+			_out[6]=i+1;
 		}
 		else if ( Buffer.lines[i].IF_word(_gradients,0,28) ) {
 			_out[6]=i+1;
