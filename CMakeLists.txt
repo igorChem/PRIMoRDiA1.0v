@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.0)
-set(CMAKE_CXX_COMPILER /usr/bin/g++-8)
+set(CMAKE_CXX_COMPILER /usr/bin/g++)
 project (primordia_app)
 enable_language (CXX)
 include_directories (./include)
